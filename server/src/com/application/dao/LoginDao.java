@@ -1,12 +1,12 @@
 package com.application.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.application.common.Queries;
-import com.mysql.jdbc.Connection;
 
 public class LoginDao extends BaseDao {
 
@@ -21,6 +21,8 @@ public class LoginDao extends BaseDao {
 		List<Object> params = new ArrayList<Object>();
 		params.add(username);
 		params.add(password);
+		System.out.println(username);
+		System.out.println(password);
 		rs = querySql(Queries.VALIDATE_USER, params);
 		if (rs.next())
 			return true;

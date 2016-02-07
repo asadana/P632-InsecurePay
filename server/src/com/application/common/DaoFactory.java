@@ -2,9 +2,9 @@ package com.application.common;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 
 import com.application.dao.BaseDao;
-import com.mysql.jdbc.Connection;
 
 /*
  * Instantiates the Dao and passes the connection to BaseDao

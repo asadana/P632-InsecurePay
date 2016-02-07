@@ -1,11 +1,10 @@
 package com.application.dao;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import com.mysql.jdbc.Connection;
 
 /*
  * Includes core methods of creating and querying results
