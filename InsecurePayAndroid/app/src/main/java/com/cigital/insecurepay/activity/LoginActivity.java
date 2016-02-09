@@ -104,6 +104,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Display username and password in log
+                Log.i("Insecure Data Storage", "Username : " + mUsernameView.getText().toString());
+                Log.i("Insecure Data Storage", "Password : " + mPasswordView.getText().toString());
                 attemptLogin();
             }
         });
@@ -111,14 +114,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         /*Fetch checkbox*/
-        mRememberMeCheck = (CheckBox)findViewById(R.id.saveLoginCheckBox);
+        mRememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
         loginPrefsEditor = loginPreferences.edit();
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
-        if(saveLogin==true){
+        if (saveLogin == true) {
             mUsernameView.setText(loginPreferences.getString("username", ""));
-            mPasswordView.setText(loginPreferences.getString("password",""));
+            mPasswordView.setText(loginPreferences.getString("password", ""));
             mRememberMeCheck.setChecked(true);
         }
     }
@@ -223,18 +226,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return password.length() > 4;
     }
 
-    private void saveLoginPreferences(){
-        if(mRememberMeCheck.isChecked()){
+    private void saveLoginPreferences() {
+        if (mRememberMeCheck.isChecked()) {
             loginPrefsEditor.putBoolean("saveLogin", true);
             loginPrefsEditor.putString("username", mUsernameView.getText().toString());
             loginPrefsEditor.putString("password", mPasswordView.getText().toString());
             loginPrefsEditor.commit();
-        }
-        else{
+        } else {
             loginPrefsEditor.clear();
             loginPrefsEditor.commit();
         }
     }
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -345,19 +348,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             try {
-                Log.d("Response","Inside Background");
+                Log.d("Response", "Inside Background");
                 //Parameters contain credentials which are capsuled to LoginVO objects
-                LoginVO send_vo = new LoginVO(params[0],params[1]);
+                LoginVO send_vo = new LoginVO(params[0], params[1]);
                 Gson gson = new Gson();
                 String sendToServer = gson.toJson(send_vo);
 
                 //Passing the context of LoginActivity to Connectivity
                 Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), sendToServer);
                 //sendToServer contains JSON object that has credentials
-                Log.d("Response","Now calling post");
+                Log.d("Response", "Now calling post");
                 String responseFromServer = con.post().trim();
-                Log.d("Response",responseFromServer);
-                if(responseFromServer.equals("true")){
+                Log.d("Response", responseFromServer);
+                if (responseFromServer.equals("true")) {
                     return true;
                 }
                 // Simulate network access.
@@ -375,14 +378,33 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
 
+            // If login successful reset the trials if exists any
+
+            String username = mUsernameView.getText().toString();
+            LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+            int trial = db.getTrial(username);
             if (success) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
+                if (trial != -1) {
+                    db.updateTrial(username, 0);
+                }
 
             } else {
-                //Update trial to database
-                LoginDBHelper db = new LoginDBHelper(LoginActivity.this.getApplicationContext());
-                db.getTrial(mUsernameView.getText().toString());
-                Toast.makeText(LoginActivity.this.getApplicationContext(),"Login Failed", Toast.LENGTH_LONG).show();
+                /*
+                Update trial to database if login failed.
+                Account Lockout if number of trials exceeds or equals to 3
+                */
+
+                if (trial == -1) {
+                    db.addTrial(username, 1);
+                } else {
+                    db.updateTrial(username, trial + 1);
+                }
+                if (trial + 1 >= 3) {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                }
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }

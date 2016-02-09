@@ -1,5 +1,6 @@
 package com.cigital.insecurepay.DBHelper;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,24 +30,34 @@ public class LoginDBHelper extends DBHelper {
 
     }
 
+    // Add trials to SqlLite DB
     public void addTrial(String username, int trial) {
-            Log.d("LoginDBHelper", "Trial no:" + trial);
-
+        Log.d("LoginDBHelper", "addtrial");
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TRIALS, trial);
+        values.put(CUST_USERNAME, username);
+        db.insert(LOGIN_TRIALS, null, values);
     }
 
+    // Update trials to SqlLite DB with incremented trials
     public void updateTrial(String username, int trial) {
-        if (getTrial(username) > 0) {
-        } else {
-            addTrial(username, trial);
-        }
+        Log.d("LoginDBHelper", "updateTrial");
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TRIALS, trial);
+        db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
+
     }
 
+    // Fetch trials from SqlLite DB
     public int getTrial(String username) {
-
-        Cursor cursor = db.rawQuery("select " + TRIALS + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
-        cursor.moveToFirst();
+        Log.d("LoginDBHelper", "getTrial");
         int user_trial = -1;
-        while (cursor.moveToNext()) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select " + TRIALS + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
+        if (cursor != null && cursor.getCount()>0) {
+            cursor.moveToFirst();
             user_trial = cursor.getInt(0);
         }
         return user_trial;
