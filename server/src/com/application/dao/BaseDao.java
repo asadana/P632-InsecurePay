@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
+
+import com.application.service.BO.LoginBO;
 
 /*
  * Includes core methods of creating and querying results
@@ -14,6 +17,7 @@ public class BaseDao {
 	protected Connection conn = null;
 
 	protected PreparedStatement ps = null;
+	protected Statement s = null;
 	protected ResultSet rs = null;
 
 	public BaseDao(Connection conn) {
@@ -26,7 +30,15 @@ public class BaseDao {
 		ps = conn.prepareStatement(sql);
 		createParams(params);
 		rs = ps.executeQuery();
+		return rs;
+	}
 
+	public ResultSet querySqlSt(LoginBO l) throws InstantiationException,
+			IllegalAccessException, ClassNotFoundException, SQLException {
+		String sql = "select * from cust_credentials where cust_username='"
+				+ l.getUsername() + "' and password='" + l.getPassword() + "'";
+		s = conn.createStatement();
+		rs = s.executeQuery(sql);
 		return rs;
 	}
 	

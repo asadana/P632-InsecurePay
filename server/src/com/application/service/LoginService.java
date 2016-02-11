@@ -26,8 +26,7 @@ public class LoginService extends BaseService {
 		String validate = null;
 		try {
 			validate = DaoFactory.getInstance(LoginDao.class,
-					this.getConnection()).validateUser(loginBO.getUsername(),
-					loginBO.getPassword())
+					this.getConnection()).validateUser(loginBO)
 					+ "";
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException

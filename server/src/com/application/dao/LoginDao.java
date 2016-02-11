@@ -3,10 +3,8 @@ package com.application.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.application.common.Queries;
+import com.application.service.BO.LoginBO;
 
 public class LoginDao extends BaseDao {
 
@@ -14,16 +12,11 @@ public class LoginDao extends BaseDao {
 		super(conn);
 	}
 
-	public boolean validateUser(String username, String password)
+	public boolean validateUser(LoginBO l)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
 		ResultSet rs = null;
-		List<Object> params = new ArrayList<Object>();
-		params.add(username);
-		params.add(password);
-		System.out.println(username);
-		System.out.println(password);
-		rs = querySql(Queries.VALIDATE_USER, params);
+		rs = querySqlSt(l);
 		if (rs.next())
 			return true;
 		close();
