@@ -3,22 +3,20 @@ package com.cigital.insecurepay.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,19 +31,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.google.gson.Gson;
-
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
-import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.common.DBHelper;
+import com.cigital.insecurepay.VOs.LoginVO;
+import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
+
+//import com.google.gson.Gson;
 
 /**
  * A login screen that offers login via username,password.
@@ -57,13 +54,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:amish", "bar@example.com:world"
-    };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -119,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         loginPrefsEditor = loginPreferences.edit();
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
-        if (saveLogin == true) {
+        if (saveLogin) {
             mUsernameView.setText(loginPreferences.getString("username", ""));
             mPasswordView.setText(loginPreferences.getString("password", ""));
             mRememberMeCheck.setChecked(true);
@@ -348,6 +338,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // TODO: attempt authentication against a network service.
 
             try {
+                //Check after account lockout
+                LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+                Log.d("Response",db.getTimestamp(params[0])+"");
                 Log.d("Response", "Inside Background");
                 //Parameters contain credentials which are capsuled to LoginVO objects
                 LoginVO send_vo = new LoginVO(params[0], params[1]);
