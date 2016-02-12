@@ -351,45 +351,40 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 //Check after account lockout
                 LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
                 Long checktrialtime = db.getTimestamp(mUsername);
+                Log.d("Response", "check the time of trial" + checktrialtime);
+                long currenttime = System.currentTimeMillis();
+                long timediff = currenttime - checktrialtime;
+                Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
 
-                if (checktrialtime != 0) {
-                    Log.d("Response", "check the time of trial" + checktrialtime);
-                    long currenttime = System.currentTimeMillis();
-                    long timediff = currenttime - checktrialtime;
-                    Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
-                    if (timediff > 600) {
-                        try {
-                            //LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-                            Log.d("Response", db.getTimestamp(mUsername) + "");
-                            Log.d("Response", "Inside Background");
-                            //Parameters contain credentials which are capsuled to LoginVO objects
-                            LoginVO send_vo = new LoginVO(mUsername, mPassword);
-                            Gson gson = new Gson();
-                            String sendToServer = gson.toJson(send_vo);
+                if ((checktrialtime != 0 && timediff > 60000) || checktrialtime == 0) {
+                    //LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+                    Log.d("Response", db.getTimestamp(mUsername) + "");
+                    Log.d("Response", "Inside Background");
+                    //Parameters contain credentials which are capsuled to LoginVO objects
+                    LoginVO send_vo = new LoginVO(mUsername, mPassword);
+                    Gson gson = new Gson();
+                    String sendToServer = gson.toJson(send_vo);
 
-                            //Passing the context of LoginActivity to Connectivity
-                            Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
-                            //sendToServer contains JSON object that has credentials
-                            Log.d("Response", "Now calling post");
-                            String responseFromServer = con.post().trim();
-                            Log.d("Response", responseFromServer);
-                            if (responseFromServer.equals("true")) {
-                                return true;
-                            }
-                            // Simulate network access.
-                            Thread.sleep(2000);
-                        } catch (Exception e) {
-                            return false;
-                        }
+                    //Passing the context of LoginActivity to Connectivity
+                    Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
+                    //sendToServer contains JSON object that has credentials
+                    Log.d("Response", "Now calling post");
+                    String responseFromServer = con.post().trim();
+                    Log.d("Response", responseFromServer);
+                    if (responseFromServer.equals("true")) {
+                        return true;
+                        // Simulate network access.
+                    }
 
-                    } else
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "In lockout period", Toast.LENGTH_LONG).show();
-
-                }
-
-                // TODO: register the new account here.
+                    }
+                    else if (checktrialtime != 0 && timediff < 60000) {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "In lockout period", Toast.LENGTH_LONG).show();
+                    return false;
+                    }
+                    Thread.sleep(2000);
                 return false;
-            } catch (Exception e) {
+            }
+                catch (Exception e) {
                 return false;
             }
         }
@@ -402,6 +397,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // If login successful reset the trials if exists any
 
             LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+            Long checktrialtime = db.getTimestamp(mUsername);
+            Log.d("Response", "check the time of trial" + checktrialtime);
+            long currenttime = System.currentTimeMillis();
+            long timediff = currenttime - checktrialtime;
+            Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
+
             int trial = db.getTrial(mUsername);
             if (success) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
@@ -420,9 +421,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     db.updateTrial(mUsername, trial + 1);
                 }
-                if (trial + 1 >= 3) {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
-                } else {
+                if (trial + 1 >= 3 && timediff<60000 && checktrialtime != 0) {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
+                }
+                else if (trial + 1 >= 3 && timediff>60000 && checktrialtime != 0){
+                    db.updateTrial(mUsername, 0);
+                }
+                else {
                     Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
                 }
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
