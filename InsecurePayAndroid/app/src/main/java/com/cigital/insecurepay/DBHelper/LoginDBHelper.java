@@ -24,6 +24,7 @@ public class LoginDBHelper extends DBHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("LoginDBHelper", "Inside Oncreate DB");
+        db.execSQL("drop table if exists "+ LOGIN_TRIALS);
         db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " text)");
     }
 

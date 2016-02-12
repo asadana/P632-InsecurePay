@@ -26,9 +26,6 @@ import java.lang.String;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Amish on 05-02-2016.
- */
 public class Connectivity {
     Context context;
     String path;
@@ -37,20 +34,24 @@ public class Connectivity {
     HttpURLConnection conn;
     String response;
     InputStream is;
-    public Connectivity(Context context, String path) {
+    String serverAddress;
+
+    public Connectivity(Context context, String path, String serverAddress) {
         this.context = context;
         this.path = path;
+        this.serverAddress = serverAddress;
     }
-    public Connectivity(Context context, String path, String sendToServer) {
-        this(context, path);
+    public Connectivity(Context context, String path, String serverAddress, String sendToServer) {
+        this(context, path, serverAddress);
         this.sendToServer = sendToServer;
     }
 
     public String post() throws IOException {
         Log.d("Response","Checking for connection");
         if (checkConnection()) {
-            url = new URL(context.getString(R.string.url)+path);
-            Log.d("Response","URL set now opening connections");
+            url = new URL(serverAddress+context.getString(R.string.url)+path);
+
+            Log.d("Response","URL set now opening connections"+ url.toString());
             conn = (HttpURLConnection) url.openConnection();
             Log.d("Response","URL Connection opened succesfully");
             conn.setDoInput(true);
@@ -71,7 +72,7 @@ public class Connectivity {
     }
 
     public String get() throws IOException {
-        url = new URL(context.getString(R.string.url)+path);
+        url = new URL(serverAddress+context.getString(R.string.url)+path);
         Log.d("Response","URL set now opening connections");
         conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000); /* milliseconds */
@@ -101,16 +102,16 @@ public class Connectivity {
         return false;
     }
 
-    private String readIt(InputStream stream) throws IOException,
-            UnsupportedEncodingException {
+    private String readIt(InputStream stream) throws IOException
+             {
         if(stream==null){
             Log.d("Response","Stream is null");
         }
         Log.d("Response","Reading response");
-        BufferedReader reader = null;
+
         StringBuilder sb = new StringBuilder();
         String line;
-        reader = new BufferedReader(new InputStreamReader(stream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
         while ((line = reader.readLine()) != null) {
             Log.d("Response","Reading lines");
@@ -121,7 +122,7 @@ public class Connectivity {
 
     private void writeIt() throws IOException {
         OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-        OutputStreamWriter outwriter = new OutputStreamWriter(out, "UTF-8");
+        OutputStreamWriter outwriter = new OutputStreamWriter(out,"UTF-8");
         outwriter.write(sendToServer);
         Log.d("Response", "Sent");
         outwriter.flush();

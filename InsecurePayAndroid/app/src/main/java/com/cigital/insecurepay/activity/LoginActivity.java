@@ -69,6 +69,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
     private CheckBox mRememberMeCheck;
+    /*For manually entering server address*/
+    private AutoCompleteTextView mServerAddressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        populateAutoComplete();
+        //Get user input for server address
+        mServerAddressView = (AutoCompleteTextView) findViewById(R.id.serveraddress);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -97,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Display username and password in log
                 Log.i("Insecure Data Storage", "Username : " + mUsernameView.getText().toString());
                 Log.i("Insecure Data Storage", "Password : " + mPasswordView.getText().toString());
+                Log.i("Insecure Data Storage", "Server Address : " + mServerAddressView.getText().toString());
                 attemptLogin();
             }
         });
@@ -177,6 +183,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
+        //Store server address
+        String server_address = mServerAddressView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -205,8 +213,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password);
-            mAuthTask.execute(username, password);/*Changes made here*/
+            mAuthTask = new UserLoginTask(username, password, server_address);
+            mAuthTask.execute(username, password, server_address);/*Changes made here*/
         }
     }
 
@@ -327,10 +335,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         /*Changes made here*/
         private final String mUsername;
         private final String mPassword;
+        private final String mServerAddress;
 
-        UserLoginTask(String username, String password) {
+        UserLoginTask(String username, String password, String serverAddress) {
             mUsername = username;
             mPassword = password;
+            mServerAddress = serverAddress;
         }
 
         @Override
@@ -343,23 +353,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Long checktrialtime = db.getTimestamp(mUsername);
 
                 if (checktrialtime != 0) {
-                    Log.d("Jaini Ttis not null", "" + checktrialtime);
-                    long time = System.currentTimeMillis();
-                    Log.d("Inside current time", "" + time);
-                    long timediff = time - checktrialtime;
-                    Log.d("current - time diff", "" + time + "-" + checktrialtime + "=" + timediff);
+                    Log.d("Response", "check the time of trial" + checktrialtime);
+                    long currenttime = System.currentTimeMillis();
+                    long timediff = currenttime - checktrialtime;
+                    Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
                     if (timediff > 600) {
                         try {
                             //LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-                            Log.d("Response", db.getTimestamp(params[0]) + "");
+                            Log.d("Response", db.getTimestamp(mUsername) + "");
                             Log.d("Response", "Inside Background");
                             //Parameters contain credentials which are capsuled to LoginVO objects
-                            LoginVO send_vo = new LoginVO(params[0], params[1]);
+                            LoginVO send_vo = new LoginVO(mUsername, mPassword);
                             Gson gson = new Gson();
                             String sendToServer = gson.toJson(send_vo);
 
                             //Passing the context of LoginActivity to Connectivity
-                            Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), sendToServer);
+                            Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
                             //sendToServer contains JSON object that has credentials
                             Log.d("Response", "Now calling post");
                             String responseFromServer = con.post().trim();
@@ -412,17 +421,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     db.updateTrial(mUsername, trial + 1);
                 }
                 if (trial + 1 >= 3) {
-                    long time = System.currentTimeMillis();
-                    Log.d("Inside current time", "" + time);
-                    long trialtime;
-                    trialtime = db.getTimestamp(mUsername);
-                    long timediff = time - trialtime;
-                    //Log.d("Inside current time - time diff", "" + time + "-" + trialtime + "=" + timediff);
-                    if (timediff > 600000) {
-                        db.updateTrial(mUsername, 0);
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
-                    } else
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
                 }
