@@ -350,14 +350,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 //Check after account lockout
                 LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-                Long checktrialtime = db.getTimestamp(mUsername);
-                Log.d("Response", "check the time of trial" + checktrialtime);
-                long currenttime = System.currentTimeMillis();
-                long timediff = currenttime - checktrialtime;
-                Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
+                int lock=  db.isLocked(mUsername);
+                if(lock==1)
+                {
+                    Long checktrialtime = db.getTimestamp(mUsername);
+                    long currenttime = System.currentTimeMillis();
+                    long timediff = currenttime - checktrialtime;
+                    if(timediff>60000)
+                    {
+                        lock=0;
+                        db.resetTrial(mUsername);
+                    }
+                }
 
-                if ((checktrialtime != 0 && timediff > 60000) || checktrialtime == 0) {
-                    //LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+                if (lock==0) {
                     Log.d("Response", db.getTimestamp(mUsername) + "");
                     Log.d("Response", "Inside Background");
                     //Parameters contain credentials which are capsuled to LoginVO objects
@@ -373,12 +379,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.d("Response", responseFromServer);
                     if (responseFromServer.equals("true")) {
                         return true;
-                        // Simulate network access.
                     }
-
                     }
-                    else if (checktrialtime != 0 && timediff < 60000) {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "In lockout period", Toast.LENGTH_LONG).show();
+                else {
+                    // Inside lockout duration
                     return false;
                     }
                     Thread.sleep(2000);
@@ -395,51 +399,52 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             // If login successful reset the trials if exists any
-
             LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-            Long checktrialtime = db.getTimestamp(mUsername);
-            Log.d("Response", "check the time of trial" + checktrialtime);
-            long currenttime = System.currentTimeMillis();
-            long timediff = currenttime - checktrialtime;
-            Log.d("Response", "diff" + currenttime + "-" + checktrialtime + "=" + timediff);
-
             int trial = db.getTrial(mUsername);
+            int lock=  db.isLocked(mUsername);
+
             if (success) {
-                Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
-                if (trial != -1) {
-                    db.updateTrial(mUsername, 0);
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
+                    if (trial != -1) {
+                        db.updateTrial(mUsername, 0 );
+                    }
+                }
+                else
+                {
+                    if (trial == -1) {
+                        db.addTrial(mUsername, 1 );
+                    } else {
+                        db.updateTrial(mUsername, trial + 1);
+                    }
+                    /*
+                    Update trial to database if login failed.
+                    Account Lockout if number of trials exceeds or equals to 3
+                    */
+                    if (trial +1 ==3)
+                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
+                    if ( lock==1 ) {
+                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                    }
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
                 }
 
-            } else {
-                /*
-                Update trial to database if login failed.
-                Account Lockout if number of trials exceeds or equals to 3
-                */
 
-                if (trial == -1) {
-                    db.addTrial(mUsername, 1);
-                } else {
-                    db.updateTrial(mUsername, trial + 1);
-                }
-                if (trial + 1 >= 3 && timediff<60000 && checktrialtime != 0) {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
-                }
-                else if (trial + 1 >= 3 && timediff>60000 && checktrialtime != 0){
-                    db.updateTrial(mUsername, 0);
-                }
-                else {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
-                }
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
             }
-        }
 
         @Override
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
         }
+
+        }
+
+
     }
-}
+
+
 

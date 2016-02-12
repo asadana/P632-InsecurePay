@@ -15,6 +15,7 @@ public class LoginDBHelper extends DBHelper {
     public static final String CUST_USERNAME = "cust_username";
     public static final String TRIALS = "trials";
     public static final String CURR_TIME = "curr_time";
+    public static final String isLocked= "isLocked";
 
 
     public LoginDBHelper(Context context) {
@@ -24,7 +25,7 @@ public class LoginDBHelper extends DBHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("LoginDBHelper", "Inside Oncreate DB");
-        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " text)");
+        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " text , " + isLocked + " int )");
     }
 
     @Override
@@ -33,30 +34,33 @@ public class LoginDBHelper extends DBHelper {
     }
 
     // Add trials to SqlLite DB
-    public void addTrial(String username, int trial) {
+    public void addTrial(String username, int trial ) {
         Log.d("LoginDBHelper", "addtrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TRIALS, trial);
         values.put(CUST_USERNAME, username);
         values.put(CURR_TIME, "");
+        values.put(isLocked,0);
         db.insert(LOGIN_TRIALS, null, values);
     }
 
     // Update trials to SqlLite DB with incremented trials
-    public void updateTrial(String username, int trial) {
+    public void updateTrial(String username, int trial ) {
         Log.d("LoginDBHelper", "updateTrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TRIALS, trial);
         if (getTrial(username) == 2) {
-            Log.d("LoginDBHelper", "After 3rd trial");
             Date d1 = new Date();
             values.put(CURR_TIME, String.valueOf(d1.getTime()));
-            Log.d("LoginDBHelper", String.valueOf(d1.getTime()));
+            values.put(isLocked,1);
         }
         if (trial < 2)
+        {
             values.put(CURR_TIME, "");
+            values.put(isLocked,0);
+        }
         db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
 
     }
@@ -84,5 +88,26 @@ public class LoginDBHelper extends DBHelper {
             entry_time = cursor.getLong(0);
         }
         return entry_time;
+    }
+
+    public int isLocked(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int locked = 0;
+        Cursor cursor = db.rawQuery("select " + isLocked + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            locked = cursor.getInt(0);
+        }
+        return locked;
+    }
+
+    public void resetTrial(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(TRIALS, 0);
+        values.put(CURR_TIME, "");
+        values.put(isLocked,0);
+        db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
+
     }
 }
