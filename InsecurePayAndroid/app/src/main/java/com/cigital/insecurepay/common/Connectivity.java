@@ -1,7 +1,5 @@
 package com.cigital.insecurepay.common;
 
-import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,7 +8,6 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,11 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.lang.CharSequence;
-import java.lang.Exception;
-import java.lang.String;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -49,7 +41,7 @@ public class Connectivity {
     public String post() throws IOException {
         Log.d("Response","Checking for connection");
         if (checkConnection()) {
-            url = new URL(serverAddress+context.getString(R.string.url)+path);
+            url = new URL(serverAddress + context.getString(R.string.defaultUrlAddress) + path);
 
             Log.d("Response","URL set now opening connections"+ url.toString());
             conn = (HttpURLConnection) url.openConnection();
@@ -72,7 +64,7 @@ public class Connectivity {
     }
 
     public String get() throws IOException {
-        url = new URL(serverAddress+context.getString(R.string.url)+path);
+        url = new URL(serverAddress + context.getString(R.string.defaultUrlAddress) + path);
         Log.d("Response","URL set now opening connections");
         conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000); /* milliseconds */
