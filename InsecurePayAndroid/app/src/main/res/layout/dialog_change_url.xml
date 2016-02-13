@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
+
+    <TextView
+        android:id="@+id/tvServerAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_horizontal"
+        android:text="@string/prompt_serveraddr"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <EditText
+        android:id="@+id/etUrlAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/etUrlPath"
+        android:layout_below="@+id/tvServerAddress"
+        android:hint="http://10.0.0.3"
+        android:inputType="textAutoComplete" />
+
+    <EditText
+        android:id="@+id/etUrlPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/etUrlAddress"
+        android:layout_below="@+id/etUrlAddress"
+        android:hint="8090"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/etUrlPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/etUrlPort"
+        android:hint="/InsecurePayServiceServer/rest/"
+        android:inputType="textAutoComplete" />
+
+    <TextView
+        android:id="@+id/tvUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etUrlAddress"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/etUrlAddress"
+        android:gravity="center_horizontal"
+        android:text="URL"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvPort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etUrlPort"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/etUrlPort"
+        android:gravity="center_horizontal"
+        android:text="Port"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/tvPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/etUrlPath"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/etUrlPath"
+        android:gravity="center_horizontal"
+        android:text="Path"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/btnSaveUrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etUrlPath"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:text="Save" />
+
+</RelativeLayout>
