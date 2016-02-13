@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -401,6 +402,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (trial != -1) {
                     db.updateTrial(mUsername, 0);
                 }
+                // Move to Home Page if successful login
+                Intent intent=new Intent(LoginActivity.this.getApplicationContext(),HomePage.class);
+                startActivity(intent);
+                intent.putExtra("Username",mUsername);
+
             } else {
                 if (trial == -1  &&  loginValidationVO.isUsernameExists()) {
                     db.addTrial(mUsername, 1);
