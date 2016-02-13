@@ -32,15 +32,6 @@ public class BaseDao {
 		rs = ps.executeQuery();
 		return rs;
 	}
-
-	public ResultSet querySqlSt(LoginBO l) throws InstantiationException,
-			IllegalAccessException, ClassNotFoundException, SQLException {
-		String sql = "select * from cust_credentials where cust_username='"
-				+ l.getUsername() + "' and password='" + l.getPassword() + "'";
-		s = conn.createStatement();
-		rs = s.executeQuery(sql);
-		return rs;
-	}
 	
 	private void createParams(List<Object> params) throws SQLException {
 		int i = 1;

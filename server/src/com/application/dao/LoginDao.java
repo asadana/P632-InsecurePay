@@ -1,10 +1,10 @@
 package com.application.dao;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.application.service.BO.LoginBO;
+import com.application.service.BO.LoginValidationBO;
 
 public class LoginDao extends BaseDao {
 
@@ -12,15 +12,39 @@ public class LoginDao extends BaseDao {
 		super(conn);
 	}
 
-	public boolean validateUser(LoginBO l)
+	public LoginValidationBO validateUser(LoginBO l)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
-		ResultSet rs = null;
-		rs = querySqlSt(l);
-		if (rs.next())
-			return true;
-		close();
+		LoginValidationBO validationBO;
+		boolean usernameExists;
+		boolean validUser;
 
-		return false;
+		String sql = "select * from cust_credentials where cust_username='"
+				+ l.getUsername() + "'";
+		s = conn.createStatement();
+		rs = s.executeQuery(sql);
+		if (rs.next()) {
+			usernameExists = true;
+			close();
+			String sql2 = "select * from cust_credentials where cust_username='"
+					+ l.getUsername()
+					+ "' and password='"
+					+ l.getPassword()
+					+ "'";
+			s = conn.createStatement();
+			rs = s.executeQuery(sql2);
+			if (rs.next())
+				validUser = true;
+			else
+				validUser = false;
+			close();
+		} else {
+			usernameExists = false;
+			validUser = false;
+		}
+
+		validationBO = new LoginValidationBO(usernameExists, validUser);
+
+		return validationBO;
 	}
 }
