@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.LoginVO;
+import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
@@ -331,7 +332,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * the user.
      */
 
-    public class UserLoginTask extends AsyncTask<String, String, Boolean> {
+    public class UserLoginTask extends AsyncTask<String, String, LoginValidationVO> {
         /*Changes made here*/
         private final String mUsername;
         private final String mPassword;
@@ -344,28 +345,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected LoginValidationVO doInBackground(String... params) {
             // TODO: attempt authentication against a network service.
-
+            LoginValidationVO loginValidationVO = null;
             try {
                 //Check after account lockout
                 LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-                int lock=  db.isLocked(mUsername);
-                if(lock==1)
-                {
+                int lock = db.isLocked(mUsername);
+                if (lock == 1) {
                     Long checktrialtime = db.getTimestamp(mUsername);
                     long currenttime = System.currentTimeMillis();
                     long timediff = currenttime - checktrialtime;
-                    if(timediff>60000)
-                    {
-                        lock=0;
+                    if (timediff > 60000) {
+                        lock = 0;
                         db.resetTrial(mUsername);
                     }
                 }
 
-                if (lock==0) {
-                    Log.d("Response", db.getTimestamp(mUsername) + "");
-                    Log.d("Response", "Inside Background");
+                if (lock == 0) {
                     //Parameters contain credentials which are capsuled to LoginVO objects
                     LoginVO send_vo = new LoginVO(mUsername, mPassword);
                     Gson gson = new Gson();
@@ -376,64 +373,60 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     //sendToServer contains JSON object that has credentials
                     Log.d("Response", "Now calling post");
                     String responseFromServer = con.post().trim();
-                    Log.d("Response", responseFromServer);
-                    if (responseFromServer.equals("true")) {
-                        return true;
-                    }
-                    }
-                else {
-                    // Inside lockout duration
-                    return false;
-                    }
+                    loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
+
                     Thread.sleep(2000);
-                return false;
+
+                }
+            } catch (Exception e) {
+                Log.d("Response", "Exception thrown");
+                return loginValidationVO;
+
             }
-                catch (Exception e) {
-                return false;
-            }
+            return loginValidationVO;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final LoginValidationVO loginValidationVO) {
             mAuthTask = null;
             showProgress(false);
 
             // If login successful reset the trials if exists any
             LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
             int trial = db.getTrial(mUsername);
-            int lock=  db.isLocked(mUsername);
+            int lock = db.isLocked(mUsername);
 
-            if (success) {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
-                    if (trial != -1) {
-                        db.updateTrial(mUsername, 0 );
-                    }
+            if (loginValidationVO.isValidUser()) {
+                Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
+                if (trial != -1) {
+                    db.updateTrial(mUsername, 0);
                 }
-                else
-                {
-                    if (trial == -1) {
-                        db.addTrial(mUsername, 1 );
-                    } else {
+            } else {
+                if (trial == -1  &&  loginValidationVO.isUsernameExists()) {
+                    db.addTrial(mUsername, 1);
+                } else {
+                    if (loginValidationVO.isUsernameExists())
                         db.updateTrial(mUsername, trial + 1);
-                    }
+                }
                     /*
                     Update trial to database if login failed.
                     Account Lockout if number of trials exceeds or equals to 3
                     */
-                    if (trial +1 ==3)
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
-                    if ( lock==1 ) {
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
-                    }
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
+                if (trial + 1 == 3)
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
+                if (lock == 1)
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
+                else {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
                 }
 
-
+                if (!loginValidationVO.isUsernameExists()) {
+                    mUsernameView.setError("Username does not exist");
+                    mUsernameView.requestFocus();
+                }
             }
+
+        }
 
         @Override
         protected void onCancelled() {
@@ -441,10 +434,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
         }
 
-        }
-
-
     }
+
+
+}
 
 
 

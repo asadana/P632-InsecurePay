@@ -21,4 +21,5 @@
     <!--Following strings are for Login-->
     <string name="login_path">login</string>
     <string name="prompt_serveraddr">Enter Server Address</string>
+    <string name="account_lockoutduration">60000</string>
 </resources>
