@@ -405,7 +405,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Move to Home Page if successful login
                 Intent intent=new Intent(LoginActivity.this.getApplicationContext(),HomePage.class);
                 startActivity(intent);
-                intent.putExtra("Username",mUsername);
+                //intent.putExtra("Username",mUsername);
 
             } else {
                 if (trial == -1  &&  loginValidationVO.isUsernameExists()) {

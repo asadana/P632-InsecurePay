@@ -46,7 +46,7 @@ public class Connectivity {
         this.sendToServer = sendToServer;
     }
 
-    public String post() throws IOException {
+    public String post()     throws IOException {
         Log.d("Response","Checking for connection");
         if (checkConnection()) {
             url = new URL(serverAddress+context.getString(R.string.url)+path);

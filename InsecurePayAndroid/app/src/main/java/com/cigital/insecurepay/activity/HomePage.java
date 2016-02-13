@@ -1,5 +1,8 @@
 package com.cigital.insecurepay.activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -31,10 +34,10 @@ public class HomePage extends AppCompatActivity
         Log.d("HomePage", "Before bundles");
         TextView tvUsername = (TextView) findViewById(R.id.tvUsername);
         Log.d("HomePage","Reached the username section");
-        Bundle bundle = getIntent().getExtras();
-        String Username = bundle.getString("Username");
-        Log.d("Reached after bundles",Username);
-        tvUsername.setText("Hello Jaini");
+        //Bundle bundle = getIntent().getExtras();
+        //String Username = bundle.getString("Username");
+        //Log.d("Reached after bundles",Username);
+        tvUsername.setText("Hello");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,7 +94,11 @@ public class HomePage extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         }
-
+        if (id == R.id.action_logout) {
+            //Calls action to be taken when 'Log out' button is pressed
+            onLogOut();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -118,5 +125,12 @@ public class HomePage extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    /*
+     * Call login activity
+     */
+    public void onLogOut(){
+        Intent intent = new Intent(HomePage.this,LoginActivity.class);
+        startActivity(intent);
     }
 }
