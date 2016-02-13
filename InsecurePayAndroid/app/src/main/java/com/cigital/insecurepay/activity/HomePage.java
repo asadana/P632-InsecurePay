@@ -129,8 +129,9 @@ public class HomePage extends AppCompatActivity
     /*
      * Call login activity
      */
-    public void onLogOut(){
-        Intent intent = new Intent(HomePage.this,LoginActivity.class);
+    public void onLogOut() {
+        Intent intent = new Intent(HomePage.this, LoginActivity.class);
         startActivity(intent);
     }
+
 }
