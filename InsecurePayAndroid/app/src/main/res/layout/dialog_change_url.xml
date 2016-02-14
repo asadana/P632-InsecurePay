@@ -26,7 +26,7 @@
         android:layout_alignStart="@+id/etUrlPath"
         android:layout_below="@+id/tvServerAddress"
         android:hint="http://10.0.0.3"
-        android:inputType="textAutoComplete" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/etUrlPort"
@@ -45,7 +45,7 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/etUrlPort"
         android:hint="/InsecurePayServiceServer/rest/"
-        android:inputType="textAutoComplete" />
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/tvUrl"

@@ -3,8 +3,11 @@ package com.cigital.insecurepay.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -21,6 +24,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
@@ -55,12 +61,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-
+    final Context context = this;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
-
     // UI references.
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
@@ -317,6 +322,61 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mUsernameView.setAdapter(adapter);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_login, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.itemChange_server) {
+            Log.i(this.getClass().getSimpleName(), "Url change selected");
+            changeUrl();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void changeUrl() {
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_change_url, null);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setView(dialogView);
+
+        final String[] userUrl = new String[3];
+
+        final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
+        final EditText etUrlPort = (EditText) dialogView.findViewById(R.id.etUrlPort);
+        final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
+
+
+        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                userUrl[0] = etUrlAddress.getText().toString();
+                userUrl[1] = etUrlPort.getText().toString();
+                userUrl[2] = etUrlPath.getText().toString();
+
+                Log.i("Server Address Update", "New Server Address: " + userUrl[0] + ":" + userUrl[1] + "" + userUrl[2]);
+
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertD = alertDialogBuilder.create();
+        alertD.show();
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -441,7 +501,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
     }
-
 
 }
 
