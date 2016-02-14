@@ -5,5 +5,5 @@ package com.application.common;
  */
 
 public class Queries {
-	
+	public static final String GET_CUSTOMER_DETAILS = "select * from customer where cust_username = ?";
 }
