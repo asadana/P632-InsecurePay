@@ -76,8 +76,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
     private CheckBox mRememberMeCheck;
-    /*For manually entering server address*/
-    // private AutoCompleteTextView mServerAddressView;
+
+    // Default values for userUrl
+    private String userAddress = "http://10.0.0.3";
+    private String userPort = "8090";
+    private String userPath = "/InsecurePayServiceServer/rest/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,8 +195,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         //Store server address
-        //String server_address = mServerAddressView.getText().toString();
-        String server_address = (getString(R.string.default_url_address));
+        String server_address = "" + userAddress + ":" + userPort + "" + userPath;
+        //String server_address = (getString(R.string.default_url_address));
 
         boolean cancel = false;
         View focusView = null;
@@ -371,6 +375,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final EditText etUrlPort = (EditText) dialogView.findViewById(R.id.etUrlPort);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
+        Log.i("Server Address", "Initial address: " + userAddress + ":" + userPort + "" + userPath);
 
         // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -379,10 +384,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 userUrl[1] = etUrlPort.getText().toString();
                 userUrl[2] = etUrlPath.getText().toString();
 
-                Log.i("Server Address Update", "New Server Address: " + userUrl[0] + ":" + userUrl[1] + "" + userUrl[2]);
+                if (!userUrl[0].isEmpty()) {
+                    userAddress = userUrl[0];
+                }
+                if (!userUrl[1].isEmpty()) {
+                    userPort = userUrl[1];
+                }
+                if (!userUrl[2].isEmpty()) {
+                    userPath = userUrl[2];
+                }
 
-                // When Cancel is clicked
+                Log.i("Server Address Update", "Storing address: " + userAddress + ":" + userPort + "" + userPath);
             }
+            // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
