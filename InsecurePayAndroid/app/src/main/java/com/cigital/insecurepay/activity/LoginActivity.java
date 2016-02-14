@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
         populateAutoComplete();
         //Get user input for server address
-        mServerAddressView = (AutoCompleteTextView) findViewById(R.id.serveraddress);
+        // mServerAddressView = (AutoCompleteTextView) findViewById(R.id.serveraddress);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -322,6 +322,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mUsernameView.setAdapter(adapter);
     }
 
+    /**
+     * Creates a menu option in the current activity
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -329,6 +332,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return true;
     }
 
+    /**
+     * Function triggered when any of the options in the menu is selected
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -346,19 +352,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a dialog for the user to enter the new server url
+     */
     private void changeUrl() {
+
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_url, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(dialogView);
 
+        // String array to store different parts of the url server address
         final String[] userUrl = new String[3];
 
+        // EditText variables to fetch user inputs from the dialog
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
         final EditText etUrlPort = (EditText) dialogView.findViewById(R.id.etUrlPort);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
 
+        // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 userUrl[0] = etUrlAddress.getText().toString();
@@ -367,6 +380,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 Log.i("Server Address Update", "New Server Address: " + userUrl[0] + ":" + userUrl[1] + "" + userUrl[2]);
 
+                // When Cancel is clicked
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
@@ -440,7 +454,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 }
             } catch (Exception e) {
-                Log.d("Response", "Exception thrown");
+                Log.e(this.getClass().getSimpleName(), e.toString());
                 return loginValidationVO;
 
             }
