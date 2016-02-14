@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private boolean saveLogin;
     private CheckBox mRememberMeCheck;
     /*For manually entering server address*/
-    private AutoCompleteTextView mServerAddressView;
+    // private AutoCompleteTextView mServerAddressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 // Display username and password in log
                 Log.i("Insecure Data Storage", "Username : " + mUsernameView.getText().toString());
                 Log.i("Insecure Data Storage", "Password : " + mPasswordView.getText().toString());
-                Log.i("Insecure Data Storage", "Server Address : " + mServerAddressView.getText().toString());
+                // Log.i("Insecure Data Storage", "Server Address : " + mServerAddressView.getText().toString());
                 attemptLogin();
             }
         });
@@ -191,7 +191,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         //Store server address
-        String server_address = mServerAddressView.getText().toString();
+        //String server_address = mServerAddressView.getText().toString();
+        String server_address = (getString(R.string.default_url_address));
 
         boolean cancel = false;
         View focusView = null;

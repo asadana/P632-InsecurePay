@@ -41,7 +41,7 @@ public class Connectivity {
     public String post()     throws IOException {
         Log.d("Response","Checking for connection");
         if (checkConnection()) {
-            url = new URL(serverAddress + context.getString(R.string.defaultUrlAddress) + path);
+            url = new URL(serverAddress + context.getString(R.string.default_url_address) + path);
 
             Log.d("Response","URL set now opening connections"+ url.toString());
             conn = (HttpURLConnection) url.openConnection();
@@ -64,7 +64,7 @@ public class Connectivity {
     }
 
     public String get() throws IOException {
-        url = new URL(serverAddress + context.getString(R.string.defaultUrlAddress) + path);
+        url = new URL(serverAddress + context.getString(R.string.default_url_address) + path);
         Log.d("Response","URL set now opening connections");
         conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000); /* milliseconds */
