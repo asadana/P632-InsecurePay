@@ -16,10 +16,11 @@
     </string>
     <string name="title_activity_user_login">Sign in</string>
     <!--Following strings are for Connectivity-->
-    <string name="default_url_address">http://10.0.0.3:8090/InsecurePayServiceServer/rest/</string>
+    <string name="default_url_address">http://10.0.0.10:8090/InsecurePayServiceServer/rest/</string>
     <string name="no_network">No network connection</string>
     <!--Following strings are for Login-->
     <string name="login_path">login</string>
+    <string name="custDetails_path">custService</string>
     <string name="prompt_serveraddr">Enter Server Address</string>
     <string name="account_lockoutduration">60000</string>
     <string name="title_activity_home_page">HomePage</string>

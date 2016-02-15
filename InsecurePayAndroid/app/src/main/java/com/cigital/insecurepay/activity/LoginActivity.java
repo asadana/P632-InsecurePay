@@ -40,10 +40,13 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +110,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 // Display username and password in log
-                Log.i("Insecure Data Storage", "Username : " + mUsernameView.getText().toString());
-                Log.i("Insecure Data Storage", "Password : " + mPasswordView.getText().toString());
+                Log.i("", "Username : " + mUsernameView.getText().toString());
+                Log.i("", "Password : " + mPasswordView.getText().toString());
                 // Log.i("Insecure Data Storage", "Server Address : " + mServerAddressView.getText().toString());
                 attemptLogin();
             }
@@ -191,7 +194,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         //Store server address
-        //String server_address = mServerAddressView.getText().toString();
         String server_address = (getString(R.string.default_url_address));
 
         boolean cancel = false;
@@ -221,8 +223,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password, server_address);
-            mAuthTask.execute(username, password, server_address);/*Changes made here*/
+            mAuthTask = new UserLoginTask(username, password, server_address, null);
+            mAuthTask.execute(username, password, server_address, null);/*Changes made here*/
         }
     }
 
@@ -413,16 +415,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mUsername;
         private final String mPassword;
         private final String mServerAddress;
+        //Create the following customerVO reference to store customerDetails
+        private CustomerVO customerDetails;
 
-        UserLoginTask(String username, String password, String serverAddress) {
+        UserLoginTask(String username, String password, String serverAddress, CustomerVO vo) {
             mUsername = username;
             mPassword = password;
             mServerAddress = serverAddress;
+            //vo = null always when it is called by execute
+            customerDetails = vo;
         }
 
         @Override
         protected LoginValidationVO doInBackground(String... params) {
             // TODO: attempt authentication against a network service.
+            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             LoginValidationVO loginValidationVO = null;
             try {
                 //Check after account lockout
@@ -439,25 +446,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 if (lock == 0) {
+                    Log.d(this.getClass().getSimpleName(), "Sending credentials");
                     //Parameters contain credentials which are capsuled to LoginVO objects
                     LoginVO send_vo = new LoginVO(mUsername, mPassword);
-                    Gson gson = new Gson();
-                    String sendToServer = gson.toJson(send_vo);
-
-                    //Passing the context of LoginActivity to Connectivity
-                    Connectivity con = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
+                    Gson gsonSendvo = new Gson();
                     //sendToServer contains JSON object that has credentials
-                    Log.d("Response", "Now calling post");
-                    String responseFromServer = con.post().trim();
-                    loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
-
+                    String sendToServer = gsonSendvo.toJson(send_vo);
+                    //Passing the context of LoginActivity to Connectivity
+                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
+                    //Call post and since there are white spaces in the response, trim is called
+                    String responseFromServer = con_login.post().trim();
+                    //Convert serverResponse to respectiveVO
+                    loginValidationVO = gsonSendvo.fromJson(responseFromServer, LoginValidationVO.class);
+                    //If the user is a valid user. Call customer service to get the user which is to be displayed in the next activity
+                    if (loginValidationVO.isValidUser()) {
+                        Log.d(this.getClass().getSimpleName(), "Getting customer details");
+                        Gson gson_customerDetails = new Gson();
+                        //Passing the context of LoginActivity to Connectivity and creating connection for customerService
+                        Connectivity con_custdetails = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.custDetails_path), mServerAddress);
+                        //Converts customer details to CustomerVO
+                        customerDetails = gson_customerDetails.fromJson(con_custdetails.get(), CustomerVO.class);
+                    }
                     Thread.sleep(2000);
-
                 }
             } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), e.toString());
                 return loginValidationVO;
-
             }
             return loginValidationVO;
         }
@@ -477,13 +490,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (trial != -1) {
                     db.updateTrial(mUsername, 0);
                 }
-                // Move to Home Page if successful login
-                Intent intent=new Intent(LoginActivity.this.getApplicationContext(),HomePage.class);
-                startActivity(intent);
-                //intent.putExtra("Username",mUsername);
-
+                try {
+                    Log.d(this.getClass().getSimpleName(), "Move to next activity");
+                    // Move to Home Page if successful login
+                    Intent intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
+                    intent.putExtra("Username", customerDetails.getCust_name());
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e(this.getClass().getSimpleName(), "Exception ", e);
+                }
             } else {
-                if (trial == -1  &&  loginValidationVO.isUsernameExists()) {
+                if (trial == -1 && loginValidationVO.isUsernameExists()) {
                     db.addTrial(mUsername, 1);
                 } else {
                     if (loginValidationVO.isUsernameExists())

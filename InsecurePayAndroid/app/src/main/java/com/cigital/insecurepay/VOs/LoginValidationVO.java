@@ -6,6 +6,7 @@ public class LoginValidationVO {
     private boolean usernameExists;
     private boolean validUser;
 
+
     public LoginValidationVO() {}
 
     public LoginValidationVO(boolean usernameExists, boolean validUser) {
