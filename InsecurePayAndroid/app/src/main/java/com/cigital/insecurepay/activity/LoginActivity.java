@@ -79,8 +79,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
     private CheckBox mRememberMeCheck;
-    /*For manually entering server address*/
-    // private AutoCompleteTextView mServerAddressView;
+
+    // Default values for userUrl
+    private String userAddress = "http://10.0.0.3";
+    private String userPort = "8090";
+    private String userPath = "/InsecurePayServiceServer/rest/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +92,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-        populateAutoComplete();
-        //Get user input for server address
-        // mServerAddressView = (AutoCompleteTextView) findViewById(R.id.serveraddress);
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -194,6 +195,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         //Store server address
+        String server_address = "" + userAddress + ":" + userPort + "" + userPath;
+        //String server_address = (getString(R.string.default_url_address));
         String server_address = (getString(R.string.default_url_address));
 
         boolean cancel = false;
@@ -373,6 +376,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final EditText etUrlPort = (EditText) dialogView.findViewById(R.id.etUrlPort);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
+        Log.i("Server Address", "Initial address: " + userAddress + ":" + userPort + "" + userPath);
 
         // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -381,10 +385,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 userUrl[1] = etUrlPort.getText().toString();
                 userUrl[2] = etUrlPath.getText().toString();
 
-                Log.i("Server Address Update", "New Server Address: " + userUrl[0] + ":" + userUrl[1] + "" + userUrl[2]);
+                if (!userUrl[0].isEmpty()) {
+                    userAddress = userUrl[0];
+                }
+                if (!userUrl[1].isEmpty()) {
+                    userPort = userUrl[1];
+                }
+                if (!userUrl[2].isEmpty()) {
+                    userPath = userUrl[2];
+                }
 
-                // When Cancel is clicked
+                Log.i("Server Address Update", "Storing address: " + userAddress + ":" + userPort + "" + userPath);
             }
+            // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
@@ -468,6 +481,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         customerDetails = gson_customerDetails.fromJson(con_custdetails.get(), CustomerVO.class);
                     }
                     Thread.sleep(2000);
+
                 }
             } catch (Exception e) {
                 return loginValidationVO;
