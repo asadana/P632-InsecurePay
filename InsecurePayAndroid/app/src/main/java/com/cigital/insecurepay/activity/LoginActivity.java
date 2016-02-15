@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Store server address
         String server_address = "" + userAddress + ":" + userPort + "" + userPath;
         //String server_address = (getString(R.string.default_url_address));
-        String server_address = (getString(R.string.default_url_address));
+        server_address = (getString(R.string.default_url_address));
 
         boolean cancel = false;
         View focusView = null;
