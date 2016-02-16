@@ -79,9 +79,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private CheckBox mRememberMeCheck;
 
     // Default values for userUrl
-    private String userAddress = (getString(R.string.defaultAddress));
-    private String userPort = (getString(R.string.defaultPort));
-    private String userPath = (getString(R.string.defaultPath));
+    private String userAddress;
+    private String userPort;
+    private String userPath;
 
 
     @Override
@@ -91,6 +91,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
         populateAutoComplete();
+
+        // Setting default values to userUrl
+        // Default values for userUrl
+        userAddress = (getString(R.string.defaultAddress));
+        userPort = (getString(R.string.defaultPort));
+        userPath = (getString(R.string.defaultPath));
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
