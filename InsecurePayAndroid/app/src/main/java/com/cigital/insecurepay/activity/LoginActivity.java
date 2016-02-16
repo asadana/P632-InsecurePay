@@ -46,8 +46,6 @@ import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,9 +79,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private CheckBox mRememberMeCheck;
 
     // Default values for userUrl
-    private String userAddress = "http://10.0.0.3";
-    private String userPort = "8090";
-    private String userPath = "/InsecurePayServiceServer/rest/";
+    private String userAddress = (getString(R.string.defaultAddress));
+    private String userPort = (getString(R.string.defaultPort));
+    private String userPath = (getString(R.string.defaultPath));
 
 
     @Override
@@ -195,9 +193,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
         //Store server address
-        String server_address = "" + userAddress + ":" + userPort + "" + userPath;
-        //String server_address = (getString(R.string.default_url_address));
-        server_address = (getString(R.string.default_url_address));
+        String server_address = userAddress + ":" + userPort + "" + userPath;
+
 
         boolean cancel = false;
         View focusView = null;

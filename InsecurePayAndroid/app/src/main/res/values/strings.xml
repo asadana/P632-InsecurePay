@@ -16,7 +16,9 @@
     </string>
     <string name="title_activity_user_login">Sign in</string>
     <!--Following strings are for Connectivity-->
-    <string name="default_url_address">http://10.0.0.10:8090/InsecurePayServiceServer/rest/</string>
+    <string name="defaultAddress">http://10.0.0.3</string>
+    <string name="defaultPort">8090</string>
+    <string name="defaultPath">/InsecurePayServiceServer/rest/</string>
     <string name="no_network">No network connection</string>
     <!--Following strings are for Login-->
     <string name="login_path">login</string>
