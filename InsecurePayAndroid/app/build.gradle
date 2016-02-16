@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -27,9 +28,10 @@ dependencies {
     compile 'com.android.support:design:23.0.1'
     compile files('libs/gson-2.5.jar')
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test:runner:0.4.1'
     androidTestCompile 'com.android.support.test:rules:0.4'
     androidTestCompile 'org.mockito:mockito-core:2.0.42-beta'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-
+    androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
 }
