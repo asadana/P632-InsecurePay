@@ -1,5 +1,6 @@
 package com.cigital.insecurepay.common;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,6 +19,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 public class Connectivity {
     Context context;
@@ -65,12 +67,12 @@ public class Connectivity {
     }
 
     //Right now get is hardcoded to get Customer Details of username = foo
-    public String get() throws IOException {
+    public String get(ContentValues contentValues) throws IOException {
         Log.d(this.getClass().getSimpleName(), "In Get()");
-        Uri.Builder builder = new Uri.Builder();
-        builder.appendQueryParameter("username", "foo");
-        String uricustService = builder.build().toString();
-        url = new URL(serverAddress + path + uricustService);
+        String params = null;
+        if(contentValues != null)
+            params = setParameters(contentValues);
+        url = new URL(serverAddress + path + params);
         Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url);
         conn = (HttpURLConnection) url.openConnection();
         conn.setReadTimeout(10000); /* milliseconds */
@@ -81,6 +83,18 @@ public class Connectivity {
         conn.connect();
         response = readIt(is);
         return response;
+    }
+
+    private String setParameters(ContentValues contentValues){
+        String key = null;
+        String value = null;
+        Uri.Builder builder = new Uri.Builder();
+        for (Map.Entry<String, Object> entry : contentValues.valueSet()) {
+            key = entry.getKey();
+            value = entry.getValue().toString();
+            builder.appendQueryParameter(key, value);
+        }
+        return builder.build().toString();
     }
 
     //Checks whether network is on

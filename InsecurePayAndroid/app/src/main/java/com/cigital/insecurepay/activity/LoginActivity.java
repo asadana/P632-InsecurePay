@@ -40,7 +40,6 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
@@ -50,8 +49,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
-
-//import com.google.gson.Gson;
 
 /**
  * A login screen that offers login via username,password.
@@ -72,16 +69,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    /*Changes for Shared pref -start-*/
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
     private CheckBox mRememberMeCheck;
 
-    // Default values for userUrl
     private String userAddress;
     private String userPort;
     private String userPath;
+
+    private Gson gson = new Gson();
 
 
     @Override
@@ -93,7 +90,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         // Setting default values to userUrl
-        // Default values for userUrl
         userAddress = (getString(R.string.defaultAddress));
         userPort = (getString(R.string.defaultPort));
         userPath = (getString(R.string.defaultPath));
@@ -229,8 +225,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password, server_address, null);
-            mAuthTask.execute(username, password, server_address, null);/*Changes made here*/
+            mAuthTask = new UserLoginTask(username, password, server_address);
+            mAuthTask.execute(username, password, server_address);
         }
     }
 
@@ -427,19 +423,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
 
     public class UserLoginTask extends AsyncTask<String, String, LoginValidationVO> {
-        /*Changes made here*/
+
         private final String mUsername;
         private final String mPassword;
         private final String mServerAddress;
-        //Create the following customerVO reference to store customerDetails
-        private CustomerVO customerDetails;
 
-        UserLoginTask(String username, String password, String serverAddress, CustomerVO vo) {
+        UserLoginTask(String username, String password, String serverAddress) {
             mUsername = username;
             mPassword = password;
             mServerAddress = serverAddress;
-            //vo = null always when it is called by execute
-            customerDetails = vo;
         }
 
         @Override
@@ -452,10 +444,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
                 int lock = db.isLocked(mUsername);
                 if (lock == 1) {
-                    Long checktrialtime = db.getTimestamp(mUsername);
-                    long currenttime = System.currentTimeMillis();
-                    long timediff = currenttime - checktrialtime;
-                    if (timediff > 60000) {
+                    Long trialTime = db.getTimestamp(mUsername);
+                    long currTime = System.currentTimeMillis();
+                    long timeDiff = currTime - trialTime;
+                    if (timeDiff > 60000) {
                         lock = 0;
                         db.resetTrial(mUsername);
                     }
@@ -464,25 +456,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (lock == 0) {
                     Log.d(this.getClass().getSimpleName(), "Sending credentials");
                     //Parameters contain credentials which are capsuled to LoginVO objects
-                    LoginVO send_vo = new LoginVO(mUsername, mPassword);
-                    Gson gsonSendvo = new Gson();
+                    LoginVO sendVo = new LoginVO(mUsername, mPassword);
+
                     //sendToServer contains JSON object that has credentials
-                    String sendToServer = gsonSendvo.toJson(send_vo);
+                    String sendToServer = gson.toJson(sendVo);
                     //Passing the context of LoginActivity to Connectivity
                     Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
                     String responseFromServer = con_login.post().trim();
                     //Convert serverResponse to respectiveVO
-                    loginValidationVO = gsonSendvo.fromJson(responseFromServer, LoginValidationVO.class);
+                    loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
                     //If the user is a valid user. Call customer service to get the user which is to be displayed in the next activity
-                    if (loginValidationVO.isValidUser()) {
-                        Log.d(this.getClass().getSimpleName(), "Getting customer details");
-                        Gson gson_customerDetails = new Gson();
-                        //Passing the context of LoginActivity to Connectivity and creating connection for customerService
-                        Connectivity con_custdetails = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.custDetails_path), mServerAddress);
-                        //Converts customer details to CustomerVO
-                        customerDetails = gson_customerDetails.fromJson(con_custdetails.get(), CustomerVO.class);
-                    }
+
                     Thread.sleep(2000);
 
                 }
@@ -503,7 +488,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             int lock = db.isLocked(mUsername);
 
             if (loginValidationVO.isValidUser()) {
-                Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                 if (trial != -1) {
                     db.updateTrial(mUsername, 0);
                 }
@@ -511,7 +496,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
                     // Move to Home Page if successful login
                     Intent intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
-                    intent.putExtra("Username", customerDetails.getCust_name());
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(this.getClass().getSimpleName(), "Exception ", e);
@@ -528,11 +512,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Account Lockout if number of trials exceeds or equals to 3
                     */
                 if (trial + 1 == 3)
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account Locked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
                 if (lock == 1)
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed and Account still Locked", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_still_account_locked), Toast.LENGTH_LONG).show();
                 else {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                 }
 
                 if (!loginValidationVO.isUsernameExists()) {

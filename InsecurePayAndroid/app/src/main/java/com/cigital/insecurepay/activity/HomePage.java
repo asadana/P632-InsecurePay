@@ -1,12 +1,10 @@
 package com.cigital.insecurepay.activity;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,29 +13,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CustomerVO;
+import com.cigital.insecurepay.common.Connectivity;
+import com.google.gson.Gson;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private CustDetailsRequestTask task = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-        //setContentView(R.layout.content_home_page);
-        //TextView new = (TextView)findViewById(R.id.tvUsername);
-        //SharedPreferences loginPreferences=getSharedPreferences("loginprefs", Context.MODE_PRIVATE);
-        //new.setText(loginPreferences.getString("username", ""));
-        Log.d("HomePage", "Before bundles");
-        TextView tvUsername = (TextView) findViewById(R.id.tvUsername);
-        Log.d("HomePage", "Reached the username section");
-        Bundle bundle = getIntent().getExtras();
-        String username = bundle.getString("Username");
-        //Log.d("Reached after bundles",Username);
-        tvUsername.setText(username);
+
+        task = new CustDetailsRequestTask();
+        task.execute();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,6 +114,39 @@ public class HomePage extends AppCompatActivity
     public void onLogOut() {
         Intent intent = new Intent(HomePage.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    class CustDetailsRequestTask extends AsyncTask<String,String, Boolean> {
+        private CustomerVO customerDetails;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String userAddress = (getString(R.string.defaultAddress));
+            String userPort = (getString(R.string.defaultPort));
+            String userPath = (getString(R.string.defaultPath));
+            String serverAddress = userAddress+":"+userPort+userPath;
+            Log.d(this.getClass().getSimpleName(),"Background");
+            try {
+                Gson gsonCustDetails = new Gson();
+                //Passing the context of LoginActivity to Connectivity and creating connection for customerService
+
+                //Converts customer details to CustomerVO
+                Connectivity conn = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.cust_details_path), serverAddress);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(getString(R.string.username), "foo");
+                customerDetails = gsonCustDetails.fromJson(conn.get(contentValues), CustomerVO.class);
+                Log.d(this.getClass().getSimpleName(),"Customer details in HomePage"+ customerDetails.getCity());
+            }
+            catch (Exception e){
+                Log.e(this.getClass().getSimpleName(),"Error while connecting: ",e);
+            }
+            return false;
+        }
+
+        protected void onPostExecute() {
+
+        }
+
     }
 
 }
