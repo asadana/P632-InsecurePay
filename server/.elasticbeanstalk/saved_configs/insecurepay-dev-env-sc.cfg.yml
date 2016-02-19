@@ -18,7 +18,7 @@ OptionSettings:
     SystemType: enhanced
   aws:autoscaling:launchconfiguration:
     IamInstanceProfile: aws-elasticbeanstalk-ec2-role
-    EC2KeyName: aws-eb-ssh
+    EC2KeyName: aws-eb-ssh-key
     InstanceType: t2.micro
   aws:autoscaling:updatepolicy:rollingupdate:
     RollingUpdateType: Health
