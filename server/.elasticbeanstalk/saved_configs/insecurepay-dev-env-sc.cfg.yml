@@ -1,7 +1,7 @@
 EnvironmentConfigurationMetadata:
   Description: Configuration created from the EB CLI using "eb config save".
-  DateCreated: '1455898097000'
-  DateModified: '1455898097000'
+  DateCreated: '1455912746000'
+  DateModified: '1455912746000'
 SolutionStack: 64bit Amazon Linux 2015.09 v2.0.7 running Tomcat 8 Java 8
 OptionSettings:
   aws:elasticbeanstalk:command:
