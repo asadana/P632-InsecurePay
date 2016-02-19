@@ -24,7 +24,6 @@ public class LoginService extends BaseService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	
 	public LoginValidationBO validateLogin(LoginBO loginBO) {
 		LoginValidationBO validate = null;
 		try {
@@ -34,13 +33,11 @@ public class LoginService extends BaseService {
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
-			e.printStackTrace();
 		} finally {
 
 			try {
 				close();
 			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 		return validate;

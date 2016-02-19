@@ -13,6 +13,7 @@ import com.application.common.StringConstants;
 
 public class BaseService {
 	private Connection conn = null;
+	//protected static final Logger logger = LogManager.getLogger(BaseService.class.getSimpleName());
 
 	private void createConnection() throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SQLException {
