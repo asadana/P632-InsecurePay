@@ -19,6 +19,8 @@
         android:layout_marginBottom="8dp"
         android:visibility="gone" />
 
+
+
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
@@ -87,6 +89,26 @@
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/btn_forgot_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/forgot_password"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:textColor="#576586"
+                android:layout_gravity="center_horizontal" />
+
         </LinearLayout>
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/textView3" />
+
 </LinearLayout>

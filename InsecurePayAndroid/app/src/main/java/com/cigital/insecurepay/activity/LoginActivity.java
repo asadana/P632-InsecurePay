@@ -68,6 +68,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private AutoCompleteTextView mUsernameView;
     private EditText mPasswordView;
     private View mProgressView;
+    private TextView mForgotPasswordView;
     private View mLoginFormView;
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
@@ -87,12 +88,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        mForgotPasswordView=(TextView)findViewById(R.id.btn_forgot_password);
         populateAutoComplete();
 
         // Setting default values to userUrl
         userAddress = (getString(R.string.defaultAddress));
         userPort = (getString(R.string.defaultPort));
         userPath = (getString(R.string.defaultPath));
+
+        mForgotPasswordView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d ("Forgot paswd","onclick");
+                Intent intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                startActivity(intent);
+            }
+        });
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
