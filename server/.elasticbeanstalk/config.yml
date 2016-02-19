@@ -1,0 +1,10 @@
+branch-defaults:
+  default:
+    environment: insecurepay-dev-env
+global:
+  application_name: InsecurePayServer
+  default_ec2_keyname: aws-eb-ssh-key
+  default_platform: Tomcat 8 Java 8
+  default_region: us-east-1
+  profile: null
+  sc: null
