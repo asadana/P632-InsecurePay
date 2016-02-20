@@ -2,31 +2,49 @@ package com.cigital.insecurepay.activity;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
+
+import com.cigital.insecurepay.R;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 
 /**
- * Created by ankit-arch on 2/16/16.
+ * Created by ankit-arch on 2/19/16.
  */
 
 @RunWith(AndroidJUnit4.class)
-@LargeTest
 public class LoginActivityTest {
 
+    public static final String typeUsername = "asadana";
+    public static final String typePassword = "abcdef";
+
     @Rule
-    public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule(LoginActivity.class);
+    public final ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void listGoesOverTheFold() {
-        onView(withText("Hello world!")).check(matches(isDisplayed()));
+    public void shouldBeAbleToLaunch() {
+        onView(withId(R.id.username)).
+                perform(typeText(typeUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(typePassword), closeSoftKeyboard());
+        onView(withId(R.id.sign_in_button)).
+                perform(click());
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+
     }
 
 }
