@@ -11,10 +11,9 @@ import com.application.common.StringConstants;
  * Manages connection
  */
 
-public class BaseService {
+public class BaseService extends Logging {
 	private Connection conn = null;
-	//protected static final Logger logger = LogManager.getLogger(BaseService.class.getSimpleName());
-
+	
 	private void createConnection() throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SQLException {
 		String url = StringConstants.url;

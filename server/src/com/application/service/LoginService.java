@@ -27,17 +27,20 @@ public class LoginService extends BaseService {
 	public LoginValidationBO validateLogin(LoginBO loginBO) {
 		LoginValidationBO validate = null;
 		try {
+			
 			validate = DaoFactory.getInstance(LoginDao.class,
 					this.getConnection()).validateUser(loginBO);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
+			logger.error(this.getClass().getSimpleName(), e);
 		} finally {
-
+			
 			try {
 				close();
 			} catch (SQLException e) {
+				logger.error(this.getClass().getSimpleName(), e);
 			}
 		}
 		return validate;
