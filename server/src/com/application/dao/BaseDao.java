@@ -33,6 +33,13 @@ public class BaseDao {
 		return rs;
 	}
 	
+	public int updateSql(String sql, List<Object> params) throws SQLException{
+		ps = conn.prepareStatement(sql);
+		createParams(params);
+		return ps.executeUpdate();
+	}
+	
+	
 	private void createParams(List<Object> params) throws SQLException {
 		int i = 1;
 		for (Object param : params) {

@@ -1,6 +1,7 @@
 package com.application.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.application.service.BO.LoginBO;
@@ -18,7 +19,7 @@ public class LoginDao extends BaseDao {
 		LoginValidationBO validationBO;
 		boolean usernameExists;
 		boolean validUser;
-
+		ResultSet rs = null;
 		String sql = "select * from cust_credentials where cust_username='"
 				+ l.getUsername() + "'";
 		s = conn.createStatement();
