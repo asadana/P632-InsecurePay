@@ -27,7 +27,7 @@ import static org.hamcrest.CoreMatchers.not;
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    public static final String typeUsername = "asadana";
+    public static final String typeUsername = "foo";
     public static final String typePassword = "abcdef";
 
     @Rule
