@@ -1,30 +1,15 @@
 package com.cigital.insecurepay.VOs;
 
-/**
- * Created by Jaini on 2/19/2016.
- */
 public class ForgotPasswordVO {
 
-    private String accountNo;
-    private String textSSNNo;
+    private int accountNo;
+    private int sSNNo;
     private String username;
 
-    public ForgotPasswordVO(String accountNo, String textSSNNo, String username){
-        this.accountNo = this.accountNo;
-        this.textSSNNo = textSSNNo;
-        this.username=username;
-    }
-
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
+    public ForgotPasswordVO(int accountNo, int sSNNo, String username){
         this.accountNo = accountNo;
-    }
-
-    public String getSSNNo() {
-        return textSSNNo;
+        this.sSNNo = sSNNo;
+        this.username=username;
     }
 
     public String getUsername() {
@@ -35,8 +20,19 @@ public class ForgotPasswordVO {
         this.username = username;
     }
 
-    public void setSSNNo(String textSSNNo) {
-        this.textSSNNo = textSSNNo;
+    public int getAccountNo() {
+        return accountNo;
     }
 
+    public void setAccountNo(int accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public int getsSNNo() {
+        return sSNNo;
+    }
+
+    public void setsSNNo(int sSNNo) {
+        this.sSNNo = sSNNo;
+    }
 }

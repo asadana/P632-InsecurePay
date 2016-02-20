@@ -108,9 +108,6 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Display username and password in log
-                Log.i("", "Username : " + usernameView.getText().toString());
-                Log.i("", "Password : " + passwordView.getText().toString());
                 attemptLogin();
             }
         });
@@ -182,6 +179,10 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
         if (authTask != null) {
             return;
         }
+
+        // Display username and password in log
+        Log.i(this.getClass().getSimpleName(), "Username : " + usernameView.getText().toString());
+        Log.i(this.getClass().getSimpleName(), "Password : " + passwordView.getText().toString());
 
         // Reset errors.
         usernameView.setError(null);

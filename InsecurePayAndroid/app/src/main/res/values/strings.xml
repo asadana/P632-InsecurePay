@@ -18,7 +18,7 @@
     <string name="title_activity_user_login">Sign in</string>
     <!--Following strings are for Connectivity-->
     <!--<string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>-->
-    <string name="defaultAddress">http://10.0.0.15:8090/InsecurePayServiceServer</string>
+    <string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>
     <string name="defaultPath">/rest/</string>
     <string name="no_network">No network connection</string>
     <!--Following strings are for Login-->
@@ -46,5 +46,5 @@
     <string name="send">SEND</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="information_mismatch">Please verify your information and try again.</string>
-    <string name="default_password_linksent">Reset password link has been sent to your inbox.</string>
+    <string name="default_password_linksent">Your password has been reset.</string>
 </resources>

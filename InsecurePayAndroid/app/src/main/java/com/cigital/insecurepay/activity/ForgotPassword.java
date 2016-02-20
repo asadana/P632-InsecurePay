@@ -1,6 +1,5 @@
 package com.cigital.insecurepay.activity;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +13,7 @@ import android.widget.Toast;
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
-import com.cigital.insecurepay.VOs.ForgotPasswordValidationVO;
+import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 
 public class ForgotPassword extends AbstractBaseActivity {
@@ -42,7 +41,7 @@ public class ForgotPassword extends AbstractBaseActivity {
             public void onClick(View view) {
                 // Display Account No and SSN in log
                 String accountNo = accountNoView.getText().toString();
-                String ssnNo = textSSNNoView.getText().toString();
+                String sSNNo = textSSNNoView.getText().toString();
                 String username = usernameView.getText().toString();
                 boolean cancel = false;
                 View focusView = null;
@@ -53,9 +52,8 @@ public class ForgotPassword extends AbstractBaseActivity {
                     focusView = accountNoView;
                     cancel = true;
                 }
-                if (TextUtils.isEmpty(ssnNo)) {
+                if (TextUtils.isEmpty(sSNNo) || isSSNInvalid(sSNNo)) {
                     textSSNNoView.setError(getString(R.string.error_invalid_field));
-                    Log.d("SSN No in check", textSSNNoView.getText().toString());
                     focusView = textSSNNoView;
                     cancel = true;
                 }
@@ -63,21 +61,16 @@ public class ForgotPassword extends AbstractBaseActivity {
                     // There was an error; focus the first form field with an error.
                     focusView.requestFocus();
                 } else {
-                    Log.d("SSN ", textSSNNoView.getText().toString());
-                    Log.d("ACCOUNT ", accountNoView.getText().toString());
-                    Log.d("Username", usernameView.getText().toString());
-                    forgotPassTask = new ForgotPasswordTask(accountNo, ssnNo, username);
-                    forgotPassTask.execute(accountNo, ssnNo, username);
+                    forgotPassTask = new ForgotPasswordTask(Integer.parseInt(accountNo), Integer.parseInt(sSNNo), username);
+                    forgotPassTask.execute(accountNo, sSNNo, username);
                 }
             }
         });
     }
 
-    private boolean isSSNValid(String ssn) {
-        //TODO: Replace this with your own logic
-        boolean value = ssn.length() > 4;
-        Log.d("SSN No in check", "" + value);
-        return value;
+
+    private boolean isSSNInvalid(String ssn) {
+        return ssn.length() < 4;
     }
 
     /**
@@ -85,29 +78,28 @@ public class ForgotPassword extends AbstractBaseActivity {
      * the user.
      */
 
-    public class ForgotPasswordTask extends AsyncTask<String, String, ForgotPasswordValidationVO> {
+    public class ForgotPasswordTask extends AsyncTask<String, String, LoginValidationVO> {
 
-        private final String accountNo;
-        private final String ssnNo;
+        private final int accountNo;
+        private final int sSNNo;
         private final String username;
 
-        ForgotPasswordTask(String accountNo, String ssnNo, String username) {
+        ForgotPasswordTask(int accountNo, int sSNNo, String username) {
             this.accountNo = accountNo;
-            this.ssnNo = ssnNo;
+            this.sSNNo = sSNNo;
             this.username = username;
         }
 
         @Override
-        protected ForgotPasswordValidationVO doInBackground(String... params) {
+        protected LoginValidationVO doInBackground(String... params) {
             // TODO: attempt authentication against a network service.
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
 
-            ForgotPasswordValidationVO forgotPasswordValidationVO = null;
+            LoginValidationVO loginValidationVO = null;
             try {
                 LoginDBHelper db = new LoginDBHelper(ForgotPassword.this);
-                Log.d(this.getClass().getSimpleName(), "Sending credentials");
                 //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
-                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, ssnNo, username);
+                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
@@ -116,25 +108,24 @@ public class ForgotPassword extends AbstractBaseActivity {
                 String responseFromServer = con_login.post().trim();
                 //Convert serverResponse to respectiveVO
 
-                forgotPasswordValidationVO = gson.fromJson(responseFromServer, ForgotPasswordValidationVO.class);
+                loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
 
                 Thread.sleep(2000);
-                return forgotPasswordValidationVO;
+                return loginValidationVO;
 
             } catch (Exception e) {
-                Log.d("Catch", "vfdFD");
-                return forgotPasswordValidationVO;
+                return loginValidationVO;
             }
         }
 
         @Override
-        protected void onPostExecute(final ForgotPasswordValidationVO forgotPasswordValidationVO) {
+        protected void onPostExecute(final LoginValidationVO loginValidationVO) {
 
-            if (!forgotPasswordValidationVO.isUsernameExists()) {
+            if (!loginValidationVO.isUsernameExists()) {
                 usernameView.setError("Username does not exist");
                 usernameView.requestFocus();
             } else {
-                if (!forgotPasswordValidationVO.isValidUser()) {
+                if (!loginValidationVO.isValidUser()) {
                     Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.information_mismatch), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_linksent), Toast.LENGTH_LONG).show();

@@ -5,34 +5,35 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ForgotPasswordBO {
 	
-	private String accountNo;
-    private String textSSNNo;
+	private int accountNo;
+    private int sSNNo;
     private String username;
 
     public ForgotPasswordBO() {
 	}
     
-    public ForgotPasswordBO(String accountNo, String textSSNNo, String username){
+    public ForgotPasswordBO(int accountNo, int sSNNo, String username){
     	super();
         this.accountNo = accountNo;
-        this.textSSNNo = textSSNNo;
+        this.sSNNo = sSNNo;
         this.username=username;
     }
 
-	public String getAccountNo() {
+	public int getAccountNo() {
 		return accountNo;
 	}
 
-	public void setAccountNo(String accountNo) {
+	public void setAccountNo(int accountNo) {
 		this.accountNo = accountNo;
 	}
 
-	public String getTextSSNNo() {
-		return textSSNNo;
+
+	public int getsSNNo() {
+		return sSNNo;
 	}
 
-	public void setTextSSNNo(String textSSNNo) {
-		this.textSSNNo = textSSNNo;
+	public void setsSNNo(int sSNNo) {
+		this.sSNNo = sSNNo;
 	}
 
 	public String getUsername() {

@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import com.application.common.DaoFactory;
 import com.application.dao.ForgotPasswordDao;
 import com.application.service.BO.ForgotPasswordBO;
-import com.application.service.BO.ForgotPasswordValidationBO;
+import com.application.service.BO.LoginValidationBO;
 
 
 @Path("/ForgotPassword")
@@ -21,8 +21,8 @@ public class ForgotPasswordService extends BaseService{
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public ForgotPasswordValidationBO validateLogin(ForgotPasswordBO forgotPasswordBO) {
-		ForgotPasswordValidationBO validate = null;
+	public LoginValidationBO validateLogin(ForgotPasswordBO forgotPasswordBO) {
+		LoginValidationBO validate = null;
 		try {
 			validate = DaoFactory.getInstance(ForgotPasswordDao.class,
 					this.getConnection()).validateUser(forgotPasswordBO);
@@ -30,11 +30,15 @@ public class ForgotPasswordService extends BaseService{
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
+			logger.error(this.getClass().getSimpleName(), e);
+			e.printStackTrace();
 		} finally {
 
 			try {
 				close();
 			} catch (SQLException e) {
+				logger.error(this.getClass().getSimpleName(), e);
+				e.printStackTrace();
 			}
 		}
 		return validate;
