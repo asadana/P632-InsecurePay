@@ -71,6 +71,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
     private CheckBox rememberMeCheck;
+    private TextView forgotPasswordView;
 
 
     @Override
@@ -79,6 +80,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
         setContentView(R.layout.activity_login);
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
+        forgotPasswordView =(TextView)findViewById(R.id.btn_forgot_password);
         populateAutoComplete();
 
         passwordView = (EditText) findViewById(R.id.password);
@@ -90,6 +92,15 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
                     return true;
                 }
                 return false;
+            }
+        });
+
+        forgotPasswordView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(this.getClass().getSimpleName(), "forgot password view");
+                Intent intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                startActivity(intent);
             }
         });
 

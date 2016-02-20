@@ -1,28 +1,28 @@
 package com.cigital.insecurepay.activity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.LoginVO;
-import com.cigital.insecurepay.VOs.LoginValidationVO;
+import com.cigital.insecurepay.VOs.ForgotPasswordVO;
+import com.cigital.insecurepay.VOs.ForgotPasswordValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 
-public class ForgotPassword extends AppCompatActivity {
+public class ForgotPassword extends AbstractBaseActivity {
 
-    private EditText mAccountNoView;
-    private EditText mSSNNoView;
-    //private ForgotPasswordTask mAuthTask = null;
+    private EditText accountNoView;
+    private EditText textSSNNoView;
+    private EditText usernameView;
+    private ForgotPasswordTask forgotPassTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,38 +33,41 @@ public class ForgotPassword extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAccountNoView = (EditText) findViewById(R.id.etxt_AccountNo);
-        mSSNNoView = (EditText) findViewById(R.id.etxt_SSNNo);
+        accountNoView = (EditText) findViewById(R.id.etxt_AccountNo);
+        textSSNNoView = (EditText) findViewById(R.id.etxt_SSNNo);
+        usernameView = (EditText) findViewById(R.id.etxt_username);
         Button mSendButton = (Button) findViewById(R.id.btn_send);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Display Account No and SSN in log
-                String accountNo = mAccountNoView.getText().toString();
-                String ssnNo = mSSNNoView.getText().toString();
-                Log.d("SSN ", mSSNNoView.getText().toString());
-
+                String accountNo = accountNoView.getText().toString();
+                String ssnNo = textSSNNoView.getText().toString();
+                String username = usernameView.getText().toString();
                 boolean cancel = false;
                 View focusView = null;
 
                 // Check for a valid Account No and SSN, if the user entered one.
-                if (!TextUtils.isEmpty(accountNo)) {
-                    mAccountNoView.setError(getString(R.string.error_field_required));
-                    focusView = mAccountNoView;
+                if (TextUtils.isEmpty(accountNo) || TextUtils.isEmpty(username)) {
+                    accountNoView.setError(getString(R.string.error_field_required));
+                    focusView = accountNoView;
                     cancel = true;
                 }
-                if (!TextUtils.isEmpty(ssnNo) && !isSSNValid(ssnNo)) {
-                    mSSNNoView.setError(getString(R.string.error_invalid_field));
-                    focusView = mSSNNoView;
+                if (TextUtils.isEmpty(ssnNo)) {
+                    textSSNNoView.setError(getString(R.string.error_invalid_field));
+                    Log.d("SSN No in check", textSSNNoView.getText().toString());
+                    focusView = textSSNNoView;
                     cancel = true;
                 }
                 if (cancel) {
                     // There was an error; focus the first form field with an error.
                     focusView.requestFocus();
                 } else {
-
-                   // mAuthTask = new ForgotPasswordTask(accountNo, ssnNo, server_address);
-                   // mAuthTask.ForgotPasswordTask(accountNo, ssnNo, server_address);
+                    Log.d("SSN ", textSSNNoView.getText().toString());
+                    Log.d("ACCOUNT ", accountNoView.getText().toString());
+                    Log.d("Username", usernameView.getText().toString());
+                    forgotPassTask = new ForgotPasswordTask(accountNo, ssnNo, username);
+                    forgotPassTask.execute(accountNo, ssnNo, username);
                 }
             }
         });
@@ -72,7 +75,9 @@ public class ForgotPassword extends AppCompatActivity {
 
     private boolean isSSNValid(String ssn) {
         //TODO: Replace this with your own logic
-        return ssn.length() > 4;
+        boolean value = ssn.length() > 4;
+        Log.d("SSN No in check", "" + value);
+        return value;
     }
 
     /**
@@ -80,4 +85,64 @@ public class ForgotPassword extends AppCompatActivity {
      * the user.
      */
 
+    public class ForgotPasswordTask extends AsyncTask<String, String, ForgotPasswordValidationVO> {
+
+        private final String accountNo;
+        private final String ssnNo;
+        private final String username;
+
+        ForgotPasswordTask(String accountNo, String ssnNo, String username) {
+            this.accountNo = accountNo;
+            this.ssnNo = ssnNo;
+            this.username = username;
+        }
+
+        @Override
+        protected ForgotPasswordValidationVO doInBackground(String... params) {
+            // TODO: attempt authentication against a network service.
+            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
+
+            ForgotPasswordValidationVO forgotPasswordValidationVO = null;
+            try {
+                LoginDBHelper db = new LoginDBHelper(ForgotPassword.this);
+                Log.d(this.getClass().getSimpleName(), "Sending credentials");
+                //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
+                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, ssnNo, username);
+                //sendToServer contains JSON object that has credentials
+                String sendToServer = gson.toJson(sendVo);
+                //Passing the context of LoginActivity to Connectivity
+                Connectivity con_login = new Connectivity(ForgotPassword.this.getApplicationContext(), getString(R.string.forgot_password_path), serverAddress, sendToServer);
+                //Call post and since there are white spaces in the response, trim is called
+                String responseFromServer = con_login.post().trim();
+                //Convert serverResponse to respectiveVO
+
+                forgotPasswordValidationVO = gson.fromJson(responseFromServer, ForgotPasswordValidationVO.class);
+
+                Thread.sleep(2000);
+                return forgotPasswordValidationVO;
+
+            } catch (Exception e) {
+                Log.d("Catch", "vfdFD");
+                return forgotPasswordValidationVO;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(final ForgotPasswordValidationVO forgotPasswordValidationVO) {
+
+            if (!forgotPasswordValidationVO.isUsernameExists()) {
+                usernameView.setError("Username does not exist");
+                usernameView.requestFocus();
+            } else {
+                if (!forgotPasswordValidationVO.isValidUser()) {
+                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.information_mismatch), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_linksent), Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+        }
+
+    }
 }
