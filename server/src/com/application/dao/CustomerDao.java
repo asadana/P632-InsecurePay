@@ -15,7 +15,9 @@ public class CustomerDao extends BaseDao {
 		super(conn);
 	}
 
-	public CustomerBO getCustomerDetails(String username) throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+	public CustomerBO getCustomerDetails(String username) throws SQLException,
+			InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 
 		ResultSet rs = null;
 		List<Object> params = new ArrayList<Object>();
@@ -23,18 +25,41 @@ public class CustomerDao extends BaseDao {
 		rs = querySql(Queries.GET_CUSTOMER_DETAILS, params);
 		CustomerBO customer = new CustomerBO();
 		if (rs.next()) {
-			customer.setCust_no(rs.getInt("cust_no"));
-			customer.setCust_name(rs.getString("cust_name"));
+			customer.setCustNo(rs.getInt("cust_no"));
+			customer.setCustName(rs.getString("cust_name"));
 			customer.setStreet(rs.getString("street"));
 			customer.setCity(rs.getString("city"));
 			customer.setState(rs.getString("state"));
 			customer.setZipcode(rs.getInt("zipcode"));
-			customer.setPhone_no(rs.getInt("phone_no"));
-			customer.setBirth_date(rs.getDate("Birth_date"));
+			customer.setPhoneNo(rs.getInt("phone_no"));
+			customer.setBirthDate(rs.getDate("Birth_date"));
 			customer.setSsn(rs.getInt("SSN"));
 			customer.setEmail(rs.getString("email"));
+			customer.setCustUsername(rs.getString("cust_username"));
 		}
 		return customer;
+	}
+
+	public boolean updateCustomerDetails(CustomerBO customerBO)
+			throws SQLException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
+
+		List<Object> params = new ArrayList<Object>();
+		params.add(customerBO.getCustName());
+		params.add(customerBO.getStreet());
+		params.add(customerBO.getCity());
+		params.add(customerBO.getState());
+		params.add(customerBO.getZipcode());
+		params.add(customerBO.getPhoneNo());
+		params.add(customerBO.getEmail());
+		params.add(customerBO.getBirthDate());
+		params.add(customerBO.getCustNo());
+		
+		if (updateSql(Queries.UPDATE_CUSTOMER_DETAILS, params) > 0) {
+			return true;
+		}
+		return false;
+
 	}
 
 }

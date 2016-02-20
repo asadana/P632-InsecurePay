@@ -1,13 +1,12 @@
 package com.application.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-
-import com.application.service.BO.LoginBO;
 
 /*
  * Includes core methods of creating and querying results
@@ -47,6 +46,8 @@ public class BaseDao {
 				ps.setInt(i, ((Integer) param).intValue());
 			} else if (param instanceof String) {
 				ps.setString(i, param.toString());
+			} else if (param instanceof Date) {
+				ps.setDate(i, Date.valueOf(param.toString()));
 			}
 			i++;
 		}

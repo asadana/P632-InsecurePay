@@ -1,58 +1,65 @@
 package com.application.service.BO;
 
 import java.sql.Date;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class CustomerBO {
-	private int cust_no;
-	private String cust_name;
+	private int custNo;
+	private String custName;
 	private String street;
 	private String city;
 	private String state;
 	private int zipcode;
-	private int phone_no;
-	private Date birth_date;
+	private int phoneNo;
+	private Date birthDate;
 	private int ssn;
 	private String email;
-	//private String cust_username;
+	private String custUsername;
 	
 	
 	public CustomerBO(){
 		
 	}
-	public CustomerBO(int cust_no, String cust_name, String street, String city, String state, int zipcode, int phone_no,
-			Date birth_date, int ssn, String email, String cust_username) {
+	public CustomerBO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
+			Date birthDate, int ssn, String email, String custUsername) {
 		super();
-		this.cust_no = cust_no;
-		this.cust_name = cust_name;
+		this.custNo = custNo;
+		this.custName = custName;
 		this.street = street;
 		this.city = city;
 		this.state = state;
 		this.zipcode = zipcode;
-		this.phone_no = phone_no;
-		this.birth_date = birth_date;
+		this.phoneNo = phoneNo;
+		this.birthDate = birthDate;
 		this.ssn = ssn;
 		this.email = email;
-		//this.cust_username = cust_username;
+		this.custUsername = custUsername;
 	}
-	public int getCust_no() {
-		return cust_no;
+	public int getCustNo() {
+		return custNo;
 	}
-	public void setCust_no(int cust_no) {
-		this.cust_no = cust_no;
+	public void setCustNo(int custNo) {
+		this.custNo = custNo;
 	}
-	public String getCust_name() {
-		return cust_name;
+	public String getCustName() {
+		return custName;
 	}
-	public void setCust_name(String cust_name) {
-		this.cust_name = cust_name;
+	public void setCustName(String custName) {
+		this.custName = custName;
 	}
 	public String getStreet() {
 		return street;
 	}
 	public void setStreet(String street) {
 		this.street = street;
+	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
 	}
 	public String getState() {
 		return state;
@@ -66,17 +73,17 @@ public class CustomerBO {
 	public void setZipcode(int zipcode) {
 		this.zipcode = zipcode;
 	}
-	public int getPhone_no() {
-		return phone_no;
+	public int getPhoneNo() {
+		return phoneNo;
 	}
-	public void setPhone_no(int phone_no) {
-		this.phone_no = phone_no;
+	public void setPhoneNo(int phoneNo) {
+		this.phoneNo = phoneNo;
 	}
-	public Date getBirth_date() {
-		return birth_date;
+	public Date getBirthDate() {
+		return birthDate;
 	}
-	public void setBirth_date(Date birth_date) {
-		this.birth_date = birth_date;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 	public int getSsn() {
 		return ssn;
@@ -90,12 +97,13 @@ public class CustomerBO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public void setCity(String city){
-		this.city=city;
+	public String getCustUsername() {
+		return custUsername;
 	}
-	public String getCity(){
-		return city;
+	public void setCustUsername(String custUsername) {
+		this.custUsername = custUsername;
 	}
+	
 	
 	
 }
