@@ -28,23 +28,13 @@
         android:inputType="text" />
 
     <EditText
-        android:id="@+id/etUrlPort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/etUrlAddress"
-        android:layout_below="@+id/etUrlAddress"
-        android:hint="8090"
-        android:inputType="number" />
-
-    <EditText
         android:id="@+id/etUrlPath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/etUrlPort"
         android:hint="/InsecurePayServiceServer/rest/"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_below="@+id/etUrlAddress" />
 
     <TextView
         android:id="@+id/tvUrl"
@@ -53,18 +43,7 @@
         android:layout_alignBaseline="@+id/etUrlAddress"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/etUrlAddress"
-        android:text="URL"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvPort"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/etUrlPort"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/etUrlPort"
-        android:text="Port"
+        android:text="@string/url"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 
@@ -75,7 +54,7 @@
         android:layout_alignBaseline="@+id/etUrlPath"
         android:layout_alignParentStart="true"
         android:layout_toStartOf="@+id/etUrlPath"
-        android:text="Path"
+        android:text="@string/path"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 

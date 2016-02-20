@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,9 +16,8 @@ import android.view.MenuItem;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
-import com.google.gson.Gson;
 
-public class HomePage extends AppCompatActivity
+public class HomePage extends AbstractBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private CustDetailsRequestTask task = null;
 
@@ -116,29 +114,21 @@ public class HomePage extends AppCompatActivity
         startActivity(intent);
     }
 
-    class CustDetailsRequestTask extends AsyncTask<String,String, Boolean> {
+    class CustDetailsRequestTask extends AsyncTask<String, String, Boolean> {
         private CustomerVO customerDetails;
 
         @Override
         protected Boolean doInBackground(String... params) {
-            String userAddress = (getString(R.string.defaultAddress));
-            String userPort = (getString(R.string.defaultPort));
-            String userPath = (getString(R.string.defaultPath));
-            String serverAddress = userAddress+":"+userPort+userPath;
-            Log.d(this.getClass().getSimpleName(),"Background");
+            Log.d(this.getClass().getSimpleName(), "Background");
             try {
-                Gson gsonCustDetails = new Gson();
-                //Passing the context of LoginActivity to Connectivity and creating connection for customerService
-
                 //Converts customer details to CustomerVO
                 Connectivity conn = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.cust_details_path), serverAddress);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), "foo");
-                customerDetails = gsonCustDetails.fromJson(conn.get(contentValues), CustomerVO.class);
-                Log.d(this.getClass().getSimpleName(),"Customer details in HomePage"+ customerDetails.getCity());
-            }
-            catch (Exception e){
-                Log.e(this.getClass().getSimpleName(),"Error while connecting: ",e);
+                customerDetails = gson.fromJson(conn.get(contentValues), CustomerVO.class);
+                Log.d(this.getClass().getSimpleName(), "Customer details in HomePage" + customerDetails.getCity());
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
             }
             return false;
         }

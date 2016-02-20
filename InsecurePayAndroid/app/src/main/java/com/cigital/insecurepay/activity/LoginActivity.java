@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -43,7 +42,6 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +51,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via username,password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AbstractBaseActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -63,23 +61,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserLoginTask authTask = null;
     // UI references.
-    private AutoCompleteTextView mUsernameView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private TextView mForgotPasswordView;
-    private View mLoginFormView;
+    private AutoCompleteTextView usernameView;
+    private EditText passwordView;
+    private View progressView;
+    private View loginFormView;
     private SharedPreferences loginPreferences;
     private SharedPreferences.Editor loginPrefsEditor;
     private boolean saveLogin;
-    private CheckBox mRememberMeCheck;
-
-    private String userAddress;
-    private String userPort;
-    private String userPath;
-
-    private Gson gson = new Gson();
+    private CheckBox rememberMeCheck;
 
 
     @Override
@@ -87,25 +78,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-        mForgotPasswordView=(TextView)findViewById(R.id.btn_forgot_password);
+        usernameView = (AutoCompleteTextView) findViewById(R.id.username);
         populateAutoComplete();
 
-        // Setting default values to userUrl
-        userAddress = (getString(R.string.defaultAddress));
-        userPort = (getString(R.string.defaultPort));
-        userPath = (getString(R.string.defaultPath));
-
-        mForgotPasswordView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
-                startActivity(intent);
-            }
-        });
-
-        mPasswordView = (EditText) findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        passwordView = (EditText) findViewById(R.id.password);
+        passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
@@ -121,25 +98,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 // Display username and password in log
-                Log.i("", "Username : " + mUsernameView.getText().toString());
-                Log.i("", "Password : " + mPasswordView.getText().toString());
-                // Log.i("Insecure Data Storage", "Server Address : " + mServerAddressView.getText().toString());
+                Log.i("", "Username : " + usernameView.getText().toString());
+                Log.i("", "Password : " + passwordView.getText().toString());
                 attemptLogin();
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-        /*Fetch checkbox*/
-        mRememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
+        loginFormView = findViewById(R.id.login_form);
+        progressView = findViewById(R.id.login_progress);
+
+        rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        loginPrefsEditor = loginPreferences.edit();
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
         if (saveLogin) {
-            mUsernameView.setText(loginPreferences.getString("username", ""));
-            mPasswordView.setText(loginPreferences.getString("password", ""));
-            mRememberMeCheck.setChecked(true);
+            usernameView.setText(loginPreferences.getString(getString(R.string.username), ""));
+            passwordView.setText(loginPreferences.getString(getString(R.string.password), ""));
+            rememberMeCheck.setChecked(true);
         }
     }
 
@@ -159,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mUsernameView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(usernameView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -193,35 +168,32 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (mAuthTask != null) {
+        if (authTask != null) {
             return;
         }
 
         // Reset errors.
-        mUsernameView.setError(null);
-        mPasswordView.setError(null);
+        usernameView.setError(null);
+        passwordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String username = mUsernameView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        //Store server address
-        String server_address = userAddress + ":" + userPort + "" + userPath;
-
+        String username = usernameView.getText().toString();
+        String password = passwordView.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+            passwordView.setError(getString(R.string.error_invalid_password));
+            focusView = passwordView;
             cancel = true;
         }
 
         // Check for a valid username address.
         if (TextUtils.isEmpty(username)) {
-            mUsernameView.setError(getString(R.string.error_field_required));
-            focusView = mUsernameView;
+            usernameView.setError(getString(R.string.error_field_required));
+            focusView = usernameView;
             cancel = true;
         }
 
@@ -235,22 +207,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(username, password, server_address);
-            mAuthTask.execute(username, password, server_address);
+            authTask = new UserLoginTask(username, password);
+            authTask.execute();
         }
     }
 
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 
     private void saveLoginPreferences() {
-        if (mRememberMeCheck.isChecked()) {
+        loginPrefsEditor = loginPreferences.edit();
+        if (rememberMeCheck.isChecked()) {
             loginPrefsEditor.putBoolean("saveLogin", true);
-            loginPrefsEditor.putString("username", mUsernameView.getText().toString());
-            loginPrefsEditor.putString("password", mPasswordView.getText().toString());
+            loginPrefsEditor.putString("username", usernameView.getText().toString());
+            loginPrefsEditor.putString("password", passwordView.getText().toString());
             loginPrefsEditor.commit();
         } else {
             loginPrefsEditor.clear();
@@ -269,28 +241,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            loginFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -334,7 +306,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mUsernameView.setAdapter(adapter);
+        usernameView.setAdapter(adapter);
     }
 
     /**
@@ -377,34 +349,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(dialogView);
 
-        // String array to store different parts of the url server address
-        final String[] userUrl = new String[3];
-
         // EditText variables to fetch user inputs from the dialog
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
-        final EditText etUrlPort = (EditText) dialogView.findViewById(R.id.etUrlPort);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
-        Log.i("Server Address", "Initial address: " + userAddress + ":" + userPort + "" + userPath);
+        Log.i("Server Address", "Initial address: " + userAddress + userPath);
 
         // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                userUrl[0] = etUrlAddress.getText().toString();
-                userUrl[1] = etUrlPort.getText().toString();
-                userUrl[2] = etUrlPath.getText().toString();
 
-                if (!userUrl[0].isEmpty()) {
-                    userAddress = userUrl[0];
+                if (!etUrlAddress.getText().toString().isEmpty()) {
+                    userAddress = etUrlAddress.getText().toString();
                 }
-                if (!userUrl[1].isEmpty()) {
-                    userPort = userUrl[1];
-                }
-                if (!userUrl[2].isEmpty()) {
-                    userPath = userUrl[2];
+                if (!etUrlPath.getText().toString().isEmpty()) {
+                    userPath = etUrlPath.getText().toString();
                 }
 
-                Log.i("Server Address Update", "Storing address: " + userAddress + ":" + userPort + "" + userPath);
+                Log.i("Server Address Update", "Storing address: " + userAddress + userPath);
             }
             // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -434,14 +396,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     public class UserLoginTask extends AsyncTask<String, String, LoginValidationVO> {
 
-        private final String mUsername;
-        private final String mPassword;
-        private final String mServerAddress;
+        private final String username;
+        private final String password;
 
-        UserLoginTask(String username, String password, String serverAddress) {
-            mUsername = username;
-            mPassword = password;
-            mServerAddress = serverAddress;
+        UserLoginTask(String username, String password) {
+            this.username = username;
+            this.password = password;
         }
 
         @Override
@@ -452,26 +412,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             try {
                 //Check after account lockout
                 LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-                int lock = db.isLocked(mUsername);
+                int lock = db.isLocked(username);
                 if (lock == 1) {
-                    Long trialTime = db.getTimestamp(mUsername);
+                    Long trialTime = db.getTimestamp(username);
                     long currTime = System.currentTimeMillis();
                     long timeDiff = currTime - trialTime;
                     if (timeDiff > 60000) {
                         lock = 0;
-                        db.resetTrial(mUsername);
+                        db.resetTrial(username);
                     }
                 }
 
                 if (lock == 0) {
                     Log.d(this.getClass().getSimpleName(), "Sending credentials");
                     //Parameters contain credentials which are capsuled to LoginVO objects
-                    LoginVO sendVo = new LoginVO(mUsername, mPassword);
+                    LoginVO sendVo = new LoginVO(username, password);
 
                     //sendToServer contains JSON object that has credentials
                     String sendToServer = gson.toJson(sendVo);
                     //Passing the context of LoginActivity to Connectivity
-                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), mServerAddress, sendToServer);
+                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), serverAddress, sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
                     String responseFromServer = con_login.post().trim();
                     //Convert serverResponse to respectiveVO
@@ -489,18 +449,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(final LoginValidationVO loginValidationVO) {
-            mAuthTask = null;
+            authTask = null;
             showProgress(false);
 
             // If login successful reset the trials if exists any
             LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
-            int trial = db.getTrial(mUsername);
-            int lock = db.isLocked(mUsername);
+            int trial = db.getTrial(username);
+            int lock = db.isLocked(username);
 
             if (loginValidationVO.isValidUser()) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                 if (trial != -1) {
-                    db.updateTrial(mUsername, 0);
+                    db.updateTrial(username, 0);
                 }
                 try {
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
@@ -512,10 +472,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             } else {
                 if (trial == -1 && loginValidationVO.isUsernameExists()) {
-                    db.addTrial(mUsername, 1);
+                    db.addTrial(username, 1);
                 } else {
                     if (loginValidationVO.isUsernameExists())
-                        db.updateTrial(mUsername, trial + 1);
+                        db.updateTrial(username, trial + 1);
                 }
                     /*
                     Update trial to database if login failed.
@@ -530,8 +490,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 if (!loginValidationVO.isUsernameExists()) {
-                    mUsernameView.setError("Username does not exist");
-                    mUsernameView.requestFocus();
+                    usernameView.setError("Username does not exist");
+                    usernameView.requestFocus();
                 }
             }
 
@@ -539,7 +499,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            authTask = null;
             showProgress(false);
         }
 

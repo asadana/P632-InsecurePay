@@ -47,47 +47,71 @@ public class Connectivity {
     /*
     Sends data to server in JSON format and receives response in JSON as well
      */
-    public String post() throws IOException {
+    public String post()  {
         Log.d(this.getClass().getSimpleName(), "In Post()");
         if (checkConnection()) {
-            url = new URL(serverAddress + path);
-            Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            conn.setChunkedStreamingMode(0);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            writeIt();
-            is = conn.getInputStream();
-            response = readIt(is);
-            is.close();
+            try {
+                url = new URL(serverAddress + path);
+                Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setChunkedStreamingMode(0);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                writeIt();
+                is = conn.getInputStream();
+                response = readIt(is);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Post error", e);
+            }  finally {
+
+                try {
+                    conn.disconnect();
+                    is.close();
+                } catch (IOException e) {
+                    Log.e(this.getClass().getSimpleName(), "Post error", e);
+                }
+            }
+
         }
         return response;
     }
 
     //Right now get is hardcoded to get Customer Details of username = foo
-    public String get(ContentValues contentValues) throws IOException {
+    public String get(ContentValues contentValues) {
         Log.d(this.getClass().getSimpleName(), "In Get()");
         String params = null;
         if(contentValues != null)
             params = setParameters(contentValues);
-        url = new URL(serverAddress + path + params);
-        Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url);
-        conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000); /* milliseconds */
-        conn.setConnectTimeout(15000); /* milliseconds */
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        is = conn.getInputStream();
-        conn.connect();
-        response = readIt(is);
+        try {
+            url = new URL(serverAddress + path + params);
+            Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("GET");
+            conn.setDoInput(true);
+            is = conn.getInputStream();
+            conn.connect();
+            response = readIt(is);
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(), "Get error", e);
+        } finally {
+            try {
+                conn.disconnect();
+                is.close();
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Get error", e);
+            }
+        }
+
         return response;
     }
 
     private String setParameters(ContentValues contentValues){
-        String key = null;
-        String value = null;
+        String key;
+        String value;
         Uri.Builder builder = new Uri.Builder();
         for (Map.Entry<String, Object> entry : contentValues.valueSet()) {
             key = entry.getKey();
@@ -107,39 +131,59 @@ public class Connectivity {
             Log.d(this.getClass().getSimpleName(), "Network is on");
             return true;
         } else {
+            Toast.makeText(context, context.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
 
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(context, context.getString(R.string.no_network), duration);
-            toast.show();
         }
         return false;
     }
 
     //To read the response from server
-    private String readIt(InputStream stream) throws IOException {
+    private String readIt(InputStream stream) {
         Log.d(this.getClass().getSimpleName(), "Reading response");
-        if (stream == null) {
-            Log.d(this.getClass().getSimpleName(), "Stream is null");
-        }
         StringBuilder sb = new StringBuilder();
         String line;
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(), "Reading response error", e);
+        } finally {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Reading response error", e);
+            }
         }
+
         return sb.toString();
     }
 
     //To send request to server
-    private void writeIt() throws IOException {
+    private void writeIt() {
         Log.d(this.getClass().getSimpleName(), "Sending data to server");
-        OutputStream out = new BufferedOutputStream(conn.getOutputStream());
-        OutputStreamWriter outwriter = new OutputStreamWriter(out, "UTF-8");
-        outwriter.write(sendToServer);
+        OutputStream out;
+        OutputStreamWriter outWriter = null;
+        try {
+            out = new BufferedOutputStream(conn.getOutputStream());
+            outWriter = new OutputStreamWriter(out, "UTF-8");
+            outWriter.write(sendToServer);
+            outWriter.flush();
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
+        }finally {
+            try {
+                if (outWriter != null) {
+                    outWriter.close();
+                }
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
+            }
+        }
         Log.d(this.getClass().getSimpleName(), "Sent");
-        outwriter.flush();
-        outwriter.close();
+
     }
 }
 /*
