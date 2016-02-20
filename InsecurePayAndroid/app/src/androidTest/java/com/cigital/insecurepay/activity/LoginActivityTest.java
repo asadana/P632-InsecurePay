@@ -33,18 +33,35 @@ public class LoginActivityTest {
     @Rule
     public final ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
 
+    // This test will fail if the account is already locked
     @Test
-    public void shouldBeAbleToLaunch() {
+    public void loginFailTest() {
         onView(withId(R.id.username)).
                 perform(typeText(typeUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
                 perform(typeText(typePassword), closeSoftKeyboard());
-        onView(withId(R.id.sign_in_button)).
-                perform(click());
+        // First attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
-
     }
 
+   /* @Test
+    public void accountLockedTest() {
+        onView(withId(R.id.username)).
+                perform(typeText(typeUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(typePassword), closeSoftKeyboard());
+        // Second attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        // Third attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        onView(withText(R.string.login_failed_account_locked))
+                .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }*/
 }
