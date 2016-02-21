@@ -95,7 +95,7 @@ public class HomePage extends AbstractBaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_accounts) {
-            fragment = new AccountFragment();
+            fragmentClass = AccountFragment.class;
             Log.i(this.getClass().getSimpleName(), "Account Management selected");
         } else if (id == R.id.nav_profile) {
 
@@ -109,16 +109,16 @@ public class HomePage extends AbstractBaseActivity
             onLogOut();
             return true;
         }
-        /*try {
+        try {
             fragment = (Fragment) fragmentClass.newInstance();
             Log.i(this.getClass().getSimpleName(), "Creating fragment");
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
-        }*/
+        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.flContent, fragment).commit();
+                .replace(R.id.fragmentContent, fragment).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
