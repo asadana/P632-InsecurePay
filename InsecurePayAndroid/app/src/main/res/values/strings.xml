@@ -55,4 +55,13 @@
     <string name="nav_interest_calc">Interest Calculator</string>
     <string name="nav_support_chat">Support Chat</string>
 
+    <!--For Account Management Fragment-->
+    <string name="tvAccount_accountNumber">Account Number</string>
+    <string name="tvAccount_userName">User Name</string>
+    <string name="tvAccount_name">Name</string>
+    <string name="tvAccount_ssn">Social Security</string>
+    <string name="tvAccount_email">Email Address</string>
+    <string name="tvAccount_phoneNumber">Phone Number</string>
+    <string name="tvAccount_address">Address</string>
+
 </resources>
