@@ -16,7 +16,8 @@ public class CustomerVO {
     private String custUsername;
 
 
-    public CustomerVO() {
+    public CustomerVO(String custUsername) {
+        this.custUsername = custUsername;
 
     }
 
