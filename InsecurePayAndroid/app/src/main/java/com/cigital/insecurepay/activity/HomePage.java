@@ -94,16 +94,17 @@ public class HomePage extends AbstractBaseActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_accounts) {
+        if (id == R.id.nav_account_manage) {
             fragmentClass = AccountFragment.class;
             Log.i(this.getClass().getSimpleName(), "Account Management selected");
-        } else if (id == R.id.nav_profile) {
+            setTitle(R.string.nav_account_manage);
+        } else if (id == R.id.nav_homepage) {
 
         } else if (id == R.id.nav_transfer_funds) {
 
-        } else if (id == R.id.nav_activity_history) {
+        } else if (id == R.id.nav_interest_calc) {
 
-        } else if (id == R.id.nav_chat) {
+        } else if (id == R.id.nav_support_chat) {
 
         } else if (id == R.id.nav_logout) {
             onLogOut();
@@ -119,6 +120,7 @@ public class HomePage extends AbstractBaseActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContent, fragment).commit();
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

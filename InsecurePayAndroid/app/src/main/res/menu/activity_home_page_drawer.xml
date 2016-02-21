@@ -3,21 +3,22 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_accounts"
-            android:title="Accounts" />
+            android:id="@+id/nav_homepage"
+            android:checked="true"
+            android:title="Home" />
         <item
-            android:id="@+id/nav_profile"
-            android:title="Profile" />
+            android:id="@+id/nav_account_manage"
+            android:title="Account Management" />
         <item
             android:id="@+id/nav_transfer_funds"
-            android:title="Transfer funds" />
+            android:title="Transfer Funds" />
         <item
-            android:id="@+id/nav_activity_history"
-            android:title="Activity History" />
+            android:id="@+id/nav_interest_calc"
+            android:title="Interest Calculator" />
 
         <item
-            android:id="@+id/nav_chat"
-            android:title="Chat" />
+            android:id="@+id/nav_support_chat"
+            android:title="Support Chat" />
     </group>
 
             <item
