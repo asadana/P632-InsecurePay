@@ -50,24 +50,24 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/tvAccount_userName"
+        android:id="@+id/tvAccount_userDOB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvAccount_accountNumber"
+        android:layout_below="@+id/tvAccount_ssn"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="19dp"
-        android:text="@string/tvAccount_userName"
+        android:text="@string/tvAccount_userDOB"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:id="@+id/tvAccount_fillUserName"
+        android:id="@+id/tvAccount_fillUserDOB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tvAccount_userName"
+        android:layout_alignBaseline="@+id/tvAccount_userDOB"
         android:layout_alignStart="@+id/tvAccount_fillName"
         android:layout_marginLeft="0dp"
-        android:text="@string/tvAccount_userName"
+        android:text="@string/tvAccount_userDOB"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvAccount_userName"
+        android:layout_below="@+id/tvAccount_accountNumber"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="19dp"
         android:text="@string/tvAccount_ssn"
@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/tvAccount_ssn"
+        android:layout_below="@+id/tvAccount_userDOB"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="23dp"
         android:text="@string/tvAccount_email"
@@ -135,7 +135,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="5dp"
         android:inputType="phone"
-        android:text="@string/tvAccount_phoneNumber" />
+        android:text="0000000000" />
 
     <TextView
         android:id="@+id/tvAccount_address"
@@ -157,18 +157,25 @@
         android:layout_alignStart="@+id/tvAccount_fillName"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="5dp"
-        android:inputType="textMultiLine"
+        android:inputType="textPostalAddress"
         android:text="@string/tvAccount_address" />
 
     <Button
         android:id="@+id/btnAccount_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="23dp"
+        android:layout_below="@+id/etAccount_fillAddress"
+        android:layout_marginTop="34dp"
         android:layout_toEndOf="@+id/tvAccount_email"
         android:enabled="false"
-        android:onClick="updateAccountInformation"
         android:text="Update" />
+
+    <Button
+        android:id="@+id/btnAccount_changePassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnAccount_update"
+        android:layout_centerHorizontal="true"
+        android:text="Change Password" />
 
 </RelativeLayout>
