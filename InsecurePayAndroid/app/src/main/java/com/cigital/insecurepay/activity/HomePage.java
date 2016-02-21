@@ -16,14 +16,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.activity.InsecurePayFragments.ACMFragment;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.fragments.AccountFragment;
 
 public class HomePage extends AbstractBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ACMFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener {
     private CustDetailsRequestTask task = null;
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +38,7 @@ public class HomePage extends AbstractBaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -93,7 +95,8 @@ public class HomePage extends AbstractBaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_accounts) {
-            fragmentClass = ACMFragment.class;
+            fragment = new AccountFragment();
+            Log.i(this.getClass().getSimpleName(), "Account Management selected");
         } else if (id == R.id.nav_profile) {
 
         } else if (id == R.id.nav_transfer_funds) {
@@ -106,15 +109,16 @@ public class HomePage extends AbstractBaseActivity
             onLogOut();
             return true;
         }
-        try {
+        /*try {
             fragment = (Fragment) fragmentClass.newInstance();
+            Log.i(this.getClass().getSimpleName(), "Creating fragment");
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        }*/
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        fragmentManager.beginTransaction()
+                .replace(R.id.flContent, fragment).commit();
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
