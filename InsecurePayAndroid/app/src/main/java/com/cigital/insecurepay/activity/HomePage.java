@@ -2,6 +2,7 @@ package com.cigital.insecurepay.activity;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import com.cigital.insecurepay.fragments.AccountFragment;
 
 public class HomePage extends AbstractBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener {
+    protected Context contextHomePage = this;
     private CustDetailsRequestTask task = null;
     private DrawerLayout drawer;
 
@@ -92,6 +94,9 @@ public class HomePage extends AbstractBaseActivity
         Fragment fragment = null;
         Class fragmentClass = null;
 
+        Bundle bundleServerAddress = new Bundle();
+        bundleServerAddress.putString("serverAddress", serverAddress);
+
         int id = item.getItemId();
 
         if (id == R.id.nav_account_manage) {
@@ -111,11 +116,15 @@ public class HomePage extends AbstractBaseActivity
             return true;
         }
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            if (fragmentClass != null) {
+                fragment = (Fragment) fragmentClass.newInstance();
+            }
             Log.i(this.getClass().getSimpleName(), "Creating fragment");
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
         }
+
+        fragment.setArguments(bundleServerAddress);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()

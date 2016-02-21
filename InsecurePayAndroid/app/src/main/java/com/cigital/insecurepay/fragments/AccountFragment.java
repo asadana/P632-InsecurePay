@@ -19,7 +19,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CustomerVO;
+import com.cigital.insecurepay.common.Connectivity;
+import com.google.gson.Gson;
 
 /**
  * AccountFragment extends Fragment and is used to display and handle Account Management
@@ -37,6 +41,12 @@ public class AccountFragment extends Fragment {
     Button btnUpdateInfo;
     Button btnChangePassword;
 
+    private String sUserName = "foo";
+    private AccountFetchTask accountFetchTask = null;
+    private CustomerVO customerVOObj;
+
+    private Gson gson = new Gson();
+    private String serverAddress;
 
     private OnFragmentInteractionListener mListener;
     private TextWatcher twEmail = new TextWatcher() {
@@ -95,11 +105,8 @@ public class AccountFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
-    public static AccountFragment newInstance(String param1, String param2) {
+    public static AccountFragment newInstance(String serverAddress) {
         AccountFragment fragment = new AccountFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -122,10 +129,22 @@ public class AccountFragment extends Fragment {
         btnUpdateInfo = (Button) viewObj.findViewById(R.id.btnAccount_update);
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
 
+        serverAddress = this.getArguments().getString("serverAddress");
+
         initValues();
         addListeners();
 
         return viewObj;
+    }
+
+    private void initValues() {
+
+        accountFetchTask = new AccountFetchTask(sUserName);
+
+        etPhone.setText("0000000000", TextView.BufferType.EDITABLE);
+        etAddress.setText("I dont live here", TextView.BufferType.EDITABLE);
+        etEmail.setText("something@gmail.com", TextView.BufferType.EDITABLE);
+
     }
 
     private void addListeners() {
@@ -153,26 +172,38 @@ public class AccountFragment extends Fragment {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
     }
 
+    // TextWatchers for editText fields
+
     private void onClickChangePassword() {
         Log.i(this.getClass().getSimpleName(), "Displaying change password dialog");
         changePassword();
         //return true;
     }
-
-    private void initValues() {
-        // TODO: Update with call to server
-        etPhone.setText("0000000000", TextView.BufferType.EDITABLE);
-        etAddress.setText("I dont live here", TextView.BufferType.EDITABLE);
-        etEmail.setText("something@gmail.com", TextView.BufferType.EDITABLE);
-
-
-    }
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
+    public class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
+
+        private String userName;
+
+        public AccountFetchTask(String user) {
+            userName = user;
+        }
+
+        @Override
+        protected CustomerVO doInBackground(String... params) {
+
+            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
+            customerVOObj = new CustomerVO(userName);
+            String sendToServer = gson.toJson(customerVOObj);
+            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
+            String responseFromServer = getInfoConnection.post().trim();
+
+            return null;
+        }
+    }
     private void changePassword() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
