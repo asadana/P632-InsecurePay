@@ -7,13 +7,15 @@ public class LoginValidationBO {
 
 	private boolean usernameExists;
 	private boolean validUser;
+	private int custNo;
 
 	public LoginValidationBO() {}
 
-	public LoginValidationBO(boolean usernameExists, boolean validUser) {
+	public LoginValidationBO(boolean usernameExists, boolean validUser, int custNo) {
 		super();
 		this.usernameExists = usernameExists;
 		this.validUser = validUser;
+		this.custNo = custNo;
 	}
 
 	public boolean isUsernameExists() {
@@ -30,6 +32,14 @@ public class LoginValidationBO {
 
 	public void setValidUser(boolean validUser) {
 		this.validUser = validUser;
+	}
+
+	public int getCustNo() {
+		return custNo;
+	}
+
+	public void setCustNo(int custNo) {
+		this.custNo = custNo;
 	}
 
 	

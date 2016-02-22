@@ -51,8 +51,6 @@ public class ForgotPasswordDao extends BaseDao {
 			if (rs.next()) {
 				cust_no_compare = rs.getInt("cust_no");
 			}
-
-			System.out.print("cust_no_compare" + cust_no_compare);
 			close();
 
 			if (cust_no == cust_no_compare) {
@@ -62,7 +60,6 @@ public class ForgotPasswordDao extends BaseDao {
 				params.add(defaultPassword);
 				params.add(l.getUsername());
 				int count = updateSql(Queries.UPDATE_PASSWORD, params);
-				System.out.println("No.of rows updated are" + count);
 			} else
 				validUser = false;
 
@@ -71,8 +68,8 @@ public class ForgotPasswordDao extends BaseDao {
 			validUser = false;
 		}
 
-		loginValidationBO = new LoginValidationBO(
-				usernameExists, validUser);
+		loginValidationBO = new LoginValidationBO(usernameExists, validUser,
+				cust_no);
 
 		return loginValidationBO;
 	}

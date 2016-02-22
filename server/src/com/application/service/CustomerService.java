@@ -20,7 +20,7 @@ public class CustomerService extends BaseService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public CustomerBO getCustomerDetails(@QueryParam("username") String username)
+	public CustomerBO getCustomerDetails(@QueryParam("custNo") int custNo)
 			throws SQLException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, SecurityException,
 			IllegalArgumentException, InvocationTargetException,
@@ -29,7 +29,7 @@ public class CustomerService extends BaseService {
 		CustomerBO customergenBO = null;
 		try {
 			customergenBO = DaoFactory.getInstance(CustomerDao.class,
-					this.getConnection()).getCustomerDetails(username);
+					this.getConnection()).getCustomerDetails(custNo);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
@@ -50,8 +50,8 @@ public class CustomerService extends BaseService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public boolean updateCustomerDetails(CustomerBO customergenBO) {
 		try {
-			return DaoFactory.getInstance(CustomerDao.class, this.getConnection())
-					.updateCustomerDetails(customergenBO);
+			return DaoFactory.getInstance(CustomerDao.class,
+					this.getConnection()).updateCustomerDetails(customergenBO);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
