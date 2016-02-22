@@ -244,4 +244,14 @@
         android:layout_alignTop="@+id/btnAccount_update"
         android:text="Change Password" />
 
+    <Button
+        android:id="@+id/btnAccountDOB_edit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tvAccount_fillUserDOB"
+        android:layout_alignEnd="@+id/etAccount_fillEmail"
+        android:layout_alignTop="@+id/tvAccount_fillUserDOB"
+        android:text="" />
+
 </RelativeLayout>

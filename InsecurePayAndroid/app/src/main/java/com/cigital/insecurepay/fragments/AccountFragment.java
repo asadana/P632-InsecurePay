@@ -1,6 +1,9 @@
 package com.cigital.insecurepay.fragments;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -15,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +30,9 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * AccountFragment extends Fragment and is used to display and handle Account Management
@@ -45,12 +52,16 @@ public class AccountFragment extends Fragment {
     EditText etAddressZip;
     Button btnUpdateInfo;
     Button btnChangePassword;
+    Button btnChangeDOB;
 
     private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
     private Gson gson = new Gson();
     private CommonVO commonVO;
+
+    private Calendar calenderObj = Calendar.getInstance();
+    private SimpleDateFormat dateFormatObj = new SimpleDateFormat("MM-dd-yyyy");
 
     private TextWatcher twEmail = new TextWatcher() {
         @Override
@@ -186,8 +197,9 @@ public class AccountFragment extends Fragment {
 
         btnUpdateInfo = (Button) viewObj.findViewById(R.id.btnAccount_update);
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
+        btnChangeDOB = (Button) viewObj.findViewById(R.id.btnAccountDOB_edit);
 
-        commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
+        commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
 
         initValues();
         addListeners();
@@ -216,22 +228,33 @@ public class AccountFragment extends Fragment {
                 onClickUpdateInformation();
             }
         });
-
         btnChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickChangePassword();
             }
         });
+        btnChangeDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment();
+                dateDialogFragment.show(getActivity().getFragmentManager(), "datePicker");
+            }
+        });
     }
 
     private void onClickUpdateInformation() {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
-        AccountUpdateTask accountUpdateTask = new AccountUpdateTask(
-                tvUserDOB.toString(),
-                etEmail.toString(),
-                etAddressStreet.toString(),
-                etPhone.toString());
+        // TODO: Fix DOB here
+        //customerVOObj.setBirthDate(tvUserDOB.toString());
+        customerVOObj.setEmail(etEmail.toString());
+        customerVOObj.setStreet(etAddressStreet.toString());
+        customerVOObj.setCity(etAddressCity.toString());
+        customerVOObj.setState(etAddressState.toString());
+        customerVOObj.setZipcode(Integer.parseInt(etAddressZip.toString()));
+        customerVOObj.setPhoneNo(Integer.parseInt(etPhone.toString()));
+
+        AccountUpdateTask accountUpdateTask = new AccountUpdateTask();
         accountUpdateTask.execute();
     }
 
@@ -346,7 +369,10 @@ public class AccountFragment extends Fragment {
             tvName.setText(customerVOObj.getCustName());
             tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
-            tvUserDOB.setText(customerVOObj.getBirthDate().toString());
+            // TODO: Remove temporary calendar object
+            calenderObj.setTime(customerVOObj.getBirthDate());
+            Log.i(this.getClass().getSimpleName(), "From calendar: " + calenderObj.getTime().toString());
+            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
             etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
@@ -357,16 +383,8 @@ public class AccountFragment extends Fragment {
     }
 
     private class AccountUpdateTask extends AsyncTask<String, String, CustomerVO> {
-        private String userDOB;
-        private String userEmail;
-        private String userAddress;
-        private String Phone;
 
-        public AccountUpdateTask(String userDOB, String userEmail, String userAddress, String Phone) {
-            this.userDOB = userDOB;
-            this.userEmail = userEmail;
-            this.userAddress = userAddress;
-
+        public AccountUpdateTask() {
 
         }
 
@@ -377,14 +395,18 @@ public class AccountFragment extends Fragment {
             // Establishing connection to the server
             Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress(), sendToServer);
             // Stroing server response
-            String responseFromServer = getInfoConnection.post().trim();
+            String responseFromServer = getInfoConnection.post();
+
+            Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
+            // Storing response in customerVOObj
+            customerVOObj = gson.fromJson(responseFromServer, CustomerVO.class);
 
             return customerVOObj;
         }
 
         @Override
         protected void onPostExecute(final CustomerVO customerVOObj) {
-
+            Toast.makeText(getContext(), "Update successful", Toast.LENGTH_LONG);
         }
     }
 
@@ -434,5 +456,25 @@ public class AccountFragment extends Fragment {
         }
     }
 
+    private class DateOfBirthPickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle bundleObj) {
+            int year = calenderObj.get(Calendar.YEAR);
+            int month = calenderObj.get(Calendar.MONTH);
+            int day = calenderObj.get(Calendar.DAY_OF_MONTH);
+
+            return new DatePickerDialog(getContext(), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            calenderObj.set(year, monthOfYear, dayOfMonth);
+            customerVOObj.setBirthDate(calenderObj.getTime());
+            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
+
+        }
+    }
 
 }
