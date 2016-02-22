@@ -24,11 +24,13 @@ import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.fragments.AccountFragment;
+import com.cigital.insecurepay.fragments.HomeFragment;
 
 public class HomePage extends AbstractBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener,
+        HomeFragment.OnFragmentInteractionListener {
     protected Context contextHomePage = this;
-    private CustDetailsRequestTask task = null;
+
     private DrawerLayout drawer;
     private TextView tvCustName;
     private TextView tvAccountBalance;
@@ -38,8 +40,6 @@ public class HomePage extends AbstractBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        task = new CustDetailsRequestTask();
-        task.execute();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,7 +108,9 @@ public class HomePage extends AbstractBaseActivity
             Log.i(this.getClass().getSimpleName(), "Account Management selected");
             setTitle(R.string.nav_account_manage);
         } else if (id == R.id.nav_homepage) {
-
+            fragmentClass = HomeFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Home Fragment selected");
+            setTitle(R.string.nav_homepage);
         } else if (id == R.id.nav_transfer_funds) {
 
         } else if (id == R.id.nav_interest_calc) {
@@ -151,45 +153,5 @@ public class HomePage extends AbstractBaseActivity
 
     }
 
-    class CustDetailsRequestTask extends AsyncTask<String, String, AccountVO> {
-        private CustomerVO customerDetails;
-        private AccountVO accountDetails;
-
-        @Override
-        protected AccountVO doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "Background");
-            try {
-                //First connection to get Customer Details
-                Connectivity conn = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.cust_details_path), serverAddress);
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.username), "foo");
-                //Converts customer details to CustomerVO
-                customerDetails = gson.fromJson(conn.get(contentValues), CustomerVO.class);
-                Log.d(this.getClass().getSimpleName(), "Customer Name: " + customerDetails.getCustUsername());
-
-                //Second connection to get Account Details
-                Connectivity conn2 = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.Account_details_path), serverAddress);
-                ContentValues contentValues2 = new ContentValues();
-                contentValues2.put(getString(R.string.customerno), customerDetails.getCustNo());
-                //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(conn2.get(contentValues2), AccountVO.class);
-                Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
-            }
-            return accountDetails;
-        }
-
-        protected void onPostExecute(AccountVO accountDetails) {
-            /*tvCustName = (TextView) findViewById(R.id.textView5);
-            tvCustName.setText(accountDetails.getAccountBalance()+"");
-            Log.d(this.getClass().getSimpleName(),"Displaying details");
-            tvAccountBalance = (TextView) findViewById(R.id.textView6);
-            tvAccountBalance.setText(accountDetails.getAccountBalance() + "");
-            */
-        }
-
-    }
 
 }
