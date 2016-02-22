@@ -63,7 +63,10 @@
     <string name="tvAccount_ssn">Social Security</string>
     <string name="tvAccount_email">Email Address</string>
     <string name="tvAccount_phoneNumber">Phone Number</string>
-    <string name="tvAccount_address">Address</string>
+    <string name="tvAccount_addressStreet">Street Address</string>
+    <string name="tvAccount_addressCity">City</string>
+    <string name="tvAccount_addressState">State</string>
+    <string name="tvAccount_addressZip">ZipCode</string>
     <string name="cust_no">custNo</string>
     <string name="Account_details_path">accountService</string>
 

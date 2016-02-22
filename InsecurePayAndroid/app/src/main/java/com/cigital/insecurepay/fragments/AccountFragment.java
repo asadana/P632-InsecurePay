@@ -3,7 +3,6 @@ package com.cigital.insecurepay.fragments;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,7 +39,10 @@ public class AccountFragment extends Fragment {
     TextView tvUserDOB;
     EditText etEmail;
     EditText etPhone;
-    EditText etAddress;
+    EditText etAddressStreet;
+    EditText etAddressCity;
+    EditText etAddressState;
+    EditText etAddressZip;
     Button btnUpdateInfo;
     Button btnChangePassword;
 
@@ -50,7 +52,6 @@ public class AccountFragment extends Fragment {
     private Gson gson = new Gson();
     private CommonVO commonVO;
 
-    private OnFragmentInteractionListener mListener;
     private TextWatcher twEmail = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -68,7 +69,7 @@ public class AccountFragment extends Fragment {
             Log.i(this.getClass().getSimpleName(), "Email Address value changed.");
         }
     };
-    private TextWatcher twAddress = new TextWatcher() {
+    private TextWatcher twAddressStreet = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -82,9 +83,61 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Address value changed.");
+            Log.i(this.getClass().getSimpleName(), "Address street value changed.");
         }
     };
+    private TextWatcher twAddressCity = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            btnUpdateInfo.setEnabled(true);
+            Log.i(this.getClass().getSimpleName(), "Address city value changed.");
+        }
+    };
+    private TextWatcher twAddressState = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            btnUpdateInfo.setEnabled(true);
+            Log.i(this.getClass().getSimpleName(), "Address state value changed.");
+        }
+    };
+    private TextWatcher twAddressZip = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            btnUpdateInfo.setEnabled(true);
+            Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
+        }
+    };
+
     private TextWatcher twPhone = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -126,7 +179,10 @@ public class AccountFragment extends Fragment {
 
         etEmail = (EditText) viewObj.findViewById(R.id.etAccount_fillEmail);
         etPhone = (EditText) viewObj.findViewById(R.id.etAccount_fillPhone);
-        etAddress = (EditText) viewObj.findViewById(R.id.etAccount_fillAddress);
+        etAddressStreet = (EditText) viewObj.findViewById(R.id.etAccount_fillAddressStreet);
+        etAddressCity = (EditText) viewObj.findViewById(R.id.etAccount_fillAddressCity);
+        etAddressState = (EditText) viewObj.findViewById(R.id.etAccount_fillAddressState);
+        etAddressZip = (EditText) viewObj.findViewById(R.id.etAccount_fillAddressZip);
 
         btnUpdateInfo = (Button) viewObj.findViewById(R.id.btnAccount_update);
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
@@ -147,7 +203,10 @@ public class AccountFragment extends Fragment {
 
     private void addListeners() {
         etEmail.addTextChangedListener(twEmail);
-        etAddress.addTextChangedListener(twAddress);
+        etAddressStreet.addTextChangedListener(twAddressStreet);
+        etAddressCity.addTextChangedListener(twAddressCity);
+        etAddressState.addTextChangedListener(twAddressState);
+        etAddressZip.addTextChangedListener(twAddressZip);
         etPhone.addTextChangedListener(twPhone);
         twPhone = new PhoneNumberFormattingTextWatcher();
 
@@ -171,7 +230,7 @@ public class AccountFragment extends Fragment {
         AccountUpdateTask accountUpdateTask = new AccountUpdateTask(
                 tvUserDOB.toString(),
                 etEmail.toString(),
-                etAddress.toString(),
+                etAddressStreet.toString(),
                 etPhone.toString());
         accountUpdateTask.execute();
     }
@@ -186,9 +245,9 @@ public class AccountFragment extends Fragment {
 
     private void changePassword() {
 
-        LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_password, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
         alertDialogBuilder.setView(dialogView);
         alertDialogBuilder.setPositiveButton("OK", null);
         alertDialogBuilder.setNegativeButton("Cancel", null);
@@ -259,11 +318,6 @@ public class AccountFragment extends Fragment {
         alertD.show();
     }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
     private class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
 
         @Override
@@ -295,9 +349,10 @@ public class AccountFragment extends Fragment {
             tvSSN.setText(customerVOObj.getDecodedSsn());
             tvUserDOB.setText(customerVOObj.getBirthDate().toString());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
-            etAddress.setText(customerVOObj.getStreet() + ", " +
-                    customerVOObj.getCity() + ", " + customerVOObj.getState() + "" +
-                    ", " + Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
+            etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
+            etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
+            etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
+            etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
             etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
         }
     }
@@ -346,7 +401,6 @@ public class AccountFragment extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            // TODO: attempt authentication against a network service.
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             String password_changed = null;
             try {

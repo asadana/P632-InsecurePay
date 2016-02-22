@@ -24,12 +24,12 @@ import com.cigital.insecurepay.fragments.HomeFragment;
 import com.google.gson.Gson;
 
 public class HomePage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
     protected Context contextHomePage = this;
+    protected Gson gson = new Gson();
     private DrawerLayout drawer;
     private TextView tvCustName;
     private TextView tvAccountBalance;
-    protected Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
