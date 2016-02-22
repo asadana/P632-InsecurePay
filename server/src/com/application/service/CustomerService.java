@@ -20,7 +20,7 @@ public class CustomerService extends BaseService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public CustomerBO getCustomerDetails(@QueryParam("custno") int custNo)
+	public CustomerBO getCustomerDetails(@QueryParam("custNo") int custNo)
 			throws SQLException, InstantiationException,
 			IllegalAccessException, NoSuchMethodException, SecurityException,
 			IllegalArgumentException, InvocationTargetException,
