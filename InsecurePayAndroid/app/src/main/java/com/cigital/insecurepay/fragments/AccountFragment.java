@@ -1,7 +1,7 @@
 package com.cigital.insecurepay.fragments;
 
 import android.app.AlertDialog;
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -142,11 +142,7 @@ public class AccountFragment extends Fragment {
     private void initValues() {
 
         accountFetchTask = new AccountFetchTask(sUserName);
-
-        etPhone.setText("0000000000", TextView.BufferType.EDITABLE);
-        etAddress.setText("I dont live here", TextView.BufferType.EDITABLE);
-        etEmail.setText("something@gmail.com", TextView.BufferType.EDITABLE);
-
+        accountFetchTask.execute();
     }
 
     private void addListeners() {
@@ -172,6 +168,12 @@ public class AccountFragment extends Fragment {
 
     private void onClickUpdateInformation() {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
+        AccountUpdateTask accountUpdateTask = new AccountUpdateTask(
+                tvUserDOB.toString(),
+                etEmail.toString(),
+                etAddress.toString(),
+                etPhone.toString());
+        accountUpdateTask.execute();
     }
 
     // TextWatchers for editText fields
@@ -181,31 +183,7 @@ public class AccountFragment extends Fragment {
         changePassword();
         //return true;
     }
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 
-    public class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
-
-        private String userName;
-
-        public AccountFetchTask(String user) {
-            userName = user;
-        }
-
-        @Override
-        protected CustomerVO doInBackground(String... params) {
-
-            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
-            customerVOObj = new CustomerVO(userName);
-            String sendToServer = gson.toJson(customerVOObj);
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
-            String responseFromServer = getInfoConnection.post().trim();
-
-            return null;
-        }
-    }
     private void changePassword() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(this.getContext());
@@ -257,8 +235,8 @@ public class AccountFragment extends Fragment {
                         }
 
                         if (password_field1.equals(password_field2)) {
-                           // changePasswordTask = new ChangePasswordTask("foo",password_field1);
-                           // changePasswordTask.execute("foo", password_field1);
+                            // changePasswordTask = new ChangePasswordTask("foo",password_field1);
+                            // changePasswordTask.execute("foo", password_field1);
                             Toast.makeText(AccountFragment.this.getContext(), "Password match", Toast.LENGTH_LONG).show();
 
                         } else {
@@ -280,6 +258,97 @@ public class AccountFragment extends Fragment {
         });
 
         alertD.show();
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    private class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
+
+        private String userName;
+
+        public AccountFetchTask(String user) {
+            userName = user;
+        }
+
+        @Override
+        protected CustomerVO doInBackground(String... params) {
+
+            // Creating dbHelper with current context
+            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
+            // Creating a new CustomerVO Object
+            customerVOObj = new CustomerVO();
+            String sendToServer = gson.toJson(customerVOObj);
+
+            // contentValues to to store the parameter used to fetch the values
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("username", userName);
+
+            // Establishing connection to the server
+            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
+            // Stroing server response
+            String responseFromServer = getInfoConnection.get(contentValues);
+
+            Log.i(this.getClass().getSimpleName(), "Account information retrieved successfully");
+
+            // Storing server response in the customerVOObj
+            customerVOObj = gson.fromJson(responseFromServer, CustomerVO.class);
+
+            return customerVOObj;
+        }
+
+        @Override
+        protected void onPostExecute(final CustomerVO customerVOObj) {
+            Log.d(this.getClass().getSimpleName(), "In post execute. Updating view.");
+
+            tvName.setText(customerVOObj.getCustName());
+            tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
+            tvSSN.setText(Integer.toString(customerVOObj.getSsn()));
+            tvUserDOB.setText(customerVOObj.getBirthDate().toString());
+            etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
+            etAddress.setText(customerVOObj.getStreet() + ", " +
+                    customerVOObj.getCity() + ", " + customerVOObj.getState() + "" +
+                    ", " + Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
+            etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+        }
+    }
+
+    private class AccountUpdateTask extends AsyncTask<String, String, CustomerVO> {
+        private String userDOB;
+        private String userEmail;
+        private String userAddress;
+        private String Phone;
+
+        public AccountUpdateTask(String userDOB, String userEmail, String userAddress, String Phone) {
+            this.userDOB = userDOB;
+            this.userEmail = userEmail;
+            this.userAddress = userAddress;
+
+
+        }
+
+        @Override
+        protected CustomerVO doInBackground(String... params) {
+
+            // Creating dbHelper with current context
+            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
+            String sendToServer = gson.toJson(customerVOObj);
+            // Establishing connection to the server
+            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
+            // Stroing server response
+            String responseFromServer = getInfoConnection.post().trim();
+
+            System.out.println(responseFromServer);
+
+            return customerVOObj;
+        }
+
+        @Override
+        protected void onPostExecute(final CustomerVO customerVOObj) {
+
+        }
     }
 
     public class ChangePasswordTask extends AsyncTask<String, String, String> {

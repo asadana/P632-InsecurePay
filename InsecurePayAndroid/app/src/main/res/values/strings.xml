@@ -17,8 +17,8 @@
     </string>
     <string name="title_activity_user_login">Sign in</string>
     <!--Following strings are for Connectivity-->
-    <!--<string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>-->
-    <string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
+    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
     <string name="defaultPath">/rest/</string>
     <string name="no_network">No network connection</string>
     <!--Following strings are for Login-->
