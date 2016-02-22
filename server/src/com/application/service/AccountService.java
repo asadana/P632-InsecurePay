@@ -20,7 +20,7 @@ public class AccountService extends BaseService {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public AccountBO getCustomerDetails(@QueryParam("custno") int custNo) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
+	public AccountBO getCustomerDetails(@QueryParam("custNo") int custNo) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException {
 		
 		AccountBO accountBO = null;
 		try {
