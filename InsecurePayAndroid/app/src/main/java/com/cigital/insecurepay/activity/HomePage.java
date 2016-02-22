@@ -1,11 +1,9 @@
 package com.cigital.insecurepay.activity;
 
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -20,26 +19,22 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.AccountVO;
-import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
+import com.google.gson.Gson;
 
-public class HomePage extends AbstractBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener,
-        HomeFragment.OnFragmentInteractionListener {
+public class HomePage extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, AccountFragment.OnFragmentInteractionListener, HomeFragment.OnFragmentInteractionListener {
     protected Context contextHomePage = this;
-
     private DrawerLayout drawer;
     private TextView tvCustName;
     private TextView tvAccountBalance;
+    protected Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,9 +93,6 @@ public class HomePage extends AbstractBaseActivity
         Fragment fragment = null;
         Class fragmentClass = null;
 
-        Bundle bundleServerAddress = new Bundle();
-        bundleServerAddress.putString("serverAddress", serverAddress);
-
         int id = item.getItemId();
 
         if (id == R.id.nav_account_manage) {
@@ -130,7 +122,7 @@ public class HomePage extends AbstractBaseActivity
             Log.e(this.getClass().getSimpleName(), e.toString());
         }
 
-        fragment.setArguments(bundleServerAddress);
+        fragment.setArguments(getIntent().getExtras());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -152,6 +144,5 @@ public class HomePage extends AbstractBaseActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-
 
 }

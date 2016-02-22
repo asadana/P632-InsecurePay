@@ -2,6 +2,7 @@ package com.cigital.insecurepay.activity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,16 +13,19 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.google.gson.Gson;
 
-public class ForgotPassword extends AbstractBaseActivity {
+public class ForgotPassword extends AppCompatActivity {
 
     private EditText accountNoView;
     private EditText textSSNNoView;
     private EditText usernameView;
     private ForgotPasswordTask forgotPassTask = null;
+    protected Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +107,7 @@ public class ForgotPassword extends AbstractBaseActivity {
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(ForgotPassword.this.getApplicationContext(), getString(R.string.forgot_password_path), serverAddress, sendToServer);
+                Connectivity con_login = new Connectivity(ForgotPassword.this.getApplicationContext(), getString(R.string.forgot_password_path), ((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getServerAddress(), sendToServer);
                 //Call post and since there are white spaces in the response, trim is called
                 String responseFromServer = con_login.post().trim();
                 //Convert serverResponse to respectiveVO

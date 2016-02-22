@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
+import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
@@ -43,12 +44,11 @@ public class AccountFragment extends Fragment {
     Button btnUpdateInfo;
     Button btnChangePassword;
 
-    private String sUserName = "foo";
     private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
     private Gson gson = new Gson();
-    private String serverAddress;
+    private CommonVO commonVO;
 
     private OnFragmentInteractionListener mListener;
     private TextWatcher twEmail = new TextWatcher() {
@@ -131,7 +131,7 @@ public class AccountFragment extends Fragment {
         btnUpdateInfo = (Button) viewObj.findViewById(R.id.btnAccount_update);
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
 
-        serverAddress = this.getArguments().getString("serverAddress");
+        commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
 
         initValues();
         addListeners();
@@ -141,7 +141,7 @@ public class AccountFragment extends Fragment {
 
     private void initValues() {
 
-        accountFetchTask = new AccountFetchTask(sUserName);
+        accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
     }
 
@@ -235,8 +235,8 @@ public class AccountFragment extends Fragment {
                         }
 
                         if (password_field1.equals(password_field2)) {
-                            changePasswordTask = new ChangePasswordTask("foo",password_field1);
-                            changePasswordTask.execute("foo", password_field1);
+                            changePasswordTask = new ChangePasswordTask(commonVO.getUsername(), password_field1);
+                            changePasswordTask.execute();
                             Toast.makeText(AccountFragment.this.getContext(), "Password changed", Toast.LENGTH_LONG).show();
                             alertD.dismiss();
                         } else {
@@ -266,27 +266,15 @@ public class AccountFragment extends Fragment {
 
     private class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
 
-        private String userName;
-
-        public AccountFetchTask(String user) {
-            userName = user;
-        }
-
         @Override
         protected CustomerVO doInBackground(String... params) {
 
-            // Creating dbHelper with current context
-            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
-            // Creating a new CustomerVO Object
-            customerVOObj = new CustomerVO();
-            String sendToServer = gson.toJson(customerVOObj);
-
             // contentValues to to store the parameter used to fetch the values
             ContentValues contentValues = new ContentValues();
-            contentValues.put("username", userName);
+            contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
             // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
+            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress());
             // Stroing server response
             String responseFromServer = getInfoConnection.get(contentValues);
 
@@ -331,15 +319,11 @@ public class AccountFragment extends Fragment {
         @Override
         protected CustomerVO doInBackground(String... params) {
 
-            // Creating dbHelper with current context
-            LoginDBHelper dbHelper = new LoginDBHelper(getContext());
             String sendToServer = gson.toJson(customerVOObj);
             // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), serverAddress, sendToServer);
+            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress(), sendToServer);
             // Stroing server response
             String responseFromServer = getInfoConnection.post().trim();
-
-            System.out.println(responseFromServer);
 
             return customerVOObj;
         }
@@ -372,7 +356,7 @@ public class AccountFragment extends Fragment {
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(AccountFragment.this.getContext(), getString(R.string.change_password_path), serverAddress, sendToServer);
+                Connectivity con_login = new Connectivity(AccountFragment.this.getContext(), getString(R.string.change_password_path), commonVO.getServerAddress(), sendToServer);
                 //Call post and since there are white spaces in the response, trim is called
                 password_changed = con_login.post().trim();
                 Log.d("Response from server", password_changed);
