@@ -14,7 +14,7 @@ public class CustomerBO {
 	private int zipcode;
 	private int phoneNo;
 	private Date birthDate;
-	private int ssn;
+	private String ssn;
 	private String email;
 	
 	
@@ -22,7 +22,7 @@ public class CustomerBO {
 		
 	}
 	public CustomerBO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
-			Date birthDate, int ssn, String email) {
+			Date birthDate, String ssn, String email) {
 		super();
 		this.custNo = custNo;
 		this.custName = custName;
@@ -83,10 +83,11 @@ public class CustomerBO {
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
-	public int getSsn() {
+	
+	public String getSsn() {
 		return ssn;
 	}
-	public void setSsn(int ssn) {
+	public void setSsn(String ssn) {
 		this.ssn = ssn;
 	}
 	public String getEmail() {
