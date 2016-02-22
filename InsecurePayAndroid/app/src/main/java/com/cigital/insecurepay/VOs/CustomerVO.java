@@ -1,5 +1,7 @@
 package com.cigital.insecurepay.VOs;
 
+import com.cigital.insecurepay.common.CustomEncoder;
+
 import java.util.Date;
 
 public class CustomerVO {
@@ -11,7 +13,7 @@ public class CustomerVO {
     private int zipcode;
     private int phoneNo;
     private Date birthDate;
-    private int ssn;
+    private String ssn;
     private String email;
     private String custUsername;
 
@@ -21,7 +23,7 @@ public class CustomerVO {
     }
 
     public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
-                      Date birthDate, int ssn, String email, String custUsername) {
+                      Date birthDate, String ssn, String email, String custUsername) {
         super();
         this.custNo = custNo;
         this.custName = custName;
@@ -100,11 +102,15 @@ public class CustomerVO {
         this.birthDate = birthDate;
     }
 
-    public int getSsn() {
+    public String getSsn() {
         return ssn;
     }
 
-    public void setSsn(int ssn) {
+    public String getDecodedSsn() {
+        return CustomEncoder.decode(getSsn());
+    }
+
+    public void setSsn(String ssn) {
         this.ssn = ssn;
     }
 

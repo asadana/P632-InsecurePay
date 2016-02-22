@@ -292,7 +292,7 @@ public class AccountFragment extends Fragment {
 
             tvName.setText(customerVOObj.getCustName());
             tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
-            tvSSN.setText(Integer.toString(customerVOObj.getSsn()));
+            tvSSN.setText(customerVOObj.getDecodedSsn());
             tvUserDOB.setText(customerVOObj.getBirthDate().toString());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
             etAddress.setText(customerVOObj.getStreet() + ", " +

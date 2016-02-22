@@ -17,6 +17,7 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.CustomEncoder;
 import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
@@ -65,7 +66,7 @@ public class ForgotPassword extends AppCompatActivity {
                     // There was an error; focus the first form field with an error.
                     focusView.requestFocus();
                 } else {
-                    forgotPassTask = new ForgotPasswordTask(Integer.parseInt(accountNo), Integer.parseInt(sSNNo), username);
+                    forgotPassTask = new ForgotPasswordTask(Integer.parseInt(accountNo), sSNNo, username);
                     forgotPassTask.execute(accountNo, sSNNo, username);
                 }
             }
@@ -85,10 +86,10 @@ public class ForgotPassword extends AppCompatActivity {
     public class ForgotPasswordTask extends AsyncTask<String, String, LoginValidationVO> {
 
         private final int accountNo;
-        private final int sSNNo;
+        private final String sSNNo;
         private final String username;
 
-        ForgotPasswordTask(int accountNo, int sSNNo, String username) {
+        ForgotPasswordTask(int accountNo, String sSNNo, String username) {
             this.accountNo = accountNo;
             this.sSNNo = sSNNo;
             this.username = username;
@@ -103,7 +104,7 @@ public class ForgotPassword extends AppCompatActivity {
             try {
                 LoginDBHelper db = new LoginDBHelper(ForgotPassword.this);
                 //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
-                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
+                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, CustomEncoder.encode(sSNNo), username);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
