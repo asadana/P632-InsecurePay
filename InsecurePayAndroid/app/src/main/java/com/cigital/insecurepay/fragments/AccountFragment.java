@@ -296,7 +296,6 @@ public class AccountFragment extends Fragment {
                         if (password_field1.equals(password_field2)) {
                             changePasswordTask = new ChangePasswordTask(commonVO.getUsername(), password_field1);
                             changePasswordTask.execute();
-                            Toast.makeText(AccountFragment.this.getContext(), "Password changed", Toast.LENGTH_LONG).show();
                             alertD.dismiss();
                         } else {
                             password1View.setText("");
@@ -421,6 +420,17 @@ public class AccountFragment extends Fragment {
                 Log.e(this.getClass().getSimpleName(), "Exception thrown in change password", e);
             }
             return password_changed;
+        }
+
+
+        protected void onPostExecute(final String password_changed) {
+
+            if (password_changed.equals("false")) {
+                Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(AccountFragment.this.getContext(), "Password Changed", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 
