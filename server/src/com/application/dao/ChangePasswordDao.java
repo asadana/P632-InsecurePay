@@ -26,7 +26,6 @@ public class ChangePasswordDao extends BaseDao{
 		params.add(l.getPassword());
 		params.add(l.getUsername());
 		int count = updateSql(Queries.UPDATE_PASSWORD, params);
-		System.out.println("No.of rows updated are" + count);
 		if (count>=1) 
 			password_changed = true;
 		else

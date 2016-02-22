@@ -211,7 +211,7 @@ public class AccountFragment extends Fragment {
                     public void onClick(View v) {
                         String password_field1 = password1View.getText().toString();
                         String password_field2 = password2View.getText().toString();
-                        //ChangePasswordTask changePasswordTask;
+                        ChangePasswordTask changePasswordTask;
                         boolean cancel = false;
                         View focusView = null;
                         Log.d("Password 1 ", password_field1);
@@ -235,17 +235,16 @@ public class AccountFragment extends Fragment {
                         }
 
                         if (password_field1.equals(password_field2)) {
-                            // changePasswordTask = new ChangePasswordTask("foo",password_field1);
-                            // changePasswordTask.execute("foo", password_field1);
-                            Toast.makeText(AccountFragment.this.getContext(), "Password match", Toast.LENGTH_LONG).show();
-
+                            changePasswordTask = new ChangePasswordTask("foo",password_field1);
+                            changePasswordTask.execute("foo", password_field1);
+                            Toast.makeText(AccountFragment.this.getContext(), "Password changed", Toast.LENGTH_LONG).show();
+                            alertD.dismiss();
                         } else {
                             password1View.setText("");
                             password2View.setText("");
                             Toast.makeText(AccountFragment.this.getContext(), "Password mismatch", Toast.LENGTH_LONG).show();
                         }
 
-                        alertD.dismiss();
                     }
                 });
                 alertD.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
