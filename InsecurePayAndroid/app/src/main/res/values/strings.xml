@@ -28,7 +28,7 @@
     <string name="prompt_server_addr">Enter Server Address</string>
     <string name="account_lockout_duration">60000</string>
     <string name="title_activity_home_page">HomePage</string>
-
+    <string name="change_password_path">changePassword</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="login_failed_account_locked">Login Failed and Account Locked</string>

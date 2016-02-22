@@ -61,7 +61,7 @@ public class ForgotPasswordDao extends BaseDao {
 				int defaultPassword = 12345;
 				params.add(defaultPassword);
 				params.add(l.getUsername());
-				int count = updateSql(Queries.UPDATE_DEFAULT_PASSWORD, params);
+				int count = updateSql(Queries.UPDATE_PASSWORD, params);
 				System.out.println("No.of rows updated are" + count);
 			} else
 				validUser = false;

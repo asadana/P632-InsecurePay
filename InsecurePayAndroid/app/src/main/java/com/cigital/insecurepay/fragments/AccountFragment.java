@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
@@ -279,5 +281,42 @@ public class AccountFragment extends Fragment {
 
         alertD.show();
     }
+
+    public class ChangePasswordTask extends AsyncTask<String, String, String> {
+
+        private final String username;
+        private final String password;
+
+        ChangePasswordTask(String username, String password) {
+            this.password = password;
+            this.username = username;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO: attempt authentication against a network service.
+            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
+            String password_changed = null;
+            try {
+                LoginDBHelper db = new LoginDBHelper(AccountFragment.this.getContext());
+                //Parameters contain credentials which are capsuled to ChangePasswordVO objects
+                ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
+                //sendToServer contains JSON object that has credentials
+                String sendToServer = gson.toJson(sendVo);
+                //Passing the context of LoginActivity to Connectivity
+                Connectivity con_login = new Connectivity(AccountFragment.this.getContext(), getString(R.string.change_password_path), serverAddress, sendToServer);
+                //Call post and since there are white spaces in the response, trim is called
+                password_changed = con_login.post().trim();
+                Log.d("Response from server", password_changed);
+                Thread.sleep(2000);
+                return password_changed;
+
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "Exception thrown in change password", e);
+            }
+            return password_changed;
+        }
+    }
+
 
 }
