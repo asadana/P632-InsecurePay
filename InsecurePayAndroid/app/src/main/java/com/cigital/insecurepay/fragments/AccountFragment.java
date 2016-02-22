@@ -247,12 +247,12 @@ public class AccountFragment extends Fragment {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
         // TODO: Fix DOB here
         //customerVOObj.setBirthDate(tvUserDOB.toString());
-        customerVOObj.setEmail(etEmail.toString());
-        customerVOObj.setStreet(etAddressStreet.toString());
-        customerVOObj.setCity(etAddressCity.toString());
-        customerVOObj.setState(etAddressState.toString());
-        customerVOObj.setZipcode(Integer.parseInt(etAddressZip.toString()));
-        customerVOObj.setPhoneNo(Integer.parseInt(etPhone.toString()));
+        customerVOObj.setEmail(etEmail.getText().toString());
+        customerVOObj.setStreet(etAddressStreet.getText().toString());
+        customerVOObj.setCity(etAddressCity.getText().toString());
+        customerVOObj.setState(etAddressState.getText().toString());
+        customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
+        customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
         AccountUpdateTask accountUpdateTask = new AccountUpdateTask();
         accountUpdateTask.execute();
