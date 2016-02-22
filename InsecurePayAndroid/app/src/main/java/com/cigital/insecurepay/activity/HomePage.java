@@ -17,8 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.fragments.AccountFragment;
@@ -28,6 +30,8 @@ public class HomePage extends AbstractBaseActivity
     protected Context contextHomePage = this;
     private CustDetailsRequestTask task = null;
     private DrawerLayout drawer;
+    private TextView tvCustName;
+    private TextView tvAccountBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,27 +151,43 @@ public class HomePage extends AbstractBaseActivity
 
     }
 
-    class CustDetailsRequestTask extends AsyncTask<String, String, Boolean> {
+    class CustDetailsRequestTask extends AsyncTask<String, String, AccountVO> {
         private CustomerVO customerDetails;
+        private AccountVO accountDetails;
 
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected AccountVO doInBackground(String... params) {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
-                //Converts customer details to CustomerVO
+                //First connection to get Customer Details
                 Connectivity conn = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.cust_details_path), serverAddress);
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), "foo");
+                //Converts customer details to CustomerVO
                 customerDetails = gson.fromJson(conn.get(contentValues), CustomerVO.class);
-                Log.d(this.getClass().getSimpleName(), "Customer details in HomePage" + customerDetails.getCity());
+                Log.d(this.getClass().getSimpleName(), "Customer Name: " + customerDetails.getCustUsername());
+
+                //Second connection to get Account Details
+                Connectivity conn2 = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.Account_details_path), serverAddress);
+                ContentValues contentValues2 = new ContentValues();
+                contentValues2.put(getString(R.string.customerno), customerDetails.getCustNo());
+                //Converts customer details to CustomerVO
+                accountDetails = gson.fromJson(conn2.get(contentValues2), AccountVO.class);
+                Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
+
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
             }
-            return false;
+            return accountDetails;
         }
 
-        protected void onPostExecute() {
-
+        protected void onPostExecute(AccountVO accountDetails) {
+            /*tvCustName = (TextView) findViewById(R.id.textView5);
+            tvCustName.setText(accountDetails.getAccountBalance()+"");
+            Log.d(this.getClass().getSimpleName(),"Displaying details");
+            tvAccountBalance = (TextView) findViewById(R.id.textView6);
+            tvAccountBalance.setText(accountDetails.getAccountBalance() + "");
+            */
         }
 
     }
