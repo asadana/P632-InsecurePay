@@ -35,7 +35,6 @@ import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -248,11 +247,7 @@ public class AccountFragment extends Fragment {
         customerVOObj.setState(etAddressState.getText().toString());
         Log.i(this.getClass().getSimpleName(), tvUserDOB.getText().toString());
 
-        try {
-            customerVOObj.setBirthDate(dateFormatObj.parse(tvUserDOB.getText().toString()));
-        } catch (ParseException e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
-        }
+        customerVOObj.setBirthDate(tvUserDOB.getText().toString());
         customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
         customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
@@ -370,7 +365,7 @@ public class AccountFragment extends Fragment {
             tvName.setText(customerVOObj.getCustName());
             tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
-            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
+            tvUserDOB.setText(customerVOObj.getBirthDate());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
             etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
@@ -406,9 +401,9 @@ public class AccountFragment extends Fragment {
         @Override
         protected void onPostExecute(final CustomerVO customerVOObj) {
             if (responseFromServer.equals("true")) {
-                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
             } else if (responseFromServer.equals("false")) {
-                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
             } else {
                 Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
             }

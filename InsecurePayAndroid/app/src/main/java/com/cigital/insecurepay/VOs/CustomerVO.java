@@ -2,9 +2,6 @@ package com.cigital.insecurepay.VOs;
 
 import com.cigital.insecurepay.common.CustomEncoder;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class CustomerVO {
     private int custNo;
     private String custName;
@@ -13,12 +10,10 @@ public class CustomerVO {
     private String state;
     private int zipcode;
     private int phoneNo;
-    private Date birthDate;
+    private String birthDate;
     private String ssn;
     private String email;
     private String custUsername;
-
-    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
 
 
     public CustomerVO() {
@@ -26,7 +21,7 @@ public class CustomerVO {
     }
 
     public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
-                      Date birthDate, String ssn, String email, String custUsername) {
+                      String birthDate, String ssn, String email, String custUsername) {
         super();
         this.custNo = custNo;
         this.custName = custName;
@@ -97,11 +92,11 @@ public class CustomerVO {
         this.phoneNo = phoneNo;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 
