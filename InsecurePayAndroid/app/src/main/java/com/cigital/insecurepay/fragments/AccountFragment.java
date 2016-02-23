@@ -1,3 +1,7 @@
+/**
+ * AccountFragment Class retrieves and displays the customer details.
+ */
+
 package com.cigital.insecurepay.fragments;
 
 import android.app.AlertDialog;
@@ -31,6 +35,7 @@ import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,6 +45,7 @@ import java.util.Calendar;
  */
 public class AccountFragment extends Fragment {
 
+    // View objects
     TextView tvName;
     TextView tvAccountNumber;
     TextView tvSSN;
@@ -54,25 +60,25 @@ public class AccountFragment extends Fragment {
     Button btnChangePassword;
     Button btnChangeDOB;
 
+    // To retrieve and store details
     private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
+    // To handle connections
     private Gson gson = new Gson();
     private CommonVO commonVO;
 
+    // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
-    private SimpleDateFormat dateFormatObj = new SimpleDateFormat("MM-dd-yyyy");
+    private SimpleDateFormat dateFormatObj = new SimpleDateFormat("yyyy-MM-dd");
 
+    // TextWatcher objects to handle on edit events for EditText fields
     private TextWatcher twEmail = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -82,14 +88,10 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressStreet = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -99,14 +101,10 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressCity = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -116,14 +114,10 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressState = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -133,14 +127,10 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressZip = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -151,14 +141,10 @@ public class AccountFragment extends Fragment {
 
     private TextWatcher twPhone = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -171,16 +157,28 @@ public class AccountFragment extends Fragment {
         // Required empty public constructor
     }
 
+    // newInstance function is called from another class to create a new object of this class
     public static AccountFragment newInstance(String serverAddress) {
         AccountFragment fragment = new AccountFragment();
         return fragment;
     }
 
+    // onCreateView is called when the class's view is being generated
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View viewObj = inflater.inflate(R.layout.fragment_account, container, false);
+
+        initValues(viewObj);
+        addListeners();
+
+        return viewObj;
+    }
+
+    // Initializing all the variables
+    private void initValues(View viewObj) {
+        Log.i(this.getClass().getSimpleName(), "Initializing values.");
 
         // Initializing all objects from fragment_account
         tvName = (TextView) viewObj.findViewById(R.id.tvAccount_fillName);
@@ -199,27 +197,25 @@ public class AccountFragment extends Fragment {
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
         btnChangeDOB = (Button) viewObj.findViewById(R.id.btnAccountDOB_edit);
 
+        // Initializing commonVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
 
-        initValues();
-        addListeners();
-
-        return viewObj;
-    }
-
-    private void initValues() {
-
+        // Fetch details from the server
         accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
     }
 
+    // Initializing listeners where needed
     private void addListeners() {
+        Log.i(this.getClass().getSimpleName(), "Adding Listeners");
         etEmail.addTextChangedListener(twEmail);
         etAddressStreet.addTextChangedListener(twAddressStreet);
         etAddressCity.addTextChangedListener(twAddressCity);
         etAddressState.addTextChangedListener(twAddressState);
         etAddressZip.addTextChangedListener(twAddressZip);
         etPhone.addTextChangedListener(twPhone);
+
+        // TODO: Fix number formatting
         twPhone = new PhoneNumberFormattingTextWatcher();
 
         btnUpdateInfo.setOnClickListener(new View.OnClickListener() {
@@ -238,35 +234,35 @@ public class AccountFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment();
+                // Calling show with FragmentManager and a unique tag name
                 dateDialogFragment.show(getActivity().getFragmentManager(), "datePicker");
             }
         });
     }
 
+    // Handles tasks to be done when Update button clicked
     private void onClickUpdateInformation() {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
-        // TODO: Fix DOB here
-        //customerVOObj.setBirthDate(tvUserDOB.toString());
+
         customerVOObj.setEmail(etEmail.getText().toString());
         customerVOObj.setStreet(etAddressStreet.getText().toString());
         customerVOObj.setCity(etAddressCity.getText().toString());
         customerVOObj.setState(etAddressState.getText().toString());
+        Log.i(this.getClass().getSimpleName(), tvUserDOB.getText().toString());
+
+        customerVOObj.setBirthDate(Date.valueOf(tvUserDOB.getText().toString()));
         customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
         customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
+        // Object of inner class to post update to the server
         AccountUpdateTask accountUpdateTask = new AccountUpdateTask();
         accountUpdateTask.execute();
     }
 
-    // TextWatchers for editText fields
-
+    // Handles tasks to be done when Change Password is clicked
     private void onClickChangePassword() {
         Log.i(this.getClass().getSimpleName(), "Displaying change password dialog");
-        changePassword();
-        //return true;
-    }
 
-    private void changePassword() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_password, null);
@@ -281,7 +277,6 @@ public class AccountFragment extends Fragment {
         // EditText variables to fetch user inputs from the dialog
         password1View = (EditText) dialogView.findViewById(R.id.et_password_field1);
         password2View = (EditText) dialogView.findViewById(R.id.et_password_field2);
-
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -340,6 +335,7 @@ public class AccountFragment extends Fragment {
         alertD.show();
     }
 
+    // Inner-class for fetching information from server
     private class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
 
         @Override
@@ -351,7 +347,7 @@ public class AccountFragment extends Fragment {
 
             // Establishing connection to the server
             Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress());
-            // Stroing server response
+            // Storing server response
             String responseFromServer = getInfoConnection.get(contentValues);
 
             Log.i(this.getClass().getSimpleName(), "Account information retrieved successfully");
@@ -366,13 +362,12 @@ public class AccountFragment extends Fragment {
         protected void onPostExecute(final CustomerVO customerVOObj) {
             Log.d(this.getClass().getSimpleName(), "In post execute. Updating view.");
 
+            // Populating customerVO with the information retrieved
             tvName.setText(customerVOObj.getCustName());
             tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
-            // TODO: Remove temporary calendar object
-            calenderObj.setTime(customerVOObj.getBirthDate());
-            Log.i(this.getClass().getSimpleName(), "From calendar: " + calenderObj.getTime().toString());
-            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
+            Log.i(this.getClass().getSimpleName(), customerVOObj.getBirthDate().toString());
+            tvUserDOB.setText(customerVOObj.getBirthDate().toString());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
             etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
@@ -382,34 +377,43 @@ public class AccountFragment extends Fragment {
         }
     }
 
+    // Inner-class to update the server
     private class AccountUpdateTask extends AsyncTask<String, String, CustomerVO> {
 
-        public AccountUpdateTask() {
-
-        }
+        String responseFromServer;
 
         @Override
         protected CustomerVO doInBackground(String... params) {
 
+            // Getting JSON from customerVO object to be sent
             String sendToServer = gson.toJson(customerVOObj);
+            // TODO: Delete this
+            Log.d(this.getClass().getSimpleName(), "Sending to server string: " + sendToServer);
+
             // Establishing connection to the server
             Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress(), sendToServer);
-            // Stroing server response
-            String responseFromServer = getInfoConnection.post();
+            // Storing server response
+            responseFromServer = getInfoConnection.post();
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
-            // Storing response in customerVOObj
-            customerVOObj = gson.fromJson(responseFromServer, CustomerVO.class);
 
             return customerVOObj;
         }
 
         @Override
         protected void onPostExecute(final CustomerVO customerVOObj) {
-            Toast.makeText(getContext(), "Update successful", Toast.LENGTH_LONG);
+            if (responseFromServer.equals("true")) {
+                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT);
+            } else if (responseFromServer.equals("false")) {
+                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT);
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+            }
+
         }
     }
 
+    // Inner class to update the password on the server
     public class ChangePasswordTask extends AsyncTask<String, String, String> {
 
         private final String username;
@@ -444,18 +448,20 @@ public class AccountFragment extends Fragment {
             return password_changed;
         }
 
-
+        @Override
         protected void onPostExecute(final String password_changed) {
 
             if (password_changed.equals("false")) {
                 Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
-            } else {
+            } else if (password_changed.equals("true")) {
                 Toast.makeText(AccountFragment.this.getContext(), "Password Changed", Toast.LENGTH_LONG).show();
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
             }
-
         }
     }
 
+    // Inner class for DialogFragment
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
@@ -468,12 +474,11 @@ public class AccountFragment extends Fragment {
             return new DatePickerDialog(getContext(), this, year, month, day);
         }
 
+        // Function handles what to once new date is selected from dialog
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker veiew, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
-            customerVOObj.setBirthDate(calenderObj.getTime());
-            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
-
+            tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }
     }
 
