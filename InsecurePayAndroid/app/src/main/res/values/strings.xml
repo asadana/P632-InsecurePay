@@ -17,8 +17,8 @@
     </string>
     <string name="title_activity_user_login">Sign in</string>
     <!--Following strings are for Connectivity-->
-    <string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <!--<string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>-->
+    <string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>
     <string name="defaultPath">/rest/</string>
     <string name="no_network">No network connection</string>
     <!--Following strings are for Login-->
@@ -56,6 +56,10 @@
     <string name="nav_interest_calc">Interest Calculator</string>
     <string name="nav_support_chat">Support Chat</string>
 
+    <!--For Home Fragment-->
+    <string name="tvHome_accountNumber">Account No</string>
+    <string name="tvHome_accountBalance">Balance</string>
+
     <!--For Account Management Fragment-->
     <string name="tvAccount_accountNumber">Account Number</string>
     <string name="tvAccount_userDOB">Date of Birth</string>
@@ -72,5 +76,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="etForgotPass_AccountNumber">Enter your Account Number</string>
+    <string name="etForgotPass_ssnNumber">Enter your SSN Number</string>
+    <string name="etForgotPass_username">Enter your username</string>
+    <string name="tvForgotPass_hereToHelp">We\'re here to help</string>
+    <string name="etChangePassword_newPassword">Enter your new password</string>
+    <string name="etChangePassword_confirmPassword">Confirm new passsword</string>
 
 </resources>

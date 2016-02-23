@@ -26,6 +26,7 @@ public class HomeFragment extends Fragment {
     private TextView tvBalance;
     private OnFragmentInteractionListener mListener;
     private CommonVO commonVO;
+    private TextView tvAccountNumber;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -41,7 +42,8 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View viewObj = inflater.inflate(R.layout.fragment_home, container, false);
-        tvBalance = (TextView)viewObj.findViewById(R.id.tvBalance);
+        tvBalance = (TextView)viewObj.findViewById(R.id.tvHome_fillBalance);
+        tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvHome_fillAccountNumber);
         commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
         task = new custAccountFetchTask();
         task.execute();
@@ -100,7 +102,8 @@ public class HomeFragment extends Fragment {
 
         protected void onPostExecute(AccountVO accountDetails) {
 
-            tvBalance.setText(accountDetails.getAccountBalance()+"");
+            tvBalance.setText(Float.toString(accountDetails.getAccountBalance()));
+            tvAccountNumber.setText(Integer.toString(accountDetails.getAccNo()));
 
         }
 

@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
 import com.google.gson.Gson;
@@ -28,8 +29,7 @@ public class HomePage extends AppCompatActivity
     protected Context contextHomePage = this;
     protected Gson gson = new Gson();
     private DrawerLayout drawer;
-    private TextView tvCustName;
-    private TextView tvAccountBalance;
+    private TextView tvCustUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,9 @@ public class HomePage extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        tvCustUserName = (TextView)findViewById(R.id.tvNavHeaderUsername);
+        tvCustUserName.setText(((CommonVO)getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
 
 
     }

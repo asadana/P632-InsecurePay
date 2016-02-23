@@ -24,7 +24,7 @@ public class AccountDao extends BaseDao {
 		rs = querySql(Queries.GET_ACCOUNT_TBL, params);
 		AccountBO account = new AccountBO();
 		if (rs.next()) {
-			account.setAccno(rs.getInt("account_no"));
+			account.setAccNo(rs.getInt("account_no"));
 			account.setAccountBalance(rs.getFloat("account_balance"));
 			account.setAccountOpenDate(rs.getDate("account_opendate"));
 		}

@@ -2,7 +2,8 @@ package com.cigital.insecurepay.VOs;
 
 import com.cigital.insecurepay.common.CustomEncoder;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CustomerVO {
     private int custNo;
@@ -16,6 +17,8 @@ public class CustomerVO {
     private String ssn;
     private String email;
     private String custUsername;
+
+    private static SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
 
 
     public CustomerVO() {
