@@ -31,10 +31,30 @@ public class HomePage extends AppCompatActivity
     private DrawerLayout drawer;
     private TextView tvCustUserName;
 
+    // For handling fragments
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private Fragment fragment = null;
+    private Class fragmentClass = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        fragmentClass = HomeFragment.class;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+            if (fragment != null) {
+                fragment.setArguments(getIntent().getExtras());
+            }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContent, fragment).commit();
+        } catch (InstantiationException e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        } catch (IllegalAccessException e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        }
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -93,8 +113,6 @@ public class HomePage extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        Fragment fragment = null;
-        Class fragmentClass = null;
 
         int id = item.getItemId();
 
@@ -125,9 +143,10 @@ public class HomePage extends AppCompatActivity
             Log.e(this.getClass().getSimpleName(), e.toString());
         }
 
-        fragment.setArguments(getIntent().getExtras());
+        if (fragment != null) {
+            fragment.setArguments(getIntent().getExtras());
+        }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContent, fragment).commit();
 
@@ -147,5 +166,4 @@ public class HomePage extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-
 }
