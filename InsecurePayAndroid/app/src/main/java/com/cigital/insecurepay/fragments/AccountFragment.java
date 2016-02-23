@@ -452,7 +452,7 @@ public class AccountFragment extends Fragment {
             if (password_changed.equals("false")) {
                 Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
             } else if (password_changed.equals("true")) {
-                Toast.makeText(AccountFragment.this.getContext(), "Password Changed", Toast.LENGTH_LONG).show();
+                Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
             } else {
                 Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
             }
