@@ -1,13 +1,17 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    android:scrollIndicators="right"
     tools:context=".fragments.AccountFragment">
 
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
 
         <TextView
             android:id="@+id/tvAccount_name"
@@ -114,7 +118,8 @@
             android:layout_alignStart="@+id/tvAccount_fillSSN"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="5dp"
-            android:inputType="textWebEmailAddress"
+            android:inputType="textWebEmailAddress|textAutoComplete"
+            android:maxLines="1"
             android:text="@string/tvAccount_email" />
 
         <TextView
@@ -139,6 +144,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginRight="5dp"
             android:inputType="phone"
+            android:maxLines="1"
             android:text="0000000000" />
 
         <TextView
@@ -184,6 +190,7 @@
             android:layout_alignStart="@+id/tvAccount_fillName"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="5dp"
+            android:maxLines="1"
             android:text="@string/tvAccount_addressCity" />
 
         <TextView
@@ -206,6 +213,7 @@
             android:layout_alignStart="@+id/tvAccount_fillName"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="5dp"
+            android:maxLines="1"
             android:text="@string/tvAccount_addressState" />
 
         <TextView
@@ -228,35 +236,28 @@
             android:layout_alignStart="@+id/tvAccount_fillName"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="5dp"
+            android:inputType="number"
+            android:maxLines="1"
+            android:numeric="integer"
             android:text="@string/tvAccount_addressZip" />
 
         <Button
             android:id="@+id/btnAccount_update"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_alignStart="@+id/tvAccount_addressZip"
             android:layout_below="@+id/etAccount_fillAddressZip"
-            android:layout_marginTop="19dp"
             android:enabled="false"
             android:text="Update" />
 
         <Button
             android:id="@+id/btnAccount_changePassword"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_alignStart="@+id/etAccount_fillAddressZip"
-            android:layout_alignTop="@+id/btnAccount_update"
+            android:layout_below="@+id/etAccount_fillAddressZip"
             android:text="Change Password" />
 
-        <Button
-            android:id="@+id/btnAccountDOB_edit"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tvAccount_fillUserDOB"
-            android:layout_alignEnd="@+id/etAccount_fillEmail"
-            android:layout_alignTop="@+id/tvAccount_fillUserDOB"
-            android:text="" />
+    </RelativeLayout>
 
-    </ScrollView>
-</RelativeLayout>
+</ScrollView>

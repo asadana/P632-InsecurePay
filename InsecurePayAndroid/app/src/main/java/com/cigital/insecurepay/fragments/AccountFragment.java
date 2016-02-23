@@ -35,7 +35,7 @@ import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
-import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -58,7 +58,6 @@ public class AccountFragment extends Fragment {
     EditText etAddressZip;
     Button btnUpdateInfo;
     Button btnChangePassword;
-    Button btnChangeDOB;
 
     // To retrieve and store details
     private AccountFetchTask accountFetchTask = null;
@@ -195,7 +194,6 @@ public class AccountFragment extends Fragment {
 
         btnUpdateInfo = (Button) viewObj.findViewById(R.id.btnAccount_update);
         btnChangePassword = (Button) viewObj.findViewById(R.id.btnAccount_changePassword);
-        btnChangeDOB = (Button) viewObj.findViewById(R.id.btnAccountDOB_edit);
 
         // Initializing commonVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -230,7 +228,7 @@ public class AccountFragment extends Fragment {
                 onClickChangePassword();
             }
         });
-        btnChangeDOB.setOnClickListener(new View.OnClickListener() {
+        tvUserDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment();
@@ -250,7 +248,11 @@ public class AccountFragment extends Fragment {
         customerVOObj.setState(etAddressState.getText().toString());
         Log.i(this.getClass().getSimpleName(), tvUserDOB.getText().toString());
 
-        customerVOObj.setBirthDate(Date.valueOf(tvUserDOB.getText().toString()));
+        try {
+            customerVOObj.setBirthDate(dateFormatObj.parse(tvUserDOB.getText().toString()));
+        } catch (ParseException e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        }
         customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
         customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
@@ -350,6 +352,8 @@ public class AccountFragment extends Fragment {
             // Storing server response
             String responseFromServer = getInfoConnection.get(contentValues);
 
+            Log.i(this.getClass().getSimpleName(), responseFromServer);
+
             Log.i(this.getClass().getSimpleName(), "Account information retrieved successfully");
 
             // Storing server response in the customerVOObj
@@ -366,8 +370,7 @@ public class AccountFragment extends Fragment {
             tvName.setText(customerVOObj.getCustName());
             tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
-            Log.i(this.getClass().getSimpleName(), customerVOObj.getBirthDate().toString());
-            tvUserDOB.setText(customerVOObj.getBirthDate().toString());
+            tvUserDOB.setText(dateFormatObj.format(customerVOObj.getBirthDate()));
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
             etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
