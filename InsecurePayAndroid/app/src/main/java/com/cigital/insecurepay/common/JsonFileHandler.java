@@ -21,13 +21,14 @@ public class JsonFileHandler {
     private String contentToStore;
     private Gson gsonObj = new Gson();
 
-    public JsonFileHandler(Context contextObj, String fileName, String contentToStore) {
+    public JsonFileHandler(Context contextObj, String fileName) {
         this.contextObj = contextObj;
         this.fileName = fileName;
-        this.contentToStore = contentToStore;
     }
 
-    private boolean writeToFile() {
+    public boolean writeToFile(String contentToStore) {
+
+        this.contentToStore = contentToStore;
         FileOutputStream outputStreamObj;
 
         try {
@@ -44,7 +45,7 @@ public class JsonFileHandler {
         }
     }
 
-    private String readFromFile() throws IOException {
+    public String readFromFile() throws IOException {
         FileInputStream fileInputStreamObj = contextObj.openFileInput(fileName);
         InputStreamReader inputStreamReaderObj = new InputStreamReader(fileInputStreamObj);
         BufferedReader bufferedReaderObj = new BufferedReader(inputStreamReaderObj);

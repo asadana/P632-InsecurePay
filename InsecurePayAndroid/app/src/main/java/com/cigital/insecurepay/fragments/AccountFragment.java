@@ -33,8 +33,10 @@ import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.JsonFileHandler;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -65,6 +67,7 @@ public class AccountFragment extends Fragment {
     // To handle connections
     private Gson gson = new Gson();
     private CommonVO commonVO;
+    private JsonFileHandler jsonFileHandlerObj;
 
     // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
@@ -197,6 +200,9 @@ public class AccountFragment extends Fragment {
         // Initializing commonVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
 
+        // Initializing JsonFileHandler
+        jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
+
         // Fetch details from the server
         accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
@@ -250,6 +256,8 @@ public class AccountFragment extends Fragment {
         customerVOObj.setBirthDate(tvUserDOB.getText().toString());
         customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
         customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
+
+        jsonFileHandlerObj.writeToFile(gson.toJson(customerVOObj));
 
         // Object of inner class to post update to the server
         AccountUpdateTask accountUpdateTask = new AccountUpdateTask();
@@ -351,8 +359,15 @@ public class AccountFragment extends Fragment {
 
             Log.i(this.getClass().getSimpleName(), "Account information retrieved successfully");
 
-            // Storing server response in the customerVOObj
-            customerVOObj = gson.fromJson(responseFromServer, CustomerVO.class);
+            // Writing to the local JSON file
+            jsonFileHandlerObj.writeToFile(responseFromServer);
+
+            // Storing server response from JSON file in the customerVOObj
+            try {
+                customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), e.toString());
+            }
 
             return customerVOObj;
         }
@@ -376,15 +391,21 @@ public class AccountFragment extends Fragment {
     }
 
     // Inner-class to update the server
-    private class AccountUpdateTask extends AsyncTask<String, String, CustomerVO> {
+    private class AccountUpdateTask extends AsyncTask<String, String, String> {
 
-        String responseFromServer;
+
 
         @Override
-        protected CustomerVO doInBackground(String... params) {
+        protected String doInBackground(String... params) {
 
+            String responseFromServer;
             // Getting JSON from customerVO object to be sent
-            String sendToServer = gson.toJson(customerVOObj);
+            String sendToServer = null;
+            try {
+                sendToServer = jsonFileHandlerObj.readFromFile();
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), e.toString());
+            }
             // TODO: Delete this
             Log.d(this.getClass().getSimpleName(), "Sending to server string: " + sendToServer);
 
@@ -395,11 +416,11 @@ public class AccountFragment extends Fragment {
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
 
-            return customerVOObj;
+            return responseFromServer;
         }
 
         @Override
-        protected void onPostExecute(final CustomerVO customerVOObj) {
+        protected void onPostExecute(final String responseFromServer) {
             if (responseFromServer.equals("true")) {
                 Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
             } else if (responseFromServer.equals("false")) {
