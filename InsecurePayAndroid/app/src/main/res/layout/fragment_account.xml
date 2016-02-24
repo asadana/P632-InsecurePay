@@ -1,0 +1,263 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical"
+    android:scrollIndicators="right"
+    tools:context=".fragments.AccountFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+
+        <TextView
+            android:id="@+id/tvAccount_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_name"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_fillName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_name"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="35dp"
+            android:layout_toEndOf="@+id/tvAccount_accountNumber"
+            android:text="@string/tvAccount_name"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+        <TextView
+            android:id="@+id/tvAccount_accountNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvAccount_ssn"
+            android:layout_below="@+id/tvAccount_name"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_accountNumber"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_fillAccountNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_accountNumber"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:text="@string/tvAccount_accountNumber"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_userDOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_ssn"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_userDOB"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_fillUserDOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_userDOB"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:text="@string/tvAccount_userDOB"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_ssn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_accountNumber"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_ssn"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_fillSSN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_ssn"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:text="@string/tvAccount_ssn"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvAccount_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_userDOB"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_email"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_email"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tvAccount_fillSSN"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:inputType="textWebEmailAddress|textAutoComplete"
+            android:maxLines="1"
+            android:text="@string/tvAccount_email" />
+
+        <TextView
+            android:id="@+id/tvAccount_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_email"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_phoneNumber"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_phone"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/etAccount_fillEmail"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:inputType="phone"
+            android:maxLines="1"
+            android:text="0000000000" />
+
+        <TextView
+            android:id="@+id/tvAccount_addressStreet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_phone"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_addressStreet"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillAddressStreet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_addressStreet"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:inputType="textPostalAddress"
+            android:text="@string/tvAccount_addressStreet" />
+
+        <TextView
+            android:id="@+id/tvAccount_addressCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_addressStreet"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_addressCity"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillAddressCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_addressCity"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:maxLines="1"
+            android:text="@string/tvAccount_addressCity" />
+
+        <TextView
+            android:id="@+id/tvAccount_addressState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_addressCity"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_addressState"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillAddressState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_addressState"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:maxLines="1"
+            android:text="@string/tvAccount_addressState" />
+
+        <TextView
+            android:id="@+id/tvAccount_addressZip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvAccount_addressState"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvAccount_addressZip"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etAccount_fillAddressZip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvAccount_addressZip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignStart="@+id/tvAccount_fillName"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="5dp"
+            android:inputType="number"
+            android:maxLines="1"
+            android:numeric="integer"
+            android:text="@string/tvAccount_addressZip" />
+
+        <Button
+            android:id="@+id/btnAccount_update"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignStart="@+id/tvAccount_addressZip"
+            android:layout_below="@+id/etAccount_fillAddressZip"
+            android:enabled="false"
+            android:text="Update" />
+
+        <Button
+            android:id="@+id/btnAccount_changePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignStart="@+id/etAccount_fillAddressZip"
+            android:layout_below="@+id/etAccount_fillAddressZip"
+            android:text="Change Password" />
+
+    </RelativeLayout>
+
+</ScrollView>

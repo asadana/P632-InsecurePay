@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -39,9 +40,11 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +54,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via username,password.
  */
-public class LoginActivity extends AbstractBaseActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -72,12 +75,22 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
     private boolean saveLogin;
     private CheckBox rememberMeCheck;
     private TextView forgotPasswordView;
+    protected String userAddress;
+    protected String userPath;
+    protected Gson gson = new Gson();
+    protected Intent intent;
+    protected CommonVO commonVO = new CommonVO();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        userAddress = getString(R.string.defaultAddress);
+        userPath = getString(R.string.defaultPath);
+        commonVO.setServerAddress(userAddress + userPath);
+
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
         forgotPasswordView =(TextView)findViewById(R.id.btn_forgot_password);
@@ -99,7 +112,8 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getSimpleName(), "forgot password view");
-                Intent intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                intent.putExtra(getString(R.string.common_VO), commonVO);
                 startActivity(intent);
             }
         });
@@ -226,7 +240,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
 
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 2;
     }
 
     private void saveLoginPreferences() {
@@ -389,6 +403,8 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
 
         AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
+
+        commonVO.setServerAddress(userAddress + userPath);
     }
 
     private interface ProfileQuery {
@@ -443,7 +459,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
                     //sendToServer contains JSON object that has credentials
                     String sendToServer = gson.toJson(sendVo);
                     //Passing the context of LoginActivity to Connectivity
-                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), serverAddress, sendToServer);
+                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), commonVO.getServerAddress(), sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
                     String responseFromServer = con_login.post().trim();
                     //Convert serverResponse to respectiveVO
@@ -477,7 +493,10 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
                 try {
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
                     // Move to Home Page if successful login
-                    Intent intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
+                    intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
+                    commonVO.setUsername(username);
+                    commonVO.setCustNo(loginValidationVO.getCustNo());
+                    intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
                 } catch (Exception e) {
                     Log.e(this.getClass().getSimpleName(), "Exception ", e);

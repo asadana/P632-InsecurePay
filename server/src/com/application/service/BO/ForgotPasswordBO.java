@@ -2,17 +2,19 @@ package com.application.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.application.common.CustomEncoder;
+
 @XmlRootElement
 public class ForgotPasswordBO {
 	
 	private int accountNo;
-    private int sSNNo;
+    private String sSNNo;
     private String username;
 
     public ForgotPasswordBO() {
 	}
     
-    public ForgotPasswordBO(int accountNo, int sSNNo, String username){
+    public ForgotPasswordBO(int accountNo, String sSNNo, String username){
     	super();
         this.accountNo = accountNo;
         this.sSNNo = sSNNo;
@@ -27,12 +29,11 @@ public class ForgotPasswordBO {
 		this.accountNo = accountNo;
 	}
 
-
-	public int getsSNNo() {
+	public String getsSNNo() {
 		return sSNNo;
 	}
 
-	public void setsSNNo(int sSNNo) {
+	public void setsSNNo(String sSNNo) {
 		this.sSNNo = sSNNo;
 	}
 
@@ -42,6 +43,10 @@ public class ForgotPasswordBO {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public String getEncodedSSNNo(){
+		return CustomEncoder.encode(getsSNNo());
 	}
     
  

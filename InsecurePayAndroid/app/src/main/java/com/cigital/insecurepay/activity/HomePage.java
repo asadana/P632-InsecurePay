@@ -1,10 +1,9 @@
 package com.cigital.insecurepay.activity;
 
 
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,31 +11,55 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.activity.InsecurePayFragments.ACMFragment;
-import com.cigital.insecurepay.common.Connectivity;
+import android.widget.TextView;
 
-public class HomePage extends AbstractBaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ACMFragment.OnFragmentInteractionListener {
-    private CustDetailsRequestTask task = null;
+import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.fragments.AccountFragment;
+import com.cigital.insecurepay.fragments.HomeFragment;
+import com.google.gson.Gson;
+
+public class HomePage extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
+    protected Context contextHomePage = this;
+    protected Gson gson = new Gson();
+    private DrawerLayout drawer;
+    private TextView tvCustUserName;
+
+    // For handling fragments
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private Fragment fragment = null;
+    private Class fragmentClass = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        task = new CustDetailsRequestTask();
-        task.execute();
+        fragmentClass = HomeFragment.class;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+            if (fragment != null) {
+                fragment.setArguments(getIntent().getExtras());
+            }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContent, fragment).commit();
+        } catch (InstantiationException e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        } catch (IllegalAccessException e) {
+            Log.e(this.getClass().getSimpleName(), e.toString());
+        }
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -44,6 +67,9 @@ public class HomePage extends AbstractBaseActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        tvCustUserName = (TextView)findViewById(R.id.tvNavHeaderUsername);
+        tvCustUserName.setText(((CommonVO)getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
 
 
     }
@@ -87,34 +113,43 @@ public class HomePage extends AbstractBaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        Fragment fragment = null;
-        Class fragmentClass = null;
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_accounts) {
-            fragmentClass = ACMFragment.class;
-        } else if (id == R.id.nav_profile) {
-
+        if (id == R.id.nav_account_manage) {
+            fragmentClass = AccountFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Account Management selected");
+            setTitle(R.string.nav_account_manage);
+        } else if (id == R.id.nav_homepage) {
+            fragmentClass = HomeFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Home Fragment selected");
+            setTitle(R.string.nav_homepage);
         } else if (id == R.id.nav_transfer_funds) {
 
-        } else if (id == R.id.nav_activity_history) {
+        } else if (id == R.id.nav_interest_calc) {
 
-        } else if (id == R.id.nav_chat) {
+        } else if (id == R.id.nav_support_chat) {
 
         } else if (id == R.id.nav_logout) {
             onLogOut();
             return true;
         }
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            if (fragmentClass != null) {
+                fragment = (Fragment) fragmentClass.newInstance();
+            }
+            Log.i(this.getClass().getSimpleName(), "Creating fragment");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(this.getClass().getSimpleName(), e.toString());
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (fragment != null) {
+            fragment.setArguments(getIntent().getExtras());
+        }
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContent, fragment).commit();
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -131,30 +166,4 @@ public class HomePage extends AbstractBaseActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-    class CustDetailsRequestTask extends AsyncTask<String, String, Boolean> {
-        private CustomerVO customerDetails;
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "Background");
-            try {
-                //Converts customer details to CustomerVO
-                Connectivity conn = new Connectivity(HomePage.this.getApplicationContext(), getString(R.string.cust_details_path), serverAddress);
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.username), "foo");
-                customerDetails = gson.fromJson(conn.get(contentValues), CustomerVO.class);
-                Log.d(this.getClass().getSimpleName(), "Customer details in HomePage" + customerDetails.getCity());
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
-            }
-            return false;
-        }
-
-        protected void onPostExecute() {
-
-        }
-
-    }
-
 }

@@ -19,6 +19,7 @@ public class LoginDao extends BaseDao {
 		LoginValidationBO validationBO;
 		boolean usernameExists;
 		boolean validUser;
+		int custNo = -1;
 		ResultSet rs = null;
 		String sql = "select * from cust_credentials where cust_username='"
 				+ l.getUsername() + "'";
@@ -34,8 +35,10 @@ public class LoginDao extends BaseDao {
 					+ "'";
 			s = conn.createStatement();
 			rs = s.executeQuery(sql2);
-			if (rs.next())
+			if (rs.next()){
+				custNo = rs.getInt("cust_no");
 				validUser = true;
+			}
 			else
 				validUser = false;
 			close();
@@ -44,7 +47,7 @@ public class LoginDao extends BaseDao {
 			validUser = false;
 		}
 
-		validationBO = new LoginValidationBO(usernameExists, validUser);
+		validationBO = new LoginValidationBO(usernameExists, validUser, custNo);
 
 		return validationBO;
 	}

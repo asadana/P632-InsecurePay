@@ -5,6 +5,7 @@ public class LoginValidationVO {
 
     private boolean usernameExists;
     private boolean validUser;
+    private int custNo;
 
 
     public LoginValidationVO() {}
@@ -31,4 +32,11 @@ public class LoginValidationVO {
         this.validUser = validUser;
     }
 
+    public int getCustNo() {
+        return custNo;
+    }
+
+    public void setCustNo(int custNo) {
+        this.custNo = custNo;
+    }
 }

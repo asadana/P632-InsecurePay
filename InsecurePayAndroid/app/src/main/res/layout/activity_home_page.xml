@@ -8,17 +8,41 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <include
+    <LinearLayout
         layout="@layout/app_bar_home_page"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:fitsSystemWindows="true"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <!--Frame where fragments are loaded-->
+        <FrameLayout
+            android:id="@+id/fragmentContent"
+            android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <!--Navigation menu-->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_home_page"
         app:menu="@menu/activity_home_page_drawer" />
 

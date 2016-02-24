@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.application.common.Queries;
+import com.application.common.StringConstants;
 import com.application.service.BO.ForgotPasswordBO;
 import com.application.service.BO.LoginValidationBO;
 
@@ -42,27 +43,22 @@ public class ForgotPasswordDao extends BaseDao {
 				cust_no = rs.getInt("cust_no");
 			}
 
-			System.out.print("cust_no" + cust_no);
 			close();
 
 			params = new ArrayList<Object>();
-			params.add(l.getsSNNo());
+			params.add(l.getEncodedSSNNo());
 			rs = querySql(Queries.GET_CUSTNO_CUST_TBL, params);
 			if (rs.next()) {
 				cust_no_compare = rs.getInt("cust_no");
 			}
-
-			System.out.print("cust_no_compare" + cust_no_compare);
 			close();
 
 			if (cust_no == cust_no_compare) {
 				validUser = true;
 				params = new ArrayList<Object>();
-				int defaultPassword = 12345;
-				params.add(defaultPassword);
+				params.add(StringConstants.defaultPassword);
 				params.add(l.getUsername());
-				int count = updateSql(Queries.UPDATE_DEFAULT_PASSWORD, params);
-				System.out.println("No.of rows updated are" + count);
+				int count = updateSql(Queries.UPDATE_PASSWORD, params);
 			} else
 				validUser = false;
 
@@ -71,8 +67,8 @@ public class ForgotPasswordDao extends BaseDao {
 			validUser = false;
 		}
 
-		loginValidationBO = new LoginValidationBO(
-				usernameExists, validUser);
+		loginValidationBO = new LoginValidationBO(usernameExists, validUser,
+				cust_no);
 
 		return loginValidationBO;
 	}

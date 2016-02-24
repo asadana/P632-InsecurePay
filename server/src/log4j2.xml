@@ -5,8 +5,8 @@
 	</Properties>
 	<Appenders>
 		<RollingFile name="RollingFile"
-			fileName="${log-path}/Insecure Pay Service Server.log"
-			filePattern="${log-path}/Insecure Pay Service Server-%d{yyyy-MM-dd}-%i.log">
+			fileName="${log-path}/Insecure_Pay_Service_Server.log"
+			filePattern="${log-path}/Insecure_Pay_Service_Server-%d{yyyy-MM-dd}-%i.log">
 			<PatternLayout>
 				<pattern>%d{dd/MMM/yyyy HH:mm:ss,SSS}- %c{1} - %M: %m%n</pattern>
 			</PatternLayout>
