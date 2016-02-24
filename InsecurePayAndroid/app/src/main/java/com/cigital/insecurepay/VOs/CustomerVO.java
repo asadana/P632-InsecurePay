@@ -1,6 +1,6 @@
 package com.cigital.insecurepay.VOs;
 
-import com.cigital.insecurepay.common.CustomEncoder;
+import com.cigital.insecurepay.common.CustomDecoder;
 
 public class CustomerVO {
     private int custNo;
@@ -109,7 +109,7 @@ public class CustomerVO {
     }
 
     public String getDecodedSsn() {
-        return CustomEncoder.decode(getSsn());
+        return CustomDecoder.decode(getSsn());
     }
 
     public String getEmail() {

@@ -158,12 +158,6 @@ public class AccountFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // newInstance function is called from another class to create a new object of this class
-    public static AccountFragment newInstance(String serverAddress) {
-        AccountFragment fragment = new AccountFragment();
-        return fragment;
-    }
-
     // onCreateView is called when the class's view is being generated
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

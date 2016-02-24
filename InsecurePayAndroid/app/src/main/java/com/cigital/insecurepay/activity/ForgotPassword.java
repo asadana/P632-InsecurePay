@@ -17,7 +17,6 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.common.CustomEncoder;
 import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
@@ -104,7 +103,7 @@ public class ForgotPassword extends AppCompatActivity {
             try {
                 LoginDBHelper db = new LoginDBHelper(ForgotPassword.this);
                 //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
-                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, CustomEncoder.encode(sSNNo), username);
+                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity

@@ -2,6 +2,8 @@ package com.application.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.application.common.CustomEncoder;
+
 @XmlRootElement
 public class ForgotPasswordBO {
 	
@@ -41,6 +43,10 @@ public class ForgotPasswordBO {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public String getEncodedSSNNo(){
+		return CustomEncoder.encode(getsSNNo());
 	}
     
  

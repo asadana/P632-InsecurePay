@@ -3,13 +3,9 @@ package com.cigital.insecurepay.common;
 import android.util.Base64;
 
 
-public class CustomEncoder {
+public class CustomDecoder {
 
     private static final String key = "abc";
-
-    public static String encode(String s) {
-        return base64Encode(xorWithKey(s.getBytes(), key.getBytes()));
-    }
 
     public static String decode(String s) {
         return new String(xorWithKey(base64Decode(s), key.getBytes()));
@@ -27,9 +23,5 @@ public class CustomEncoder {
         return Base64.decode(s, Base64.DEFAULT);
     }
 
-    private static String base64Encode(byte[] bytes) {
-        return Base64.encodeToString(bytes, Base64.DEFAULT).replaceAll("\\s", "");
-
-    }
 }
 
