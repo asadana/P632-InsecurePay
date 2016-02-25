@@ -1,9 +1,5 @@
 package com.cigital.insecurepay.VOs;
 
-/**
- * Created by Amish on 05-02-2016.
- */
-
 public class LoginVO {
     private String username;
     private String password;

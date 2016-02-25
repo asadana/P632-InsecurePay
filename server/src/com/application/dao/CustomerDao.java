@@ -15,13 +15,13 @@ public class CustomerDao extends BaseDao {
 		super(conn);
 	}
 
-	public CustomerBO getCustomerDetails(String username) throws SQLException,
+	public CustomerBO getCustomerDetails(int custNo) throws SQLException,
 			InstantiationException, IllegalAccessException,
 			ClassNotFoundException {
 
 		ResultSet rs = null;
 		List<Object> params = new ArrayList<Object>();
-		params.add(username);
+		params.add(custNo);
 		rs = querySql(Queries.GET_CUSTOMER_DETAILS, params);
 		CustomerBO customer = new CustomerBO();
 		if (rs.next()) {
@@ -33,9 +33,8 @@ public class CustomerDao extends BaseDao {
 			customer.setZipcode(rs.getInt("zipcode"));
 			customer.setPhoneNo(rs.getInt("phone_no"));
 			customer.setBirthDate(rs.getDate("Birth_date"));
-			customer.setSsn(rs.getInt("SSN"));
+			customer.setSsn(rs.getString("ssn"));
 			customer.setEmail(rs.getString("email"));
-			customer.setCustUsername(rs.getString("cust_username"));
 		}
 		return customer;
 	}
