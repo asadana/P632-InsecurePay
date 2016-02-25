@@ -15,4 +15,5 @@ public class Queries {
 	public static final String GET_CUSTNO_CRED_TBL="select cust_no from cust_credentials where cust_username = ?";
 	public static final String INSERT_TRANSFER_TBL="INSERT INTO transfer_funds(from_account_no, from_cust_no, to_account_no, to_cust_no, transfer_amount, from_beforeamount, from_afteramount, to_beforeamount, to_afteramount, transfer_details) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	public static final String UPDATE_ACCOUNT_BALANCE = "update account set account_balance=? where account_no = ?";
+
 }

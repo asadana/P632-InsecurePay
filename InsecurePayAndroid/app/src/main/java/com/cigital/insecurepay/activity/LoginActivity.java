@@ -94,7 +94,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
+
         TextView forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
+
         populateAutoComplete();
 
         passwordView = (EditText) findViewById(R.id.password);
@@ -450,10 +452,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     lockoutVO.setAddUser(true);
                 } else {
                     Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
-                    Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
-                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() + "");
                 }
-
 
                 if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
                     lockoutVO.setIsLocked(db.isLocked(username));
