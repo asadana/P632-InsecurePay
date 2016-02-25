@@ -1,6 +1,6 @@
 package com.application.service.BO;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -14,16 +14,15 @@ public class CustomerBO {
 	private int zipcode;
 	private int phoneNo;
 	private Date birthDate;
-	private int ssn;
+	private String ssn;
 	private String email;
-	private String custUsername;
 	
 	
 	public CustomerBO(){
 		
 	}
 	public CustomerBO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
-			Date birthDate, int ssn, String email, String custUsername) {
+			Date birthDate, String ssn, String email) {
 		super();
 		this.custNo = custNo;
 		this.custName = custName;
@@ -35,7 +34,6 @@ public class CustomerBO {
 		this.birthDate = birthDate;
 		this.ssn = ssn;
 		this.email = email;
-		this.custUsername = custUsername;
 	}
 	public int getCustNo() {
 		return custNo;
@@ -85,10 +83,11 @@ public class CustomerBO {
 	public void setBirthDate(Date birthDate) {
 		this.birthDate = birthDate;
 	}
-	public int getSsn() {
+	
+	public String getSsn() {
 		return ssn;
 	}
-	public void setSsn(int ssn) {
+	public void setSsn(String ssn) {
 		this.ssn = ssn;
 	}
 	public String getEmail() {
@@ -96,12 +95,6 @@ public class CustomerBO {
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getCustUsername() {
-		return custUsername;
-	}
-	public void setCustUsername(String custUsername) {
-		this.custUsername = custUsername;
 	}
 	
 	

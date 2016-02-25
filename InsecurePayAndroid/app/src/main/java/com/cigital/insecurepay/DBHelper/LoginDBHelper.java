@@ -8,7 +8,11 @@ import android.util.Log;
 
 import com.cigital.insecurepay.common.DBHelper;
 
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import java.text.ParseException;
 
 public class LoginDBHelper extends DBHelper {
     public static final String LOGIN_TRIALS = "LoginTrials";
@@ -16,6 +20,7 @@ public class LoginDBHelper extends DBHelper {
     public static final String TRIALS = "trials";
     public static final String CURR_TIME = "curr_time";
     public static final String isLocked = "isLocked";
+    DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
 
     public LoginDBHelper(Context context) {
@@ -24,7 +29,9 @@ public class LoginDBHelper extends DBHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " text , " + isLocked + " int )");
+        db.execSQL("DROP TABLE IF EXISTS LoginTrials;");
+        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP , " + isLocked + " int )");
+        db.execSQL("CREATE TRIGGER update_date_time AFTER UPDATE ON LoginTrials BEGIN update LoginTrials SET curr_time = datetime('now') WHERE cust_username = NEW.cust_username; END;");
     }
 
     @Override
@@ -39,62 +46,52 @@ public class LoginDBHelper extends DBHelper {
         ContentValues values = new ContentValues();
         values.put(TRIALS, trial);
         values.put(CUST_USERNAME, username);
-        values.put(CURR_TIME, "");
         values.put(isLocked, 0);
         db.insert(LOGIN_TRIALS, null, values);
     }
 
     // Update trials to SqlLite DB with incremented trials
-    public void updateTrial(String username, int trial) {
+    public void updateTrial(String username, int trial, boolean locked) {
         Log.d("LoginDBHelper", "updateTrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(TRIALS, trial);
-        if (getTrial(username) == 2) {
-            Date d1 = new Date();
-            values.put(CURR_TIME, String.valueOf(d1.getTime()));
-            values.put(isLocked, 1);
-        }
-        if (trial < 2) {
-            values.put(CURR_TIME, "");
-            values.put(isLocked, 0);
-        }
+        values.put(isLocked, locked);
         db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
-
     }
 
     // Fetch trials from SqlLite DB
     public int getTrial(String username) {
         Log.d("LoginDBHelper", "getTrial");
-        int user_trial = -1;
+        int userTrial = -1;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select " + TRIALS + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            user_trial = cursor.getInt(0);
+            userTrial = cursor.getInt(0);
         }
-        return user_trial;
+        return userTrial;
     }
 
-    public long getTimestamp(String username) {
+    public DateTime getTimestamp(String username) throws ParseException {
         Log.d("LoginDBHelper", "getTimestamp");
         SQLiteDatabase db = this.getReadableDatabase();
-        long entry_time = 0;
+        DateTime entryTime = null;
         Cursor cursor = db.rawQuery("select " + CURR_TIME + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            entry_time = cursor.getLong(0);
+            entryTime = format.parseDateTime(cursor.getString(0));
         }
-        return entry_time;
+        return entryTime;
     }
 
-    public int isLocked(String username) {
+    public boolean isLocked(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
-        int locked = 0;
+        boolean locked = false;
         Cursor cursor = db.rawQuery("select " + isLocked + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            locked = cursor.getInt(0);
+            locked = cursor.getInt(0) == 1;
         }
         return locked;
     }

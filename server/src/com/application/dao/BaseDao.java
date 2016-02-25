@@ -1,7 +1,7 @@
 package com.application.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ public class BaseDao {
 	public BaseDao(Connection conn) {
 		this.conn = conn;
 	}
-	
+
 	public ResultSet querySql(String sql, List<Object> params)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
@@ -31,14 +31,13 @@ public class BaseDao {
 		rs = ps.executeQuery();
 		return rs;
 	}
-	
-	public int updateSql(String sql, List<Object> params) throws SQLException{
+
+	public int updateSql(String sql, List<Object> params) throws SQLException {
 		ps = conn.prepareStatement(sql);
 		createParams(params);
 		return ps.executeUpdate();
 	}
-	
-	
+
 	private void createParams(List<Object> params) throws SQLException {
 		int i = 1;
 		for (Object param : params) {
@@ -47,12 +46,12 @@ public class BaseDao {
 			} else if (param instanceof String) {
 				ps.setString(i, param.toString());
 			} else if (param instanceof Date) {
-				ps.setDate(i, Date.valueOf(param.toString()));
+				ps.setDate(i, new java.sql.Date(((Date) param).getTime()));
 			}
 			i++;
 		}
 	}
-	
+
 	public void close() throws SQLException {
 		if (ps != null)
 			ps.close();
@@ -61,5 +60,4 @@ public class BaseDao {
 
 	}
 
-	
 }
