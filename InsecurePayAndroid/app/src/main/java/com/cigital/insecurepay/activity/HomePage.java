@@ -125,6 +125,9 @@ public class HomePage extends AppCompatActivity
             Log.i(this.getClass().getSimpleName(), "Home Fragment selected");
             setTitle(R.string.nav_homepage);
         } else if (id == R.id.nav_transfer_funds) {
+            fragmentClass = HomeFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Home Fragment selected");
+            setTitle(R.string.nav_homepage);
 
         } else if (id == R.id.nav_interest_calc) {
 
