@@ -48,6 +48,8 @@ public class BaseDao {
 				ps.setString(i, param.toString());
 			} else if (param instanceof Date) {
 				ps.setDate(i, Date.valueOf(param.toString()));
+			} else if(param instanceof Float){
+				ps.setFloat(i, ((Float)param).floatValue());
 			}
 			i++;
 		}

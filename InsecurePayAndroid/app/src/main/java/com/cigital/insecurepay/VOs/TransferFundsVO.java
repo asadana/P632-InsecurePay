@@ -9,130 +9,68 @@ import java.util.Date;
  */
 public class TransferFundsVO {
 
-    private int CustomerNumber;
-    private int AccountNumber;
-    private int TransferID;
-    private int toAccountNumber;
-    private int toCustomerNumber;
-    private float TransferAmount;
-    private Date Timestamp;
-    private float frombeforeAmount;
-    private float fromafterAmount;
-    private float tobeforeAmount;
-    private float toafterAmount;
+    private int fromCustNo;
+    private int fromAccountNo;
+    private int toAccountNo;
+    private int toCustNo;
+    private float transferAmount;
+    private String transferDetails;
 
-    public String getTransferDetails() {
-        return TransferDetails;
+
+    public TransferFundsVO(int fromAccountNo,int fromCustNo,int toCustNo,int toAccountNo,float transferAmount,String transferDetails) {
+        this.fromCustNo = fromCustNo;
+        this.fromAccountNo = fromAccountNo;
+        this.toAccountNo = toAccountNo;
+        this.toCustNo = toCustNo;
+        this.transferAmount = transferAmount;
+        this.transferDetails = transferDetails;
     }
 
-    public void setTransferDetails(String transferDetails) {
-        TransferDetails = transferDetails;
+    public int getFromCustNo() {
+        return fromCustNo;
     }
 
-    public int getCustomerNumber() {
-        return CustomerNumber;
+    public void setFromCustNo(int fromCustNo) {
+        this.fromCustNo = fromCustNo;
     }
 
-    public void setCustomerNumber(int customerNumber) {
-        CustomerNumber = customerNumber;
+    public int getFromAccountNo() {
+        return fromAccountNo;
     }
 
-    public int getAccountNumber() {
-        return AccountNumber;
+    public void setFromAccountNo(int fromAccountNo) {
+        this.fromAccountNo = fromAccountNo;
     }
 
-    public void setAccountNumber(int accountNumber) {
-        AccountNumber = accountNumber;
+    public int getToCustNo() {
+        return toCustNo;
     }
 
-    public int getTransferID() {
-        return TransferID;
-    }
-
-    public void setTransferID(int transferID) {
-        TransferID = transferID;
-    }
-
-    public int getToAccountNumber() {
-        return toAccountNumber;
-    }
-
-    public void setToAccountNumber(int toAccountNumber) {
-        this.toAccountNumber = toAccountNumber;
-    }
-
-    public int getToCustomerNumber() {
-        return toCustomerNumber;
-    }
-
-    public void setToCustomerNumber(int toCustomerNumber) {
-        this.toCustomerNumber = toCustomerNumber;
+    public void setToCustNo(int toCustNo) {
+        this.toCustNo = toCustNo;
     }
 
     public float getTransferAmount() {
-        return TransferAmount;
+        return transferAmount;
     }
 
     public void setTransferAmount(float transferAmount) {
-        TransferAmount = transferAmount;
+        this.transferAmount = transferAmount;
     }
 
-    public Date getTimestamp() {
-        return Timestamp;
+    public String getTransferDetails() {
+        return transferDetails;
     }
 
-    public void setTimestamp(Date timestamp) {
-        Timestamp = timestamp;
+    public void setTransferDetails(String transferDetails) {
+        this.transferDetails = transferDetails;
     }
 
-    public float getFrombeforeAmount() {
-        return frombeforeAmount;
+    public int getToAccountNo() {
+        return toAccountNo;
     }
 
-    public void setFrombeforeAmount(float frombeforeAmount) {
-        this.frombeforeAmount = frombeforeAmount;
-    }
-
-    public float getFromafterAmount() {
-        return fromafterAmount;
-    }
-
-    public void setFromafterAmount(float fromafterAmount) {
-        this.fromafterAmount = fromafterAmount;
-    }
-
-    public float getTobeforeAmount() {
-        return tobeforeAmount;
-    }
-
-    public void setTobeforeAmount(float tobeforeAmount) {
-        this.tobeforeAmount = tobeforeAmount;
-    }
-
-    public float getToafterAmount() {
-        return toafterAmount;
-    }
-
-    public void setToafterAmount(float toafterAmount) {
-        this.toafterAmount = toafterAmount;
-    }
-
-    private String TransferDetails;
-
-
-    public TransferFundsVO(int customerNumber, int accountNumber, int transferID, int toAccountNumber, int toCustomerNumber, float transferAmount,
-                           Date timestamp, float frombeforeAmount, float fromafterAmount, float tobeforeAmount, float toafterAmount, String transferDetails) {
-        this.CustomerNumber = customerNumber;
-        this.AccountNumber = accountNumber;
-        this.TransferID = transferID;
-        this.toAccountNumber = toAccountNumber;
-        this.toCustomerNumber = toCustomerNumber;
-        this.TransferAmount = transferAmount;
-        this.Timestamp = timestamp;
-        this.frombeforeAmount = frombeforeAmount;
-        this.fromafterAmount = fromafterAmount;
-        this.tobeforeAmount = tobeforeAmount;
-        this.toafterAmount = toafterAmount;
-        this.TransferDetails = transferDetails;
+    public void setToAccountNo(int toAccountNo) {
+        this.toAccountNo = toAccountNo;
     }
 }

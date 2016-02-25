@@ -2,9 +2,7 @@ package com.cigital.insecurepay.VOs;
 
 import java.util.Date;
 
-/**
- * Created by Amish on 21-02-2016.
- */
+
 public class AccountVO {
     private int custNo;
     private int accNo;
