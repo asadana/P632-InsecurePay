@@ -47,7 +47,9 @@ public class BaseDao {
 				ps.setString(i, param.toString());
 			} else if (param instanceof Date) {
 				ps.setDate(i, new java.sql.Date(((Date) param).getTime()));
-			}
+			} else if(param instanceof Float){
+				ps.setFloat(i, ((Float)param).floatValue());
+			}		
 			i++;
 		}
 	}
