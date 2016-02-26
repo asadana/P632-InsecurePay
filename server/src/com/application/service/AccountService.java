@@ -34,7 +34,7 @@ public class AccountService extends BaseService {
 			try {
 				close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				logger.error(this.getClass().getSimpleName(), e);
 			}
 		}
 		return accountBO;

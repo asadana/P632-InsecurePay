@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
 	<Properties>
-		<Property name="log-path">/Users/janakbhalla/Desktop/logs</Property>
+		<Property name="log-path">/var/log/tomcat8/insecurePayLogs</Property>
 	</Properties>
 	<Appenders>
 		<RollingFile name="RollingFile"
