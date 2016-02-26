@@ -2,9 +2,14 @@ package com.cigital.insecurepay.activity;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import android.widget.EditText;
 
 import com.cigital.insecurepay.R;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,21 +19,24 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.init;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.Intents.release;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 
-/**
- * Created by ankit-arch on 2/19/16.
- */
 
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    public static final String typeUsername = "foo";
-    public static final String typePassword = "abcdef";
+    public static final String correctUsername = "foo";
+    public static final String wrongPassword = "abcdef";
+    public static final String correctPassword = "123";
+    public static final String wrongUsername = "abc";
 
     @Rule
     public final ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
@@ -37,9 +45,9 @@ public class LoginActivityTest {
     @Test
     public void loginFailTest() {
         onView(withId(R.id.username)).
-                perform(typeText(typeUsername), closeSoftKeyboard());
+                perform(typeText(correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(typePassword), closeSoftKeyboard());
+                perform(typeText(wrongPassword), closeSoftKeyboard());
         // First attempt
         onView(withId(R.id.sign_in_button))
                 .perform(click());
@@ -48,7 +56,51 @@ public class LoginActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-   /* @Test
+    @Test
+    public void loginPassTest() {
+        init();
+        onView(withId(R.id.username)).
+                perform(typeText(correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(correctPassword), closeSoftKeyboard());
+        // First attempt with correct username and password
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        intended(hasComponent(HomePage.class.getName()));
+        release();
+    }
+
+
+    @Test
+    public void loginUsernameExistsTest() {
+        onView(withId(R.id.username)).
+                perform(typeText(wrongUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(correctPassword), closeSoftKeyboard());
+        // First attempt with wrong username
+        onView(withId(R.id.username)).check(matches(withError(
+                mActivityRule.getActivity().getString(R.string.username_does_not_exist))));
+    }
+
+    private static Matcher<View> withError(final String expected) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view instanceof EditText)) {
+                    return false;
+                }
+                EditText editText = (EditText) view;
+                return editText.getError().toString().equals(expected);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
+    }
+   /*@Test
     public void accountLockedTest() {
         onView(withId(R.id.username)).
                 perform(typeText(typeUsername), closeSoftKeyboard());

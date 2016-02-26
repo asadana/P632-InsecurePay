@@ -270,12 +270,12 @@ public class AccountFragment extends Fragment {
         alertDialogBuilder.setPositiveButton("OK", null);
         alertDialogBuilder.setNegativeButton("Cancel", null);
 
-        final EditText password1View;
-        final EditText password2View;
+        final EditText etNewPassword;
+        final EditText etConfirmPassword;
 
         // EditText variables to fetch user inputs from the dialog
-        password1View = (EditText) dialogView.findViewById(R.id.et_password_field1);
-        password2View = (EditText) dialogView.findViewById(R.id.et_password_field2);
+        etNewPassword = (EditText) dialogView.findViewById(R.id.etxtChangePassword_newPassword);
+        etConfirmPassword = (EditText) dialogView.findViewById(R.id.etxtChangePassword_confirmPassword);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -285,38 +285,38 @@ public class AccountFragment extends Fragment {
                 alertD.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String password_field1 = password1View.getText().toString();
-                        String password_field2 = password2View.getText().toString();
+                        String newPassword = etNewPassword.getText().toString();
+                        String confirmPassword = etConfirmPassword.getText().toString();
                         ChangePasswordTask changePasswordTask;
                         boolean cancel = false;
                         View focusView = null;
-                        Log.d("Password 1 ", password_field1);
-                        Log.d("Password 2 ", password_field2);
+                        Log.d("Password 1 ", newPassword);
+                        Log.d("Password 2 ", confirmPassword);
 
-                        if (TextUtils.isEmpty(password_field1)) {
-                            password1View.setError(getString(R.string.error_field_required));
+                        if (TextUtils.isEmpty(newPassword)) {
+                            etNewPassword.setError(getString(R.string.error_field_required));
                             return;
                         }
 
-                        if ((password_field1.length() < 3) || (password_field2.length() < 3)) {
-                            password2View.setError("Minimum 3 characters length required");
-                            password1View.setText("");
-                            password2View.setText("");
+                        if ((newPassword.length() < 3) || (confirmPassword.length() < 3)) {
+                            etConfirmPassword.setError("Minimum 3 characters length required");
+                            etNewPassword.setText("");
+                            etConfirmPassword.setText("");
                             return;
                         }
 
-                        if (TextUtils.isEmpty(password_field2)) {
-                            password2View.setError(getString(R.string.error_invalid_field));
+                        if (TextUtils.isEmpty(confirmPassword)) {
+                            etConfirmPassword.setError(getString(R.string.error_invalid_field));
                             return;
                         }
 
-                        if (password_field1.equals(password_field2)) {
-                            changePasswordTask = new ChangePasswordTask(commonVO.getUsername(), password_field1);
+                        if (newPassword.equals(confirmPassword)) {
+                            changePasswordTask = new ChangePasswordTask(commonVO.getUsername(), newPassword);
                             changePasswordTask.execute();
                             alertD.dismiss();
                         } else {
-                            password1View.setText("");
-                            password2View.setText("");
+                            etNewPassword.setText("");
+                            etConfirmPassword.setText("");
                             Toast.makeText(AccountFragment.this.getContext(), "Password mismatch", Toast.LENGTH_LONG).show();
                         }
 
