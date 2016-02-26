@@ -131,6 +131,7 @@ public class Connectivity {
             Log.d(this.getClass().getSimpleName(), "Network is on");
             return true;
         } else {
+            Log.d(this.getClass().getSimpleName(), "Network is off");
             Toast.makeText(context, context.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
 
         }

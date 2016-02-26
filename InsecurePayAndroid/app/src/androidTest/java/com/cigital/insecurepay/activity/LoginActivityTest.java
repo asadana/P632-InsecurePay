@@ -37,9 +37,11 @@ public class LoginActivityTest {
     public static final String wrongPassword = "abcdef";
     public static final String correctPassword = "123";
     public static final String wrongUsername = "abc";
+    public static final String wrongAccount = "1234234";
+
 
     @Rule
-    public final ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(LoginActivity.class);
+    public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     // This test will fail if the account is already locked
     @Test
@@ -52,7 +54,7 @@ public class LoginActivityTest {
         onView(withId(R.id.sign_in_button))
                 .perform(click());
         onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
@@ -71,7 +73,7 @@ public class LoginActivityTest {
     }
 
 
-    @Test
+   /* @Test
     public void loginUsernameExistsTest() {
         onView(withId(R.id.username)).
                 perform(typeText(wrongUsername), closeSoftKeyboard());
@@ -79,8 +81,8 @@ public class LoginActivityTest {
                 perform(typeText(correctPassword), closeSoftKeyboard());
         // First attempt with wrong username
         onView(withId(R.id.username)).check(matches(withError(
-                mActivityRule.getActivity().getString(R.string.username_does_not_exist))));
-    }
+                loginActivityActivityTestRule.getActivity().getString(R.string.username_does_not_exist))));
+    }*/
 
     private static Matcher<View> withError(final String expected) {
         return new TypeSafeMatcher<View>() {
@@ -113,7 +115,7 @@ public class LoginActivityTest {
         onView(withId(R.id.sign_in_button))
                 .perform(click());
         onView(withText(R.string.login_failed_account_locked))
-                .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }*/
 }
