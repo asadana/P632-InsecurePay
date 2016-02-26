@@ -24,6 +24,7 @@
     <!--Following strings are for Login-->
     <string name="login_path">login</string>
     <string name="forgot_password_path">ForgotPassword</string>
+    <string name="transfer_funds_path">transferFunds</string>
     <string name="cust_details_path">custService</string>
     <string name="prompt_server_addr">Enter Server Address</string>
     <string name="account_lockout_duration">60000</string>

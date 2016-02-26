@@ -52,7 +52,7 @@ public class TransferFundsDao extends BaseDao{
 		params = new ArrayList<Object>();
 		params.add(l.getFromAccountNo());
 		params.add(l.getFromCustNo());
-		params.add(l.getToAccountNo());
+		params.add(toAccountNo);
 		params.add(l.getToCustNo());
 		params.add(l.getTransferAmount());
 		params.add(fromBeforeAmt);
@@ -74,7 +74,7 @@ public class TransferFundsDao extends BaseDao{
 		
 		params = new ArrayList<Object>();
 		params.add(toAfterAmt);
-		params.add(l.getToAccountNo());
+		params.add(toAccountNo);
 		count = updateSql(Queries.UPDATE_ACCOUNT_BALANCE, params);
 		
 		return fundsTransferred;
