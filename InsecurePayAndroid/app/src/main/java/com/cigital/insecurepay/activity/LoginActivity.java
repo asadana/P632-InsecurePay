@@ -516,7 +516,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (lockoutVO.isLocked()) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
             } else if (!lockoutVO.getLoginValidationVO().isUsernameExists()) {
-                usernameView.setError("Username does not exist");
+                usernameView.setError(getString(R.string.username_does_not_exist));
                 usernameView.requestFocus();
             } else if (lockoutVO.getLoginValidationVO().isValidUser()) {
                 try {

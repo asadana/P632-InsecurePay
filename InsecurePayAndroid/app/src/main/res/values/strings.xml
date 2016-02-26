@@ -83,5 +83,6 @@
     <string name="tvForgotPass_hereToHelp">We\'re here to help</string>
     <string name="etChangePassword_newPassword">Enter your new password</string>
     <string name="etChangePassword_confirmPassword">Confirm new passsword</string>
+    <string name="username_does_not_exist">Username does not exist</string>
 
 </resources>
