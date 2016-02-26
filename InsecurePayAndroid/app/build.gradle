@@ -16,7 +16,16 @@ android {
     }
 
     lintOptions {
+        // if true, stop the gradle build if errors are found
         abortOnError false
+        // if true, absolute paths are displayed for all warnings/errors
+        absolutePaths false
+        // if true, only report errors
+        ignoreWarnings false
+
+        xmlReport false
+        htmlReport true
+        htmlOutput file("$project.buildDir/reports/lint/lint-result.html")
     }
 
     buildTypes {
