@@ -285,7 +285,6 @@ public class AccountFragment extends Fragment {
                         String newPassword = etNewPassword.getText().toString();
                         String confirmPassword = etConfirmPassword.getText().toString();
                         ChangePasswordTask changePasswordTask;
-
                         Log.d("Password 1 ", newPassword);
                         Log.d("Password 2 ", confirmPassword);
 

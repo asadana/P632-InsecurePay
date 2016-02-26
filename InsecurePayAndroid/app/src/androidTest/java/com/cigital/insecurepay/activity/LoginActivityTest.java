@@ -72,6 +72,7 @@ public class LoginActivityTest {
 
         onView(withId(R.id.username))
                 .perform(typeText(correctUsername), closeSoftKeyboard());
+
         onView(withId(R.id.password)).
                 perform(typeText(wrongPassword), closeSoftKeyboard());
 
@@ -82,7 +83,6 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
-
 
     @Test
     public void loginFailTest() {
