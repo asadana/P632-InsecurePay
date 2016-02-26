@@ -41,8 +41,10 @@ public class LoginActivityTest {
     public static final String wrongUsername = "abc";
     public static final String wrongAccount = "1234234";
 
+
     public static final String URL = "http://10.0.0.3:8090/";
     public static final String path = "InsecurePayServiceServer/rest/";
+
 
 
     @Rule
