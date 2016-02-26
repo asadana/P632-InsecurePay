@@ -50,6 +50,7 @@
     <string name="cust_details_path">custService</string>
     <string name="change_password_path">changePassword</string>
     <string name="account_details_path">accountService</string>
+    <string name="transfer_funds_path">transferFunds</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>

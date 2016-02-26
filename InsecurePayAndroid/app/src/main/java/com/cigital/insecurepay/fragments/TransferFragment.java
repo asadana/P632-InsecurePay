@@ -1,93 +1,131 @@
 package com.cigital.insecurepay.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.AccountVO;
+import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.VOs.TransferFundsVO;
+import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
 
 public class TransferFragment extends Fragment {
 
-    private TransferFetchTask task = null;
-    private Gson gson = new Gson();
-    EditText etAccountNumber;
+    EditText etTransferDetails;
+    EditText etCust_username;
     EditText etTransferAmount;
-    Button bTransfer;
-    private OnFragmentInteractionListener mListener;
+    int fromCustNo;
+    int fromAccountNo = 2004;
+    int toCustNo = 6;
+    Button btnTransfer;
+
+    // To handle connections
+    private Gson gson = new Gson();
+    private CommonVO commonVO;
+
+    private TransferTask transferTask = null;
 
     public TransferFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View viewObj = inflater.inflate(R.layout.fragment_home, container, false);
-        etAccountNumber = (EditText)viewObj.findViewById(R.id.etAccountNumber);
-        etTransferAmount = (EditText)viewObj.findViewById(R.id.etTransferAmount);
-        bTransfer = (Button)viewObj.findViewById(R.id.bTransfer);
-        onButtonPressed(bTransfer);
+        View viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
+
+        initValues(viewObj);
+        addListeners();
         return viewObj;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Button uri) {
-        task = new TransferFetchTask();
-        task.execute();
+    private void initValues(View viewObj) {
+        Log.i(this.getClass().getSimpleName(), "Initializing values.");
+
+        // Initializing all objects from fragment_transfer
+        etTransferAmount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
+        etTransferDetails = (EditText) viewObj.findViewById(R.id.ettransferDetails);
+        etCust_username = (EditText) viewObj.findViewById(R.id.etCust_username);
+        btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
+
+        // Initializing commonVO object
+        commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
+        Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    // Initializing listeners where needed
+    protected void addListeners() {
+        Log.i(this.getClass().getSimpleName(), "Adding Listeners");
+
+
+        btnTransfer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("in on click", "clicked");
+                String transferDetails = etTransferDetails.getText().toString();
+                String transferAmount = etTransferAmount.getText().toString();
+                String custUsername = etCust_username.getText().toString();
+                Log.d("transferDetails", "" + transferDetails);
+                Log.d("transferAmount", "" + transferAmount);
+                Log.d("custUsername", "" + custUsername);
+
+                TransferTask transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
+                transferTask.execute();
+            }
+        });
+    }
+
+
+    private class TransferTask extends AsyncTask<String, String, String> {
+
+        private int fromCustNo;
+        private int fromAccountNo;
+        private int toCustNo;
+        private float transferAmount;
+        private String transferDetails;
+
+
+        TransferTask(int fromAccountNo, int fromCustNo, int toCustNo, float transferAmount, String transferDetails) {
+            this.fromCustNo = fromCustNo;
+            this.fromAccountNo = fromAccountNo;
+            this.toCustNo = toCustNo;
+            this.transferAmount = transferAmount;
+            this.transferDetails = transferDetails;
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-    class TransferFetchTask extends AsyncTask<String, String, AccountVO> {
-
 
         @Override
-        protected AccountVO doInBackground(String... params) {
-            return null;
+        protected String doInBackground(String... params) {
+
+            Log.d(this.getClass().getSimpleName(), "In background, sending transfer details");
+            String amount_transferred = null;
+            try {
+                LoginDBHelper db = new LoginDBHelper(TransferFragment.this.getContext());
+                //Parameters contain credentials which are capsuled to ChangePasswordVO objects
+                TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
+                //sendToServer contains JSON object that has credentials
+                String sendToServer = gson.toJson(sendVo);
+                //Passing the context of LoginActivity to Connectivity
+                Connectivity con_login = new Connectivity(TransferFragment.this.getContext(), getString(R.string.transfer_funds_path), commonVO.getServerAddress(), sendToServer);
+                //Call post and since there are white spaces in the response, trim is called
+                amount_transferred = con_login.post().trim();
+                Log.d("Response from server", amount_transferred);
+                Thread.sleep(2000);
+
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "Exception thrown in transfer funds", e);
+            }
+
+            return amount_transferred;
         }
     }
 }
