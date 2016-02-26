@@ -31,14 +31,12 @@ public class ForgotPasswordService extends BaseService{
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
 			logger.error(this.getClass().getSimpleName(), e);
-			e.printStackTrace();
 		} finally {
 
 			try {
 				close();
 			} catch (SQLException e) {
 				logger.error(this.getClass().getSimpleName(), e);
-				e.printStackTrace();
 			}
 		}
 		return validate;
