@@ -5,25 +5,25 @@
         <item
             android:id="@+id/nav_homepage"
             android:checked="true"
-            android:title="Home" />
+            android:title="@string/nav_homepage" />
         <item
             android:id="@+id/nav_account_manage"
-            android:title="Account Management" />
+            android:title="@string/nav_account_manage" />
         <item
             android:id="@+id/nav_transfer_funds"
-            android:title="Transfer Funds" />
+            android:title="@string/nav_transfer_funds" />
         <item
             android:id="@+id/nav_interest_calc"
-            android:title="Interest Calculator" />
+            android:title="@string/nav_interest_calc" />
 
         <item
             android:id="@+id/nav_support_chat"
-            android:title="Support Chat" />
+            android:title="@string/nav_support_chat" />
     </group>
 
             <item
                 android:id="@+id/nav_logout"
-                android:title="Logout" />
+                android:title="@string/action_logout" />
 
 
 </menu>
