@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
@@ -126,6 +127,18 @@ public class TransferFragment extends Fragment {
             }
 
             return amount_transferred;
+        }
+
+        @Override
+        protected void onPostExecute(final String amount_transferred) {
+
+            if (amount_transferred.equals("false")) {
+                Toast.makeText(TransferFragment.this.getContext(), "Amount was not transferred", Toast.LENGTH_LONG).show();
+            } else if (amount_transferred.equals("true")) {
+                Toast.makeText(TransferFragment.this.getContext(), "Transaction successful", Toast.LENGTH_LONG).show();
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Invalid response on transfer funds");
+            }
         }
     }
 }
