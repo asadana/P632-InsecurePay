@@ -36,9 +36,9 @@ public class ForgotPassword extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        accountNoView = (EditText) findViewById(R.id.etxt_AccountNo);
-        textSSNNoView = (EditText) findViewById(R.id.etxt_SSNNo);
-        usernameView = (EditText) findViewById(R.id.etxt_username);
+        accountNoView = (EditText) findViewById(R.id.etForgotPassword_AccountNo);
+        textSSNNoView = (EditText) findViewById(R.id.etForgotPassword_SSNNo);
+        usernameView = (EditText) findViewById(R.id.etForgotPassword_username);
         Button mSendButton = (Button) findViewById(R.id.btn_send);
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +126,7 @@ public class ForgotPassword extends AppCompatActivity {
         protected void onPostExecute(final LoginValidationVO loginValidationVO) {
 
             if (!loginValidationVO.isUsernameExists()) {
-                usernameView.setError("Username does not exist");
+                usernameView.setError(getString(R.string.username_does_not_exist));
                 usernameView.requestFocus();
             } else {
                 if (!loginValidationVO.isValidUser()) {
