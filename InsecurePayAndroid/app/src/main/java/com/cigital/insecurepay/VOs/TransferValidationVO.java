@@ -25,7 +25,7 @@ public class TransferValidationVO {
         this.usernameExists = usernameExists;
     }
 
-    public int getCustNo() {
+    public  int getCustNo() {
         return custNo;
     }
 

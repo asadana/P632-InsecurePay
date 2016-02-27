@@ -5,13 +5,14 @@ import com.cigital.insecurepay.fragments.TransferFragment;
 import java.util.Date;
 
 
-public class TransferFundsVO {
+public class TransferFundsVO extends TransferValidationVO {
 
     private int fromCustNo;
     private int fromAccountNo;
     private int toCustNo;
     private float transferAmount;
     private String transferDetails;
+
 
 
     public TransferFundsVO(int fromAccountNo,int fromCustNo,int toCustNo,float transferAmount,String transferDetails) {
