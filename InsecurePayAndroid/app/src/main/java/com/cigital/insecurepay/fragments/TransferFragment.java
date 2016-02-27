@@ -15,6 +15,7 @@ import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
+import com.cigital.insecurepay.VOs.TransferValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
@@ -26,12 +27,13 @@ public class TransferFragment extends Fragment {
     EditText etTransferAmount;
     int fromCustNo;
     int fromAccountNo = 2004;
-    int toCustNo = 6;
+    int toCustNo;
     Button btnTransfer;
 
     // To handle connections
     private Gson gson = new Gson();
     private CommonVO commonVO;
+    private TransferValidationVO transferValidationVO;
 
     private TransferTask transferTask = null;
 
@@ -60,6 +62,8 @@ public class TransferFragment extends Fragment {
 
         // Initializing commonVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+
         Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
         Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
     }
@@ -79,6 +83,10 @@ public class TransferFragment extends Fragment {
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
                 Log.d("custUsername", "" + custUsername);
+                if(transferValidationVO.isUsernameExists())
+                {
+                    toCustNo = transferValidationVO.getCustNo();
+                }
 
                 TransferTask transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
                 transferTask.execute();
@@ -94,6 +102,7 @@ public class TransferFragment extends Fragment {
         private int toCustNo;
         private float transferAmount;
         private String transferDetails;
+
 
 
         TransferTask(int fromAccountNo, int fromCustNo, int toCustNo, float transferAmount, String transferDetails) {

@@ -44,6 +44,8 @@ public class Connectivity {
         this.sendToServer = sendToServer;
     }
 
+
+
     /*
     Sends data to server in JSON format and receives response in JSON as well
      */
