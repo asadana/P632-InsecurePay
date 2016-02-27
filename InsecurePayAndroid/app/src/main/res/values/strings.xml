@@ -83,5 +83,6 @@
     <string name="etChangePassword_newPassword">Enter your new password</string>
     <string name="etChangePassword_confirmPassword">Confirm new passsword</string>
     <string name="username_does_not_exist">Username does not exist</string>
+    <string name="nav_logout">Logout</string>
 
 </resources>

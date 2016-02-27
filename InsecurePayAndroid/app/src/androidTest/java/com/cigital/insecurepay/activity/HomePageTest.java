@@ -54,7 +54,7 @@ public class HomePageTest {
         onView(withText(R.string.nav_account_manage))
                 .perform(click());
 
-        //Enter
+
     }
 
 }

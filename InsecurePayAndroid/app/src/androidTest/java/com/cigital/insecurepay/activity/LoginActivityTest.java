@@ -14,7 +14,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
@@ -35,15 +37,53 @@ public class LoginActivityTest {
 
     public static final String correctUsername = "foo";
     public static final String wrongPassword = "abcdef";
-    public static final String correctPassword = "123";
+    public static final String correctPassword = "12345";
     public static final String wrongUsername = "abc";
     public static final String wrongAccount = "1234234";
+
+    public static final String URL = "http://10.0.0.3:8090/";
+    public static final String path = "InsecurePayServiceServer/rest/";
 
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    // This test will fail if the account is already locked
+
+    @Test
+    public void changeServerAdress() {
+
+        // Open the overflow menu OR open the options menu,
+        // depending on if the device has a hardware or software overflow menu button.
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        onView(withText(R.string.menu_change_url))
+                .perform(click());
+        // Enter URL
+        onView(withId(R.id.etUrlAddress))
+                .perform(typeText(URL), closeSoftKeyboard());
+
+        //Enter Path
+        onView(withId(R.id.etUrlPath))
+                .perform(typeText(path), closeSoftKeyboard());
+
+        onView(withId(android.R.id.button1)).perform(click());
+
+        //Login Again
+
+        onView(withId(R.id.username))
+                .perform(typeText(correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(wrongPassword), closeSoftKeyboard());
+
+        // First attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }
+
+
     @Test
     public void loginFailTest() {
         onView(withId(R.id.username)).

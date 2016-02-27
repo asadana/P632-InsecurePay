@@ -383,7 +383,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
-        Log.i("Server Address", "Initial address: " + userAddress + userPath);
+        Log.i(this.getClass().getSimpleName(), "Initial address: " + userAddress + userPath);
 
         // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -395,8 +395,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (!etUrlPath.getText().toString().isEmpty()) {
                     userPath = etUrlPath.getText().toString();
                 }
-
-                Log.i("Server Address Update", "Storing address: " + userAddress + userPath);
             }
             // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -409,6 +407,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         alertD.show();
 
         commonVO.setServerAddress(userAddress + userPath);
+        Log.i(this.getClass().getSimpleName(), "Storing address: " + userAddress + userPath);
     }
 
     private interface ProfileQuery {
