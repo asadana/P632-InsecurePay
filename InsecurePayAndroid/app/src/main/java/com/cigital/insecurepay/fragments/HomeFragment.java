@@ -1,6 +1,7 @@
 package com.cigital.insecurepay.fragments;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ public class HomeFragment extends Fragment {
     private TextView tvBalance;
     private CommonVO commonVO;
     private TextView tvAccountNumber;
+    private OnFragmentInteractionListener mListener;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -41,6 +43,27 @@ public class HomeFragment extends Fragment {
 
 
         return viewObj;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void setAccNo(int accNo);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
     }
 
     private class custAccountFetchTask extends AsyncTask<String, String, AccountVO> {
@@ -67,6 +90,7 @@ public class HomeFragment extends Fragment {
 
             tvBalance.setText(Float.toString(accountDetails.getAccountBalance()));
             tvAccountNumber.setText(Integer.toString(accountDetails.getAccNo()));
+            mListener.setAccNo(accountDetails.getAccNo());
 
         }
 

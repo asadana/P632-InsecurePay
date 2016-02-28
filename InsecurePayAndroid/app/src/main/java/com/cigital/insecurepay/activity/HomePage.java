@@ -25,7 +25,7 @@ import com.cigital.insecurepay.fragments.TransferFragment;
 import com.google.gson.Gson;
 
 public class HomePage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
     protected Context contextHomePage = this;
     protected Gson gson = new Gson();
     private DrawerLayout drawer;
@@ -163,5 +163,12 @@ public class HomePage extends AppCompatActivity
     public void onLogOut() {
         Intent intent = new Intent(HomePage.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void setAccNo(int accNo) {
+        CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
+        commonVO.setAccountNo(accNo);
+        getIntent().putExtra(getString(R.string.common_VO), commonVO);
     }
 }
