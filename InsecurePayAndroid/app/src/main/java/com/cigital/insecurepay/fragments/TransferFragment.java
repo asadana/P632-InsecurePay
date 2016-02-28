@@ -35,6 +35,8 @@ public class TransferFragment extends Fragment {
     Button btnTransfer;
     private SharedPreferences UsernamePreferences;
     private SharedPreferences.Editor UsernamePrefsEditor;
+    public static final String PREFS_NAME = "MyPrefsFile";
+
     private static final String PREF_USERNAME = "username";
 
 
@@ -61,6 +63,19 @@ public class TransferFragment extends Fragment {
 
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing values.");
+        getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+                .edit()
+                .putString(PREF_USERNAME, etCust_username.getText().toString())
+                .commit();
+
+        SharedPreferences pref = getSharedPreferences(PREFS_NAME,MODE_PRIVATE);
+        String username = pref.getString(PREF_USERNAME, null);
+
+        if (etCust_username.getText().toString() == null) {
+            //Prompt for username
+            etCust_username.setText(username);
+
+        }
 
         // Initializing all objects from fragment_transfer
         etTransferAmount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
