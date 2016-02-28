@@ -41,6 +41,7 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
+    <string name="transfer_validation_path">transferValidation</string>
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>

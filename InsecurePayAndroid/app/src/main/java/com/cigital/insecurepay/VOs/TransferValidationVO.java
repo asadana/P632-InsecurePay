@@ -9,12 +9,15 @@ public class TransferValidationVO {
     private int custNo;
 
 
-    public TransferValidationVO() {}
+    public TransferValidationVO(String custUsername) {}
 
     public TransferValidationVO(boolean usernameExists, int custNo) {
         super();
         this.usernameExists = usernameExists;
         this.custNo=custNo;
+    }
+
+    public TransferValidationVO() {
     }
 
     public boolean isUsernameExists() {

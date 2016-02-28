@@ -1,5 +1,6 @@
 package com.cigital.insecurepay.fragments;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -21,7 +22,9 @@ import com.cigital.insecurepay.VOs.TransferValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
-import static com.cigital.insecurepay.R.string.transfervalidation_VO;
+import static com.cigital.insecurepay.R.string.account_lockout_duration;
+import static com.cigital.insecurepay.R.string.transfer_validation_path;
+//import static com.cigital.insecurepay.R.string.transfervalidation_VO;
 
 
 public class TransferFragment extends Fragment {
@@ -32,6 +35,7 @@ public class TransferFragment extends Fragment {
     int fromCustNo;
     int fromAccountNo = 2004;
     int toCustNo;
+    String custUsername;
     Button btnTransfer;
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final String PREF_USERNAME = "username";
@@ -44,6 +48,7 @@ public class TransferFragment extends Fragment {
     private TransferValidationVO transferValidationVO;
 
     private TransferTask transferTask = null;
+    private TransferValidationTask transfervalidationtask = null;
 
     public TransferFragment() {
         // Required empty public constructor
@@ -78,7 +83,7 @@ public class TransferFragment extends Fragment {
 
         // Initializing commonVO and transferfundsVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
-        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfervalidation_VO)));
+        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfer_validation_path)));
 
         Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
         Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
@@ -104,25 +109,60 @@ public class TransferFragment extends Fragment {
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
 
-                if(transferValidationVO.isUsernameExists())
-                {
-                    toCustNo = transferValidationVO.getCustNo();
-                }
-
-                sharedpreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
+              /*  sharedpreferences = this.getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(PREF_USERNAME, etCust_username.getText().toString());
-                editor.commit();
+                editor.commit();*/
 
-                String custUsername = sharedpreferences.getString(PREF_USERNAME,"");
+                custUsername = sharedpreferences.getString(PREF_USERNAME,"");
                 etCust_username.setText(custUsername);
+                if (transferAmount == null || custUsername == null) {
+                    etTransferAmount.setError("Enter Amount");
+                    etCust_username.setError("Enter Username");
+                }
                 Log.d("custUsername", "" + custUsername);
-                TransferTask transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
-                transferTask.execute();
+                if(transferValidationVO.isUsernameExists()) {
+                    toCustNo = transferValidationVO.getCustNo();
+                    transfervalidationtask = new TransferValidationTask(custUsername);
+                    transfervalidationtask.execute();
+                    transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
+                    transferTask.execute();
+                }
             }
         });
     }
 
+    class TransferValidationTask extends AsyncTask<String, String, TransferValidationVO> {
+        private TransferValidationVO accountDetails;
+        private int custno;
+
+        public TransferValidationTask(String custUsername) {
+        }
+
+        @Override
+        protected TransferValidationVO doInBackground(String... params) {
+            Log.d(this.getClass().getSimpleName(), "Background");
+            try {
+                //Connection to get Account Details
+                Connectivity conn = new Connectivity(TransferFragment.this.getContext(), getString(R.string.transfer_validation_path), commonVO.getServerAddress());
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(getString(R.string.username), accountDetails.isUsernameExists());
+                //Converts customer details to CustomerVO
+                accountDetails = gson.fromJson(conn.get(contentValues), TransferValidationVO.class);
+                Log.d(this.getClass().getSimpleName(), "Customer number: " + accountDetails.isUsernameExists());
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
+            }
+            return accountDetails;
+        }
+
+        protected void onPostExecute(TransferValidationVO accountDetails) {
+
+            
+
+        }
+
+    }
 
     private class TransferTask extends AsyncTask<String, String, String> {
 
