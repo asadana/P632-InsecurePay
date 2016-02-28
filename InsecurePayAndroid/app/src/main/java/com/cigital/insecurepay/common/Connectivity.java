@@ -46,6 +46,8 @@ public class Connectivity {
 
 
 
+
+
     /*
     Sends data to server in JSON format and receives response in JSON as well
      */

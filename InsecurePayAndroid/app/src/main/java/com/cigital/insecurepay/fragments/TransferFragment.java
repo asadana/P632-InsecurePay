@@ -33,9 +33,9 @@ public class TransferFragment extends Fragment {
     int fromAccountNo = 2004;
     int toCustNo;
     Button btnTransfer;
-    private SharedPreferences UsernamePreferences;
-    private SharedPreferences.Editor UsernamePrefsEditor;
+    public static final String PREFS_NAME = "MyPrefsFile";
     private static final String PREF_USERNAME = "username";
+    private SharedPreferences sharedpreferences;
 
 
     // To handle connections
@@ -62,6 +62,10 @@ public class TransferFragment extends Fragment {
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing values.");
 
+
+
+
+
         // Initializing all objects from fragment_transfer
         etTransferAmount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
         etTransferDetails = (EditText) viewObj.findViewById(R.id.ettransferDetails);
@@ -69,6 +73,7 @@ public class TransferFragment extends Fragment {
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
 
         //Implementing SharedPreferences
+
 
 
         // Initializing commonVO and transferfundsVO object
@@ -82,8 +87,10 @@ public class TransferFragment extends Fragment {
 
     }
 
+
+
     // Initializing listeners where needed
-    protected void addListeners() {
+    private void addListeners() {
         Log.i(this.getClass().getSimpleName(), "Adding Listeners");
 
 
@@ -93,15 +100,23 @@ public class TransferFragment extends Fragment {
                 Log.d("in on click", "clicked");
                 String transferDetails = etTransferDetails.getText().toString();
                 String transferAmount = etTransferAmount.getText().toString();
-                String custUsername = etCust_username.getText().toString();
+
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
-                Log.d("custUsername", "" + custUsername);
+
                 if(transferValidationVO.isUsernameExists())
                 {
                     toCustNo = transferValidationVO.getCustNo();
                 }
 
+                sharedpreferences = this.getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                editor.putString(PREF_USERNAME, etCust_username.getText().toString());
+                editor.commit();
+
+                String custUsername = sharedpreferences.getString(PREF_USERNAME,"");
+                etCust_username.setText(custUsername);
+                Log.d("custUsername", "" + custUsername);
                 TransferTask transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
                 transferTask.execute();
             }

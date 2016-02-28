@@ -19,6 +19,7 @@
     <string name="no_network">No network connection</string>
 
     <!--Following strings are for Login-->
+
     <string name="prompt_server_addr">Enter Server Address</string>
     <string name="account_lockout_duration">10</string>
     <string name="title_activity_home_page">HomePage</string>

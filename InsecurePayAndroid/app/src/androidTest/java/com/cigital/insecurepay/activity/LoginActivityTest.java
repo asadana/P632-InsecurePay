@@ -46,7 +46,6 @@ public class LoginActivityTest {
     public static final String path = "InsecurePayServiceServer/rest/";
 
 
-
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 

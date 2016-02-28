@@ -195,7 +195,7 @@ public class AccountFragment extends Fragment {
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
 
         // Fetch details from the server
-        AccountFetchTask accountFetchTask = new AccountFetchTask();
+        accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
     }
 
@@ -382,6 +382,8 @@ public class AccountFragment extends Fragment {
     // Inner-class to update the server
     private class AccountUpdateTask extends AsyncTask<String, String, String> {
 
+
+
         @Override
         protected String doInBackground(String... params) {
 
@@ -408,16 +410,12 @@ public class AccountFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final String responseFromServer) {
-            switch (responseFromServer) {
-                case "true":
-                    Toast.makeText(getContext(), R.string.account_update_successful, Toast.LENGTH_SHORT).show();
-                    break;
-                case "false":
-                    Toast.makeText(getContext(), R.string.account_update_failed, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
-                    break;
+            if (responseFromServer.equals("true")) {
+                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+            } else if (responseFromServer.equals("false")) {
+                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
             }
 
         }
@@ -439,6 +437,7 @@ public class AccountFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             String password_changed = null;
             try {
+                LoginDBHelper db = new LoginDBHelper(AccountFragment.this.getContext());
                 //Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
                 //sendToServer contains JSON object that has credentials
@@ -458,18 +457,14 @@ public class AccountFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(final String passwordChanged) {
+        protected void onPostExecute(final String password_changed) {
 
-            switch (passwordChanged) {
-                case "false":
-                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_not_changed, Toast.LENGTH_LONG).show();
-                    break;
-                case "true":
-                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_changed + password, Toast.LENGTH_LONG).show();
-                    break;
-                default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
-                    break;
+            if (password_changed.equals("false")) {
+                Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
+            } else if (password_changed.equals("true")) {
+                Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
             }
         }
     }
@@ -478,22 +473,18 @@ public class AccountFragment extends Fragment {
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
-        DateOfBirthPickerFragment() {
-
-        }
-
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {
             int year = calenderObj.get(Calendar.YEAR);
             int month = calenderObj.get(Calendar.MONTH);
             int day = calenderObj.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getContext(), this, year, month, day);
         }
 
         // Function handles what to once new date is selected from dialog
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker veiew, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
             tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }

@@ -96,7 +96,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
 
         TextView forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
-
         populateAutoComplete();
 
         passwordView = (EditText) findViewById(R.id.password);

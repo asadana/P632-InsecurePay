@@ -51,7 +51,6 @@ public class ForgotPasswordTest {
 
         onView(withId(R.id.btn_send)).
                 perform(click());
-
         onView(withText(R.string.default_password_link_sent))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
