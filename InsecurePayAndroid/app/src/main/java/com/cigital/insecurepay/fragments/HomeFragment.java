@@ -43,7 +43,7 @@ public class HomeFragment extends Fragment {
         return viewObj;
     }
 
-    class custAccountFetchTask extends AsyncTask<String, String, AccountVO> {
+    private class custAccountFetchTask extends AsyncTask<String, String, AccountVO> {
         private AccountVO accountDetails;
 
         @Override

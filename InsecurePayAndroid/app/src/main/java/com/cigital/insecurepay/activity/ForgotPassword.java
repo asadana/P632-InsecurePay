@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
@@ -101,7 +100,6 @@ public class ForgotPassword extends AppCompatActivity {
 
             LoginValidationVO loginValidationVO = null;
             try {
-                LoginDBHelper db = new LoginDBHelper(ForgotPassword.this);
                 //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
                 ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
                 //sendToServer contains JSON object that has credentials

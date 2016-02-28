@@ -12,8 +12,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.ParseException;
-
 public class LoginDBHelper extends DBHelper {
     public static final String LOGIN_TRIALS = "LoginTrials";
     public static final String CUST_USERNAME = "cust_username";
@@ -75,7 +73,7 @@ public class LoginDBHelper extends DBHelper {
         return userTrial;
     }
 
-    public DateTime getTimestamp(String username) throws ParseException {
+    public DateTime getTimestamp(String username) {
         Log.d("LoginDBHelper", "getTimestamp");
         SQLiteDatabase db = this.getReadableDatabase();
         DateTime entryTime = null;

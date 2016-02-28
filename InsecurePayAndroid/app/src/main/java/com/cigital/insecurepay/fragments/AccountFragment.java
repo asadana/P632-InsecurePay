@@ -27,7 +27,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
@@ -286,8 +285,7 @@ public class AccountFragment extends Fragment {
                         String newPassword = etNewPassword.getText().toString();
                         String confirmPassword = etConfirmPassword.getText().toString();
                         ChangePasswordTask changePasswordTask;
-                        boolean cancel = false;
-                        View focusView = null;
+
                         Log.d("Password 1 ", newPassword);
                         Log.d("Password 2 ", confirmPassword);
 
@@ -442,7 +440,6 @@ public class AccountFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             String password_changed = null;
             try {
-                LoginDBHelper db = new LoginDBHelper(AccountFragment.this.getContext());
                 //Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
                 //sendToServer contains JSON object that has credentials
@@ -481,6 +478,10 @@ public class AccountFragment extends Fragment {
     // Inner class for DialogFragment
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
+
+        DateOfBirthPickerFragment() {
+
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {

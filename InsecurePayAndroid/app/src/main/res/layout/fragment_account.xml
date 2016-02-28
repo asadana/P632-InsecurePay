@@ -106,7 +106,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_email"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillEmail" />
 
         <EditText
             android:id="@+id/etAccount_fillEmail"
@@ -131,7 +132,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_phoneNumber"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillPhone" />
 
         <EditText
             android:id="@+id/etAccount_fillPhone"
@@ -155,7 +157,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_addressStreet"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillAddressStreet" />
 
         <EditText
             android:id="@+id/etAccount_fillAddressStreet"
@@ -178,7 +181,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_addressCity"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillAddressCity" />
 
         <EditText
             android:id="@+id/etAccount_fillAddressCity"
@@ -202,7 +206,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_addressState"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillAddressState" />
 
         <EditText
             android:id="@+id/etAccount_fillAddressState"
@@ -226,7 +231,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:text="@string/tvAccount_addressZip"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:labelFor="@+id/etAccount_fillAddressZip" />
 
         <EditText
             android:id="@+id/etAccount_fillAddressZip"
