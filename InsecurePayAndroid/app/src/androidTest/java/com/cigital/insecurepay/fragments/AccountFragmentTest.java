@@ -23,9 +23,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 
-/**
- * Created by janakbhalla on 26/02/16.
- */
 @RunWith(AndroidJUnit4.class)
 public class AccountFragmentTest {
 
@@ -68,11 +65,11 @@ public class AccountFragmentTest {
                 .perform(click());
 
         //Enter a new Password
-        onView(withId(R.id.etxtChangePassword_newPassword))
+        onView(withId(R.id.etChangePassword_newPassword))
                 .perform(typeText(newPassword), closeSoftKeyboard());
 
         //Confirm new Password
-        onView(withId(R.id.etxtChangePassword_confirmPassword))
+        onView(withId(R.id.etChangePassword_confirmPassword))
                 .perform(typeText(newPassword), closeSoftKeyboard());
 
         onView(withId(android.R.id.button1)).perform(click());

@@ -22,14 +22,14 @@ import java.net.URL;
 import java.util.Map;
 
 public class Connectivity {
-    Context context;
-    String path;
-    String sendToServer;
-    URL url;
-    HttpURLConnection conn;
-    String response;
-    InputStream is;
-    String serverAddress;
+    private Context context;
+    private String path;
+    private String sendToServer;
+    private URL url;
+    private HttpURLConnection conn;
+    private String response;
+    private InputStream is;
+    private String serverAddress;
 
     //Constructor called if connection is to be established for get
     public Connectivity(Context context, String path, String serverAddress) {

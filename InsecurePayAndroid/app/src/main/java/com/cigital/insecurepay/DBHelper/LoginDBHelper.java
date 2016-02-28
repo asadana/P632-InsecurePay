@@ -40,11 +40,11 @@ public class LoginDBHelper extends DBHelper {
     }
 
     // Add trials to SqlLite DB
-    public void addTrial(String username, int trial) {
+    public void addTrial(String username) {
         Log.d("LoginDBHelper", "addtrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(TRIALS, trial);
+        values.put(TRIALS, 1);
         values.put(CUST_USERNAME, username);
         values.put(isLocked, 0);
         db.insert(LOGIN_TRIALS, null, values);
@@ -70,6 +70,8 @@ public class LoginDBHelper extends DBHelper {
             cursor.moveToFirst();
             userTrial = cursor.getInt(0);
         }
+        if (cursor != null)
+            cursor.close();
         return userTrial;
     }
 
@@ -82,6 +84,8 @@ public class LoginDBHelper extends DBHelper {
             cursor.moveToFirst();
             entryTime = format.parseDateTime(cursor.getString(0));
         }
+        if (cursor != null)
+            cursor.close();
         return entryTime;
     }
 
@@ -93,15 +97,15 @@ public class LoginDBHelper extends DBHelper {
             cursor.moveToFirst();
             locked = cursor.getInt(0) == 1;
         }
+        if (cursor != null)
+            cursor.close();
         return locked;
     }
 
-    public void resetTrial(String username) {
+    public void deleteTrial(String username) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(TRIALS, 0);
-        values.put(CURR_TIME, "");
-        values.put(isLocked, 0);
-        db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
+        db.delete(LOGIN_TRIALS, CUST_USERNAME + "='" + username + "'", null);
     }
+
+
 }

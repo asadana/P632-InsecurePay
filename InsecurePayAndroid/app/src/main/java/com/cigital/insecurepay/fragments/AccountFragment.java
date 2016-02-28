@@ -47,21 +47,19 @@ import java.util.Calendar;
 public class AccountFragment extends Fragment {
 
     // View objects
-    TextView tvName;
-    TextView tvAccountNumber;
-    TextView tvSSN;
-    TextView tvUserDOB;
-    EditText etEmail;
-    EditText etPhone;
-    EditText etAddressStreet;
-    EditText etAddressCity;
-    EditText etAddressState;
-    EditText etAddressZip;
-    Button btnUpdateInfo;
-    Button btnChangePassword;
+    private TextView tvName;
+    private TextView tvAccountNumber;
+    private TextView tvSSN;
+    private TextView tvUserDOB;
+    private EditText etEmail;
+    private EditText etPhone;
+    private EditText etAddressStreet;
+    private EditText etAddressCity;
+    private EditText etAddressState;
+    private EditText etAddressZip;
+    private Button btnUpdateInfo;
+    private Button btnChangePassword;
 
-    // To retrieve and store details
-    private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
     // To handle connections
@@ -198,7 +196,7 @@ public class AccountFragment extends Fragment {
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
 
         // Fetch details from the server
-        accountFetchTask = new AccountFetchTask();
+        AccountFetchTask accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
     }
 
@@ -274,8 +272,8 @@ public class AccountFragment extends Fragment {
         final EditText etConfirmPassword;
 
         // EditText variables to fetch user inputs from the dialog
-        etNewPassword = (EditText) dialogView.findViewById(R.id.etxtChangePassword_newPassword);
-        etConfirmPassword = (EditText) dialogView.findViewById(R.id.etxtChangePassword_confirmPassword);
+        etNewPassword = (EditText) dialogView.findViewById(R.id.etChangePassword_newPassword);
+        etConfirmPassword = (EditText) dialogView.findViewById(R.id.etChangePassword_confirmPassword);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -387,8 +385,6 @@ public class AccountFragment extends Fragment {
     // Inner-class to update the server
     private class AccountUpdateTask extends AsyncTask<String, String, String> {
 
-
-
         @Override
         protected String doInBackground(String... params) {
 
@@ -415,12 +411,16 @@ public class AccountFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final String responseFromServer) {
-            if (responseFromServer.equals("true")) {
-                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-            } else if (responseFromServer.equals("false")) {
-                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+            switch (responseFromServer) {
+                case "true":
+                    Toast.makeText(getContext(), R.string.account_update_successful, Toast.LENGTH_SHORT).show();
+                    break;
+                case "false":
+                    Toast.makeText(getContext(), R.string.account_update_failed, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+                    break;
             }
 
         }
@@ -462,14 +462,18 @@ public class AccountFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(final String password_changed) {
+        protected void onPostExecute(final String passwordChanged) {
 
-            if (password_changed.equals("false")) {
-                Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
-            } else if (password_changed.equals("true")) {
-                Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
-            } else {
-                Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
+            switch (passwordChanged) {
+                case "false":
+                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_not_changed, Toast.LENGTH_LONG).show();
+                    break;
+                case "true":
+                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_changed + password, Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
+                    break;
             }
         }
     }
@@ -484,12 +488,12 @@ public class AccountFragment extends Fragment {
             int month = calenderObj.get(Calendar.MONTH);
             int day = calenderObj.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getContext(), this, year, month, day);
+            return new DatePickerDialog(getActivity(), this, year, month, day);
         }
 
         // Function handles what to once new date is selected from dialog
         @Override
-        public void onDateSet(DatePicker veiew, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
             tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }

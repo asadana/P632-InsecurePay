@@ -7,7 +7,6 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="remember_me">Remember Me</string>
-    <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_invalid_field">Field is invalid</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -16,23 +15,16 @@
         completions."
     </string>
     <string name="title_activity_user_login">Sign in</string>
-    <!--Following strings are for Connectivity-->
-    <string name="defaultAddress">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
-    <string name="defaultPath">/rest/</string>
+    <string name="default_path">/rest/</string>
     <string name="no_network">No network connection</string>
+
     <!--Following strings are for Login-->
-    <string name="login_path">login</string>
-    <string name="forgot_password_path">ForgotPassword</string>
-    <string name="cust_details_path">custService</string>
     <string name="prompt_server_addr">Enter Server Address</string>
-    <string name="account_lockout_duration">60000</string>
+    <string name="account_lockout_duration">10</string>
     <string name="title_activity_home_page">HomePage</string>
-    <string name="change_password_path">changePassword</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="login_failed_account_locked">Login Failed and Account Locked</string>
-    <string name="login_failed_still_account_locked">Login Failed and Account still Locked</string>
     <string name="login_failed">Login Failed</string>
     <string name="login_successful">Login Successful</string>
     <string name="menu_change_url">Change Server Address</string>
@@ -46,8 +38,18 @@
     <string name="send">SEND</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="information_mismatch">Please verify your information and try again.</string>
-    <string name="default_password_linksent">Your password has been reset.</string>
+    <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
+
+
+    <!--Following strings are for Connectivity-->
+    <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
+    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <string name="login_path">login</string>
+    <string name="forgot_password_path">ForgotPassword</string>
+    <string name="cust_details_path">custService</string>
+    <string name="change_password_path">changePassword</string>
+    <string name="account_details_path">accountService</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>
@@ -55,10 +57,12 @@
     <string name="nav_transfer_funds">Transfer Funds</string>
     <string name="nav_interest_calc">Interest Calculator</string>
     <string name="nav_support_chat">Support Chat</string>
+    <string name="nav_logout">Logout</string>
 
     <!--For Home Fragment-->
     <string name="tvHome_accountNumber">Account No</string>
     <string name="tvHome_accountBalance">Balance</string>
+    <string name="tvHome_insecure_pay_Account">Insecure Pay Account</string>
 
     <!--For Account Management Fragment-->
     <string name="tvAccount_accountNumber">Account Number</string>
@@ -72,21 +76,23 @@
     <string name="tvAccount_addressState">State</string>
     <string name="tvAccount_addressZip">ZipCode</string>
     <string name="cust_no">custNo</string>
-    <string name="Account_details_path">accountService</string>
+    <string name="account_update_successful">Update successful</string>
+    <string name="account_update_failed">Update failed</string>
+    <string name="btnAccount_update">Update</string>
+    <string name="btnAccount_change_password">Change Password</string>
+    <string name="etAccount_phone_hint">0000000000</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--For Forgot Password -->
     <string name="etForgotPass_AccountNumber">Enter your Account Number</string>
     <string name="etForgotPass_ssnNumber">Enter your SSN Number</string>
     <string name="etForgotPass_username">Enter your username</string>
     <string name="tvForgotPass_hereToHelp">We\'re here to help</string>
+
+    <!--For Change Password -->
     <string name="etChangePassword_newPassword">Enter your new password</string>
     <string name="etChangePassword_confirmPassword">Confirm new passsword</string>
-    <string name="username_does_not_exist">Username does not exist</string>
-    <string name="nav_logout">Logout</string>
+    <string name="error_username_does_not_exist">Username does not exist</string>
     <string name="password_not_changed">Password was not changed</string>
-    <string name="password_changed">"Password Changed to "</string>
-    <string name="account_update_successful">Update successful</string>
-    <string name="account_update_failed">Update failed</string>
+    <string name="password_changed">Password Changed to </string>
 
 </resources>

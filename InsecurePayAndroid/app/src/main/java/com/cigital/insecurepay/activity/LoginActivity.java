@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
-    final Context context = this;
+    private final Context context = this;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -75,15 +75,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View progressView;
     private View loginFormView;
     private SharedPreferences loginPreferences;
-    private SharedPreferences.Editor loginPrefsEditor;
-    private boolean saveLogin;
     private CheckBox rememberMeCheck;
-    private TextView forgotPasswordView;
-    protected String userAddress;
-    protected String userPath;
-    protected Gson gson = new Gson();
-    protected Intent intent;
-    protected CommonVO commonVO = new CommonVO();
+    private String userAddress;
+    private String userPath;
+    private Gson gson = new Gson();
+    private Intent intent;
+    private CommonVO commonVO = new CommonVO();
 
 
     @Override
@@ -91,13 +88,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        userAddress = getString(R.string.defaultAddress);
-        userPath = getString(R.string.defaultPath);
+        userAddress = getString(R.string.default_address);
+        userPath = getString(R.string.default_path);
         commonVO.setServerAddress(userAddress + userPath);
 
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
-        forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
+        TextView forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
         populateAutoComplete();
 
         passwordView = (EditText) findViewById(R.id.password);
@@ -135,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        saveLogin = loginPreferences.getBoolean("saveLogin", false);
+        boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
         if (saveLogin) {
             usernameView.setText(loginPreferences.getString(getString(R.string.username), ""));
@@ -248,15 +245,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void saveLoginPreferences() {
-        loginPrefsEditor = loginPreferences.edit();
+        SharedPreferences.Editor loginPrefsEditor = loginPreferences.edit();
         if (rememberMeCheck.isChecked()) {
             loginPrefsEditor.putBoolean("saveLogin", true);
             loginPrefsEditor.putString("username", usernameView.getText().toString());
             loginPrefsEditor.putString("password", passwordView.getText().toString());
-            loginPrefsEditor.commit();
+            loginPrefsEditor.apply();
         } else {
             loginPrefsEditor.clear();
-            loginPrefsEditor.commit();
+            loginPrefsEditor.apply();
         }
     }
 
@@ -439,7 +436,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected LoginLockoutVO doInBackground(String... params) {
             // TODO: attempt authentication against a network service.
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
-            LoginValidationVO loginValidationVO = null;
+            LoginValidationVO loginValidationVO;
             LoginLockoutVO lockoutVO = new LoginLockoutVO();
             try {
                 //Check after account lockout
@@ -453,9 +450,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     lockoutVO.setAddUser(true);
                 } else {
                     Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
+                    Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
+                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() + "");
                 }
 
-                if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() > 10)){
+
+                if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
                     lockoutVO.setIsLocked(db.isLocked(username));
                 }
 
@@ -470,7 +470,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), commonVO.getServerAddress(), sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
                     String responseFromServer = con_login.post().trim();
-                    Log.d(this.getClass().getSimpleName(),responseFromServer);
+                    Log.d(this.getClass().getSimpleName(), responseFromServer);
                     //Convert serverResponse to respectiveVO
                     loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
 
@@ -481,11 +481,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     if (lockoutVO.getLoginValidationVO().isValidUser()) {
                         // delete row
+                        db.deleteTrial(username);
                     } else {
 
                         if (lockoutVO.isAddUser()) {
                             lockoutVO.setTrialCount(1);
-                            db.addTrial(username, 1);
+                            db.addTrial(username);
                         } else {
                             lockoutVO.setTrialCount(db.getTrial(username) + 1);
                             if (lockoutVO.getTrialCount() > 3)
@@ -515,12 +516,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             if (lockoutVO.isLocked()) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
             } else if (!lockoutVO.getLoginValidationVO().isUsernameExists()) {
-                usernameView.setError(getString(R.string.username_does_not_exist));
+                usernameView.setError(getString(R.string.error_username_does_not_exist));
                 usernameView.requestFocus();
             } else if (lockoutVO.getLoginValidationVO().isValidUser()) {
                 try {
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
                     // Move to Home Page if successful login
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
                     commonVO.setUsername(username);
                     commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
@@ -531,6 +533,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             } else {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+                passwordView.setError(getString(R.string.error_incorrect_password));
             }
 
         }

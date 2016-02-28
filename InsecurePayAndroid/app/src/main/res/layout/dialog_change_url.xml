@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/url"
                 android:imeOptions="actionUnspecified"
-                android:inputType="text"
+                android:inputType="textUri"
                 android:maxLines="1"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/path"
                 android:imeOptions="actionUnspecified"
-                android:inputType="text"
+                android:inputType="textUri"
                 android:maxLines="1"
                 android:singleLine="true" />
 

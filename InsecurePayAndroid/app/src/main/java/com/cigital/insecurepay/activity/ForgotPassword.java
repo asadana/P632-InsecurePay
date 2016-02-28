@@ -126,13 +126,13 @@ public class ForgotPassword extends AppCompatActivity {
         protected void onPostExecute(final LoginValidationVO loginValidationVO) {
 
             if (!loginValidationVO.isUsernameExists()) {
-                usernameView.setError(getString(R.string.username_does_not_exist));
+                usernameView.setError(getString(R.string.error_username_does_not_exist));
                 usernameView.requestFocus();
             } else {
                 if (!loginValidationVO.isValidUser()) {
                     Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.information_mismatch), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_linksent), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_link_sent), Toast.LENGTH_LONG).show();
                 }
 
             }

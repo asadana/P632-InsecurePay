@@ -75,7 +75,7 @@
                 android:id="@+id/saveLoginCheckBox"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_below="@+id/editTextPassword"
                 android:text="@string/remember_me"
                 />
@@ -97,7 +97,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="@string/forgot_password"
                 android:clickable="true"
-                android:onClick="onClick"
                 android:textColor="#576586"
                 android:layout_gravity="center_horizontal" />
 
