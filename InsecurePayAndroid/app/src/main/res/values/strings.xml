@@ -49,6 +49,7 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_linksent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
+    <string name="transfervalidation_VO">transfervalidationVO</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>
