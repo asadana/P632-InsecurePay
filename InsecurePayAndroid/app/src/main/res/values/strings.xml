@@ -84,5 +84,9 @@
     <string name="etChangePassword_confirmPassword">Confirm new passsword</string>
     <string name="username_does_not_exist">Username does not exist</string>
     <string name="nav_logout">Logout</string>
+    <string name="password_not_changed">Password was not changed</string>
+    <string name="password_changed">"Password Changed to "</string>
+    <string name="account_update_successful">Update successful</string>
+    <string name="account_update_failed">Update failed</string>
 
 </resources>

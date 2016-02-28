@@ -378,6 +378,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_url, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(dialogView);
+        alertDialogBuilder.setTitle(R.string.prompt_server_addr);
 
         // EditText variables to fetch user inputs from the dialog
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
@@ -395,6 +396,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (!etUrlPath.getText().toString().isEmpty()) {
                     userPath = etUrlPath.getText().toString();
                 }
+                commonVO.setServerAddress(userAddress + userPath);
+                Log.i(this.getClass().getSimpleName(), "Storing address: " + userAddress + userPath);
             }
             // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -405,9 +408,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         AlertDialog alertD = alertDialogBuilder.create();
         alertD.show();
-
-        commonVO.setServerAddress(userAddress + userPath);
-        Log.i(this.getClass().getSimpleName(), "Storing address: " + userAddress + userPath);
     }
 
     private interface ProfileQuery {
