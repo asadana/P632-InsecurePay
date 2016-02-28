@@ -1,5 +1,7 @@
 package com.cigital.insecurepay.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,8 @@ import com.cigital.insecurepay.VOs.TransferValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
+import static com.cigital.insecurepay.R.string.transfervalidation_VO;
+
 
 public class TransferFragment extends Fragment {
 
@@ -29,6 +33,10 @@ public class TransferFragment extends Fragment {
     int fromAccountNo = 2004;
     int toCustNo;
     Button btnTransfer;
+    private SharedPreferences UsernamePreferences;
+    private SharedPreferences.Editor UsernamePrefsEditor;
+    private static final String PREF_USERNAME = "username";
+
 
     // To handle connections
     private Gson gson = new Gson();
@@ -60,12 +68,18 @@ public class TransferFragment extends Fragment {
         etCust_username = (EditText) viewObj.findViewById(R.id.etCust_username);
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
 
-        // Initializing commonVO object
+        //Implementing SharedPreferences
+
+
+        // Initializing commonVO and transferfundsVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
-        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfervalidation_VO)));
 
         Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
         Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
+
+
+
     }
 
     // Initializing listeners where needed

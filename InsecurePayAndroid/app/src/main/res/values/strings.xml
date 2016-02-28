@@ -41,7 +41,6 @@
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
 
-
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
     <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
@@ -51,6 +50,7 @@
     <string name="change_password_path">changePassword</string>
     <string name="account_details_path">accountService</string>
     <string name="transfer_funds_path">transferFunds</string>
+    <string name="transfervalidation_VO">transfervalidationVO</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>
