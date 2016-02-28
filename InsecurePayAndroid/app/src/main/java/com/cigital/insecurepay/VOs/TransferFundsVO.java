@@ -5,7 +5,7 @@ import com.cigital.insecurepay.fragments.TransferFragment;
 import java.util.Date;
 
 
-public class TransferFundsVO extends TransferValidationVO {
+public class TransferFundsVO {
 
     private int fromCustNo;
     private int fromAccountNo;

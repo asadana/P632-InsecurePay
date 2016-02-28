@@ -105,7 +105,7 @@ public class TransferFragment extends Fragment {
                 Log.d("in on click", "clicked");
                 String transferDetails = etTransferDetails.getText().toString();
                 String transferAmount = etTransferAmount.getText().toString();
-
+                custUsername = etCust_username.getText().toString();
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
 
@@ -114,26 +114,23 @@ public class TransferFragment extends Fragment {
                 editor.putString(PREF_USERNAME, etCust_username.getText().toString());
                 editor.commit();*/
 
-                custUsername = sharedpreferences.getString(PREF_USERNAME,"");
-                etCust_username.setText(custUsername);
+                //custUsername = sharedpreferences.getString(PREF_USERNAME,"");
+               // etCust_username.setText(custUsername);
                 if (transferAmount == null || custUsername == null) {
                     etTransferAmount.setError("Enter Amount");
                     etCust_username.setError("Enter Username");
                 }
                 Log.d("custUsername", "" + custUsername);
-                if(transferValidationVO.isUsernameExists()) {
-                    toCustNo = transferValidationVO.getCustNo();
+
                     transfervalidationtask = new TransferValidationTask(custUsername);
                     transfervalidationtask.execute();
-                    transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, Float.parseFloat(transferAmount), transferDetails);
-                    transferTask.execute();
-                }
+
             }
         });
     }
 
     class TransferValidationTask extends AsyncTask<String, String, TransferValidationVO> {
-        private TransferValidationVO accountDetails;
+
         private int custno;
 
         public TransferValidationTask(String custUsername) {
@@ -146,19 +143,24 @@ public class TransferFragment extends Fragment {
                 //Connection to get Account Details
                 Connectivity conn = new Connectivity(TransferFragment.this.getContext(), getString(R.string.transfer_validation_path), commonVO.getServerAddress());
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.username), accountDetails.isUsernameExists());
+                contentValues.put(getString(R.string.username),custUsername);
                 //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(conn.get(contentValues), TransferValidationVO.class);
-                Log.d(this.getClass().getSimpleName(), "Customer number: " + accountDetails.isUsernameExists());
+                transferValidationVO = gson.fromJson(conn.get(contentValues), TransferValidationVO.class);
+                Log.d(this.getClass().getSimpleName(), "Customer number: " + transferValidationVO.getCustNo());
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
             }
-            return accountDetails;
+            return transferValidationVO;
         }
 
         protected void onPostExecute(TransferValidationVO accountDetails) {
 
-            
+            if(transferValidationVO.isUsernameExists()) {
+                toCustNo = transferValidationVO.getCustNo();
+
+                transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, 56, "hello");
+                transferTask.execute();
+            }
 
         }
 
@@ -190,7 +192,7 @@ public class TransferFragment extends Fragment {
             try {
                 LoginDBHelper db = new LoginDBHelper(TransferFragment.this.getContext());
                 //Parameters contain credentials which are capsuled to ChangePasswordVO objects
-                TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
+                TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, 56, "hello");
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
