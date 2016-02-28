@@ -22,6 +22,7 @@ import java.net.URL;
 import java.util.Map;
 
 public class Connectivity {
+
     private Context context;
     private String path;
     private String sendToServer;
@@ -31,17 +32,25 @@ public class Connectivity {
     private InputStream is;
     private String serverAddress;
 
+  /*
+    CookieStore mCookieStore;
+    CookieManager mCookieManager = new CookieManager(mCookieStore, null);
+    final static String COOKIES_HEADER = "Set-Cookie";
+   */
+
     //Constructor called if connection is to be established for get
     public Connectivity(Context context, String path, String serverAddress) {
         this.context = context;
         this.path = path;
         this.serverAddress = serverAddress;
+//        mCookieStore = mCookieManager.getCookieStore();
     }
 
     //Constructor called if connection is to be established for post
     public Connectivity(Context context, String path, String serverAddress, String sendToServer) {
         this(context, path, serverAddress);
         this.sendToServer = sendToServer;
+//        mCookieStore = mCookieManager.getCookieStore();
     }
 
 
@@ -49,7 +58,7 @@ public class Connectivity {
 
 
     /*
-    Sends data to server in JSON format and receives response in JSON as well
+     * Sends data to server in JSON format and receives response in JSON as well
      */
     public String post()  {
         Log.d(this.getClass().getSimpleName(), "In Post()");
@@ -65,6 +74,18 @@ public class Connectivity {
                 conn.setRequestProperty("Content-Type", "application/json");
                 writeIt();
                 is = conn.getInputStream();
+/*
+                Map<String, List<String>> headerFields = conn.getHeaderFields();
+                List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
+                if (cookieHeaderList != null) {
+                    for (String cookie : cookieHeaderList) {
+                        Log.d("REMOVE ME", cookie);
+                        mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
+                    }
+                }
+                Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
+                Log.d("REMOVE ME", mCookieStore.getCookies().toString());
+*/
                 response = readIt(is);
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
@@ -96,6 +117,15 @@ public class Connectivity {
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
+/*
+            mCookieStore.add(null, HttpCookie.parse("CookieID=\"asadanaSat Feb 27 23:55:23 UTC 2016\";$Path=\"/custService\";$Domain=\"\"").get(0));
+            Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
+            if(mCookieStore.getCookies().size()>0){
+                //TO join cookies in the request
+                conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
+            }
+*/
             is = conn.getInputStream();
             conn.connect();
             response = readIt(is);
@@ -191,63 +221,3 @@ public class Connectivity {
 
     }
 }
-/*
-Following will be the declaration for the class variables of cookie
-
-CookieStore mCookieStore;
-CookieManager mCookieManager=new CookieManager(mCookieStore, null);
-Addition in Constructor
-mCookieStore = mCookieManager.getCookieStore();
-Above needed for both get and post with cookies
- */
-
-/*public String cookie_post() throws IOException {
-         url = new URL(serverAddress + "http://10.0.0.10:8090/InsecurePayService/rest/" + "login");
-        Log.d("Response", "URL set now opening connections" + url.toString());
-        conn = (HttpURLConnection) url.openConnection();
-        Log.d("Response", "URL Connection opened successfully");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setChunkedStreamingMode(0);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        writeIt();
-        final String COOKIES_HEADER = "Set-Cookie";
-
-        Map<String, List<String>> headerFields = conn.getHeaderFields();
-        List<String> cookieHeader = headerFields.get(COOKIES_HEADER);
-        if (cookieHeader != null) {
-            for (String cookie : cookieHeader) {
-
-                mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
-            }
-        }
-        Log.d("Response", "Cookie " + mCookieStore.getCookies().toString());
-        is = conn.getInputStream();
-        conn.connect();
-        response = readIt(is);
-        cookie_get();
-        return response;
-    }
-*/
-/*
-    public String cookie_get() throws IOException {
-        url = new URL(serverAddress + "http://10.0.0.10:8090/InsecurePayService/rest/" + "cookie");
-        Log.d("Response", "URL set now opening connections" + url.toString());
-        conn = (HttpURLConnection) url.openConnection();
-        Log.d("Response", "URL Connection opened successfully");
-        conn.setDoInput(true);
-        conn.setReadTimeout(10000);
-        conn.setConnectTimeout(15000);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        if(mCookieStore.getCookies().size()>0){
-            //TO join cookies in the request
-            conn.setRequestProperty("Cookie", TextUtils.join(";",mCookieStore.getCookies()));
-        }
-        is = conn.getInputStream();
-        conn.connect();
-        response = readIt(is);
-        return response;
-    }
-*/

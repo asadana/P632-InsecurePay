@@ -50,6 +50,8 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +83,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Gson gson = new Gson();
     private Intent intent;
     private CommonVO commonVO = new CommonVO();
+    // Initializing cookieManager
+    CookieManager cookieManager = new CookieManager();
 
+
+//    static final String COOKIES_HEADER = "CookieID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +96,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         userAddress = getString(R.string.default_address);
         userPath = getString(R.string.default_path);
+
         commonVO.setServerAddress(userAddress + userPath);
+
+        CookieHandler.setDefault(cookieManager);
 
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
@@ -519,6 +528,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else if (lockoutVO.getLoginValidationVO().isValidUser()) {
                 try {
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
+                    Log.d("REMOVE ME", cookieManager.getCookieStore().getCookies().toString());
                     // Move to Home Page if successful login
                     Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);

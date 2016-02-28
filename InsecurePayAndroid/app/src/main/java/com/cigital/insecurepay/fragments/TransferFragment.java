@@ -109,7 +109,7 @@ public class TransferFragment extends Fragment {
                     toCustNo = transferValidationVO.getCustNo();
                 }
 
-                sharedpreferences = this.getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
+                sharedpreferences = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString(PREF_USERNAME, etCust_username.getText().toString());
                 editor.commit();

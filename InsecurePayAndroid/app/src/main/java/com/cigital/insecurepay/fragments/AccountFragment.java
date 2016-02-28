@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
@@ -59,6 +60,8 @@ public class AccountFragment extends Fragment {
     private Button btnUpdateInfo;
     private Button btnChangePassword;
 
+    // To retrieve and store details
+    private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
     // To handle connections

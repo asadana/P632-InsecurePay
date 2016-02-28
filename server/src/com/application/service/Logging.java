@@ -1,13 +1,12 @@
 package com.application.service;
 
-import java.util.logging.Logger;
-
-import javax.ws.rs.ApplicationPath;
-
 import org.apache.logging.log4j.LogManager;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+
+import javax.ws.rs.ApplicationPath;
+import java.util.logging.Logger;
 
 @ApplicationPath("/rest")
 public class Logging extends ResourceConfig {
