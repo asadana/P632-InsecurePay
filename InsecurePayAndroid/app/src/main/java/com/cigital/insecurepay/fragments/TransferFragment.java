@@ -40,6 +40,8 @@ public class TransferFragment extends Fragment {
     public static final String PREFS_NAME = "MyPrefsFile";
     private static final String PREF_USERNAME = "username";
     private SharedPreferences sharedpreferences;
+    String transferDetails;
+    private float transferAmount;
 
 
     // To handle connections
@@ -103,8 +105,8 @@ public class TransferFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("in on click", "clicked");
-                String transferDetails = etTransferDetails.getText().toString();
-                String transferAmount = etTransferAmount.getText().toString();
+                 transferDetails = etTransferDetails.getText().toString();
+                 transferAmount = etTransferAmount.getAlpha();
                 custUsername = etCust_username.getText().toString();
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
@@ -115,18 +117,25 @@ public class TransferFragment extends Fragment {
                 editor.commit();*/
 
                 //custUsername = sharedpreferences.getString(PREF_USERNAME,"");
-               // etCust_username.setText(custUsername);
-                if (transferAmount == null || custUsername == null) {
+                // etCust_username.setText(custUsername);
+                if (transferAmount == 0 || custUsername == null) {
                     etTransferAmount.setError("Enter Amount");
                     etCust_username.setError("Enter Username");
                 }
                 Log.d("custUsername", "" + custUsername);
 
-                    transfervalidationtask = new TransferValidationTask(custUsername);
-                    transfervalidationtask.execute();
+                transfervalidationtask = new TransferValidationTask(custUsername);
+                transfervalidationtask.execute();
 
             }
         });
+    }
+    private void callingtransfertask() {
+        if(transferValidationVO.isUsernameExists()) {
+            toCustNo = transferValidationVO.getCustNo();
+            transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, transferAmount, transferDetails);
+            transferTask.execute();
+        }
     }
 
     class TransferValidationTask extends AsyncTask<String, String, TransferValidationVO> {
@@ -154,15 +163,12 @@ public class TransferFragment extends Fragment {
         }
 
         protected void onPostExecute(TransferValidationVO accountDetails) {
+            callingtransfertask();
 
-            if(transferValidationVO.isUsernameExists()) {
-                toCustNo = transferValidationVO.getCustNo();
-
-                transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, 56, "hello");
-                transferTask.execute();
-            }
 
         }
+
+
 
     }
 
@@ -192,7 +198,7 @@ public class TransferFragment extends Fragment {
             try {
                 LoginDBHelper db = new LoginDBHelper(TransferFragment.this.getContext());
                 //Parameters contain credentials which are capsuled to ChangePasswordVO objects
-                TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, 56, "hello");
+                TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
                 //Passing the context of LoginActivity to Connectivity
