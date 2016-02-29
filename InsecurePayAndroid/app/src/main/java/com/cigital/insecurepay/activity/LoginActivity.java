@@ -84,8 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Intent intent;
     private CommonVO commonVO = new CommonVO();
     // Initializing cookieManager
-    CookieManager cookieManager = new CookieManager();
-
+    private CookieManager cookieManager = new CookieManager();
 
 //    static final String COOKIES_HEADER = "CookieID";
 
@@ -98,6 +97,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         userPath = getString(R.string.default_path);
 
         commonVO.setServerAddress(userAddress + userPath);
+        // Creating a new Connectivity object in commonVO
+        commonVO.setConnectivityObj(new Connectivity(commonVO.getServerAddress()));
+        // Setting application context and login path
+        commonVO.getConnectivityObj().setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
 
         CookieHandler.setDefault(cookieManager);
 
@@ -473,10 +476,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //sendToServer contains JSON object that has credentials
                     String sendToServer = gson.toJson(sendVo);
-                    //Passing the context of LoginActivity to Connectivity
-                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), commonVO.getServerAddress(), sendToServer);
+                    commonVO.getConnectivityObj().setSendToServer(sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
-                    String responseFromServer = con_login.post().trim();
+                    String responseFromServer = commonVO.getConnectivityObj().post().trim();
                     Log.d(this.getClass().getSimpleName(), responseFromServer);
                     //Convert serverResponse to respectiveVO
                     loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
@@ -531,7 +533,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.d("REMOVE ME", cookieManager.getCookieStore().getCookies().toString());
                     // Move to Home Page if successful login
                     Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
-                    intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
+                    intent = new Intent(getApplicationContext(), HomePage.class);
                     commonVO.setUsername(username);
                     commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
                     intent.putExtra(getString(R.string.common_VO), commonVO);

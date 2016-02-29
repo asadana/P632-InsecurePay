@@ -41,11 +41,11 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
-    <string name="transfer_validation_path">transferValidation</string>
 
     <!--Following strings are for Connectivity-->
     <!--<string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>-->
-    <string name="default_address">http://10.0.0.15:8090/InsecurePayServiceServer</string>
+    <string name="default_address">http://insecurepay-test.us-east-1.elasticbeanstalk.com</string>
+    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
     <string name="forgot_password_path">ForgotPassword</string>
     <string name="cust_details_path">custService</string>

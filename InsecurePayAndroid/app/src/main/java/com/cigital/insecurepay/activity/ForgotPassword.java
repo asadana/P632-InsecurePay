@@ -100,16 +100,17 @@ public class ForgotPassword extends AppCompatActivity {
 
             LoginValidationVO loginValidationVO = null;
             try {
-                //Parameters contain credentials which are capsuled to ForgotPasswordVO objects
+                // Parameters contain credentials which are capsuled to ForgotPasswordVO objects
                 ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
-                //sendToServer contains JSON object that has credentials
+                // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-                //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(ForgotPassword.this.getApplicationContext(), getString(R.string.forgot_password_path), ((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getServerAddress(), sendToServer);
-                //Call post and since there are white spaces in the response, trim is called
-                String responseFromServer = con_login.post().trim();
-                //Convert serverResponse to respectiveVO
-
+                // Fetching the connectivityObj and setting path and sendToServer
+                Connectivity connectivityObj = ((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getConnectivityObj();
+                connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.forgot_password_path));
+                connectivityObj.setSendToServer(sendToServer);
+                // Call post and since there are white spaces in the response, trim is called
+                String responseFromServer = connectivityObj.post().trim();
+                // Convert serverResponse to respectiveVO
                 loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
 
                 Thread.sleep(2000);

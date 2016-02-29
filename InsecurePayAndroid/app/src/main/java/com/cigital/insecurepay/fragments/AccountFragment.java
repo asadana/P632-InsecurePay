@@ -27,12 +27,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.google.gson.Gson;
 
@@ -342,10 +340,10 @@ public class AccountFragment extends Fragment {
             ContentValues contentValues = new ContentValues();
             contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-            // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress());
+            // Fetching the connectivity object and setting context and path
+            commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             // Storing server response
-            String responseFromServer = getInfoConnection.get(contentValues);
+            String responseFromServer = commonVO.getConnectivityObj().get(contentValues);
 
             Log.i(this.getClass().getSimpleName(), responseFromServer);
 
@@ -398,13 +396,11 @@ public class AccountFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), e.toString());
             }
-            // TODO: Delete this
-            Log.d(this.getClass().getSimpleName(), "Sending to server string: " + sendToServer);
-
-            // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress(), sendToServer);
+            // Fetching the connectivity object and setting context and path
+            commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+            commonVO.getConnectivityObj().setSendToServer(sendToServer);
             // Storing server response
-            responseFromServer = getInfoConnection.post();
+            responseFromServer = commonVO.getConnectivityObj().post();
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
 
@@ -440,15 +436,15 @@ public class AccountFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             String password_changed = null;
             try {
-                LoginDBHelper db = new LoginDBHelper(AccountFragment.this.getContext());
-                //Parameters contain credentials which are capsuled to ChangePasswordVO objects
+                // Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
-                //sendToServer contains JSON object that has credentials
+                // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-                //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(AccountFragment.this.getContext(), getString(R.string.change_password_path), commonVO.getServerAddress(), sendToServer);
-                //Call post and since there are white spaces in the response, trim is called
-                password_changed = con_login.post().trim();
+                // Fetching the connectivity object and setting context and path
+                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.change_password_path));
+                commonVO.getConnectivityObj().setSendToServer(sendToServer);
+                // Call post and since there are white spaces in the response, trim is called
+                password_changed = commonVO.getConnectivityObj().post().trim();
                 Log.d("Response from server", password_changed);
                 Thread.sleep(2000);
                 return password_changed;

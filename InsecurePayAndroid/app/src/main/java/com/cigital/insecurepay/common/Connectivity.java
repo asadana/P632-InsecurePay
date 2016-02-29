@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,11 +18,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.net.CookieManager;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
-public class Connectivity {
+public class Connectivity implements Serializable {
 
     private Context context;
     private String path;
@@ -32,35 +38,21 @@ public class Connectivity {
     private InputStream is;
     private String serverAddress;
 
-  /*
+    // Stores and handles cookies
     CookieStore mCookieStore;
     CookieManager mCookieManager = new CookieManager(mCookieStore, null);
     final static String COOKIES_HEADER = "Set-Cookie";
-   */
 
     //Constructor called if connection is to be established for get
-    public Connectivity(Context context, String path, String serverAddress) {
-        this.context = context;
-        this.path = path;
+    public Connectivity(String serverAddress) {
         this.serverAddress = serverAddress;
-//        mCookieStore = mCookieManager.getCookieStore();
+        mCookieStore = mCookieManager.getCookieStore();
     }
-
-    //Constructor called if connection is to be established for post
-    public Connectivity(Context context, String path, String serverAddress, String sendToServer) {
-        this(context, path, serverAddress);
-        this.sendToServer = sendToServer;
-//        mCookieStore = mCookieManager.getCookieStore();
-    }
-
-
-
-
 
     /*
      * Sends data to server in JSON format and receives response in JSON as well
      */
-    public String post()  {
+    public String post() {
         Log.d(this.getClass().getSimpleName(), "In Post()");
         if (checkConnection()) {
             try {
@@ -74,22 +66,23 @@ public class Connectivity {
                 conn.setRequestProperty("Content-Type", "application/json");
                 writeIt();
                 is = conn.getInputStream();
-/*
                 Map<String, List<String>> headerFields = conn.getHeaderFields();
+                Log.d("REMOVE ME: Header: ", headerFields.toString());
                 List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
+                Log.d("REMOVE ME: Cookie H", cookieHeaderList.toString());
                 if (cookieHeaderList != null) {
                     for (String cookie : cookieHeaderList) {
-                        Log.d("REMOVE ME", cookie);
+                        Log.d("REMOVE ME: Cookie", cookie);
                         mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
                     }
                 }
                 Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
                 Log.d("REMOVE ME", mCookieStore.getCookies().toString());
-*/
+
                 response = readIt(is);
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
-            }  finally {
+            } finally {
 
                 try {
                     conn.disconnect();
@@ -107,7 +100,7 @@ public class Connectivity {
     public String get(ContentValues contentValues) {
         Log.d(this.getClass().getSimpleName(), "In Get()");
         String params = null;
-        if(contentValues != null)
+        if (contentValues != null)
             params = setParameters(contentValues);
         try {
             url = new URL(serverAddress + path + params);
@@ -117,15 +110,14 @@ public class Connectivity {
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
-/*
-            mCookieStore.add(null, HttpCookie.parse("CookieID=\"asadanaSat Feb 27 23:55:23 UTC 2016\";$Path=\"/custService\";$Domain=\"\"").get(0));
-            Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
-            if(mCookieStore.getCookies().size()>0){
+
+            Log.d("REMOVE ME: In get ", Integer.toString(mCookieStore.getCookies().size()));
+            if (mCookieStore.getCookies().size() > 0) {
                 //TO join cookies in the request
                 conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
                 Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
             }
-*/
+
             is = conn.getInputStream();
             conn.connect();
             response = readIt(is);
@@ -143,7 +135,7 @@ public class Connectivity {
         return response;
     }
 
-    private String setParameters(ContentValues contentValues){
+    private String setParameters(ContentValues contentValues) {
         String key;
         String value;
         Uri.Builder builder = new Uri.Builder();
@@ -208,7 +200,7 @@ public class Connectivity {
             outWriter.flush();
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
-        }finally {
+        } finally {
             try {
                 if (outWriter != null) {
                     outWriter.close();
@@ -220,4 +212,42 @@ public class Connectivity {
         Log.d(this.getClass().getSimpleName(), "Sent");
 
     }
+
+    public void setConnectionParameters(Context contextObj, String path) {
+        this.context = contextObj;
+        this.path = path;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public String getSendToServer() {
+        return sendToServer;
+    }
+
+    public void setSendToServer(String sendToServer) {
+        this.sendToServer = sendToServer;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
 }

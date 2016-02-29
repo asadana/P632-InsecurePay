@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
-import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
 
 
@@ -73,12 +72,12 @@ public class HomeFragment extends Fragment {
         protected AccountVO doInBackground(String... params) {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
-                //Connection to get Account Details
-                Connectivity conn = new Connectivity(HomeFragment.this.getContext(), getString(R.string.account_details_path), commonVO.getServerAddress());
+                // Fetching the connectivity object and setting context and path
+                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.account_details_path));
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
                 //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(conn.get(contentValues), AccountVO.class);
+                accountDetails = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), AccountVO.class);
                 Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);

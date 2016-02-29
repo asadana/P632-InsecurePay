@@ -1,7 +1,6 @@
 package com.cigital.insecurepay.fragments;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,16 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
 import com.cigital.insecurepay.VOs.TransferValidationVO;
-import com.cigital.insecurepay.common.Connectivity;
 import com.google.gson.Gson;
-
-import static com.cigital.insecurepay.R.string.account_lockout_duration;
-import static com.cigital.insecurepay.R.string.transfer_validation_path;
 //import static com.cigital.insecurepay.R.string.transfervalidation_VO;
 
 
@@ -85,7 +79,8 @@ public class TransferFragment extends Fragment {
 
         // Initializing commonVO and transferfundsVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
-        transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfer_validation_path)));
+        // TODO: Fix transfer_validation_path
+        //transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfer_validation_path)));
 
         Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
         Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
@@ -149,12 +144,13 @@ public class TransferFragment extends Fragment {
         protected TransferValidationVO doInBackground(String... params) {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
-                //Connection to get Account Details
-                Connectivity conn = new Connectivity(TransferFragment.this.getContext(), getString(R.string.transfer_validation_path), commonVO.getServerAddress());
+                // Fetching the connectivity object and setting context and path
+                // TODO: Fix transfer_validation_path
+                //commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.username),custUsername);
+                contentValues.put(getString(R.string.username), custUsername);
                 //Converts customer details to CustomerVO
-                transferValidationVO = gson.fromJson(conn.get(contentValues), TransferValidationVO.class);
+                transferValidationVO = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), TransferValidationVO.class);
                 Log.d(this.getClass().getSimpleName(), "Customer number: " + transferValidationVO.getCustNo());
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
@@ -196,15 +192,14 @@ public class TransferFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "In background, sending transfer details");
             String amount_transferred = null;
             try {
-                LoginDBHelper db = new LoginDBHelper(TransferFragment.this.getContext());
-                //Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-                //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(TransferFragment.this.getContext(), getString(R.string.transfer_funds_path), commonVO.getServerAddress(), sendToServer);
+                // Fetching the connectivity object and setting context and path
+                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
+                commonVO.getConnectivityObj().setSendToServer(sendToServer);
                 //Call post and since there are white spaces in the response, trim is called
-                amount_transferred = con_login.post().trim();
+                amount_transferred = commonVO.getConnectivityObj().post().trim();
                 Log.d("Response from server", amount_transferred);
                 Thread.sleep(2000);
 
