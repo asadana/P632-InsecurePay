@@ -51,6 +51,7 @@
     <string name="change_password_path">changePassword</string>
     <string name="account_details_path">accountService</string>
     <string name="transfer_funds_path">transferFunds</string>
+    <string name="transfer_validation_path">transferValidation</string>
     <string name="transfervalidation_VO">transfervalidationVO</string>
 
     <!--For Navigation Drawer Toolbar titles-->

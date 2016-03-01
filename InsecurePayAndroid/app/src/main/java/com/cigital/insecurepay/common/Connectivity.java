@@ -62,21 +62,29 @@ public class Connectivity implements Serializable {
                 conn.setChunkedStreamingMode(0);
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
+                Log.d("REMOVE ME: In post ", Integer.toString(mCookieStore.getCookies().size()));
+                if (mCookieStore.getCookies().size() > 0) {
+                    //TO join cookies in the request
+                    conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                    Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+                }
                 writeIt();
                 is = conn.getInputStream();
-                Map<String, List<String>> headerFields = conn.getHeaderFields();
-                Log.d("REMOVE ME: Header: ", headerFields.toString());
-                List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
-                Log.d("REMOVE ME: Cookie H", cookieHeaderList.toString());
-                if (cookieHeaderList != null) {
-                    for (String cookie : cookieHeaderList) {
-                        Log.d("REMOVE ME: Cookie", cookie);
-                        mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
+                if (mCookieStore.getCookies().size() <= 0) {
+                    Map<String, List<String>> headerFields = conn.getHeaderFields();
+                    Log.d("REMOVE ME: Header: ", headerFields.toString());
+                    List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
+                    if (cookieHeaderList != null) {
+                        Log.d("REMOVE ME: Cookie H", cookieHeaderList.toString());
+                        for (String cookie : cookieHeaderList) {
+                            Log.d("REMOVE ME: Cookie", cookie);
+                            mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
+                        }
                     }
-                }
-                Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
-                Log.d("REMOVE ME", mCookieStore.getCookies().toString());
+                    Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
+                    Log.d("REMOVE ME", mCookieStore.getCookies().toString());
 
+                }
                 response = readIt(is);
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);

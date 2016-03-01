@@ -148,6 +148,8 @@ public class TransferFragment extends Fragment {
                 // Fetching the connectivity object and setting context and path
                 // TODO: Fix transfer_validation_path
                 //commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
 
