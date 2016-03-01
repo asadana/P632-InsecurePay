@@ -31,6 +31,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
+import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.google.gson.Gson;
 
@@ -339,11 +340,19 @@ public class AccountFragment extends Fragment {
             // contentValues to to store the parameter used to fetch the values
             ContentValues contentValues = new ContentValues();
             contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
+/*
 
             // Fetching the connectivity object and setting context and path
             commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             // Storing server response
             String responseFromServer = commonVO.getConnectivityObj().get(contentValues);
+
+*/
+
+            // Fetching the connectivity object and setting context and path
+            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+            // Storing server response
+            String responseFromServer = LoginActivity.connectivityObj.get(contentValues);
 
             Log.i(this.getClass().getSimpleName(), responseFromServer);
 
@@ -396,11 +405,20 @@ public class AccountFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), e.toString());
             }
+/*
+
             // Fetching the connectivity object and setting context and path
             commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             commonVO.getConnectivityObj().setSendToServer(sendToServer);
             // Storing server response
             responseFromServer = commonVO.getConnectivityObj().post();
+
+*/
+            // Fetching the connectivity object and setting context and path
+            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+            LoginActivity.connectivityObj.setSendToServer(sendToServer);
+            // Storing server response
+            responseFromServer = LoginActivity.connectivityObj.post();
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
 
@@ -440,11 +458,22 @@ public class AccountFragment extends Fragment {
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
                 // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
+/*
+
                 // Fetching the connectivity object and setting context and path
                 commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.change_password_path));
                 commonVO.getConnectivityObj().setSendToServer(sendToServer);
                 // Call post and since there are white spaces in the response, trim is called
                 password_changed = commonVO.getConnectivityObj().post().trim();
+
+*/
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
+                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                // Call post and since there are white spaces in the response, trim is called
+                password_changed = LoginActivity.connectivityObj.post().trim();
+
+
                 Log.d("Response from server", password_changed);
                 Thread.sleep(2000);
                 return password_changed;

@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
@@ -20,11 +19,11 @@ import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
 
+    protected Gson gson = new Gson();
     private EditText accountNoView;
     private EditText textSSNNoView;
     private EditText usernameView;
     private ForgotPasswordTask forgotPassTask = null;
-    protected Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +103,13 @@ public class ForgotPassword extends AppCompatActivity {
                 ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
                 // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-                // Fetching the connectivityObj and setting path and sendToServer
+
+/*                // Fetching the connectivityObj and setting path and sendToServer
                 Connectivity connectivityObj = ((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getConnectivityObj();
+                */
+                // Fetching the connectivityObj and setting path and sendToServer
+                Connectivity connectivityObj = LoginActivity.connectivityObj;
+
                 connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.forgot_password_path));
                 connectivityObj.setSendToServer(sendToServer);
                 // Call post and since there are white spaces in the response, trim is called

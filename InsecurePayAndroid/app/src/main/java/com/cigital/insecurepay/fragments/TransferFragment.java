@@ -17,12 +17,15 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
 import com.cigital.insecurepay.VOs.TransferValidationVO;
+import com.cigital.insecurepay.activity.LoginActivity;
 import com.google.gson.Gson;
 //import static com.cigital.insecurepay.R.string.transfervalidation_VO;
 
 
 public class TransferFragment extends Fragment {
 
+    public static final String PREFS_NAME = "MyPrefsFile";
+    private static final String PREF_USERNAME = "username";
     EditText etTransferDetails;
     EditText etCust_username;
     EditText etTransferAmount;
@@ -31,10 +34,8 @@ public class TransferFragment extends Fragment {
     int toCustNo;
     String custUsername;
     Button btnTransfer;
-    public static final String PREFS_NAME = "MyPrefsFile";
-    private static final String PREF_USERNAME = "username";
-    private SharedPreferences sharedpreferences;
     String transferDetails;
+    private SharedPreferences sharedpreferences;
     private float transferAmount;
 
 
@@ -149,8 +150,13 @@ public class TransferFragment extends Fragment {
                 //commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
-                //Converts customer details to CustomerVO
+
+/*                //Converts customer details to CustomerVO
                 transferValidationVO = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), TransferValidationVO.class);
+                */
+                //Converts customer details to CustomerVO
+                transferValidationVO = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), TransferValidationVO.class);
+
                 Log.d(this.getClass().getSimpleName(), "Customer number: " + transferValidationVO.getCustNo());
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
@@ -195,12 +201,24 @@ public class TransferFragment extends Fragment {
                 TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
+/*
+
                 // Fetching the connectivity object and setting context and path
                 commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
                 commonVO.getConnectivityObj().setSendToServer(sendToServer);
                 //Call post and since there are white spaces in the response, trim is called
                 amount_transferred = commonVO.getConnectivityObj().post().trim();
+*/
+
+
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
+                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                //Call post and since there are white spaces in the response, trim is called
+                amount_transferred = LoginActivity.connectivityObj.post().trim();
+
                 Log.d("Response from server", amount_transferred);
+
                 Thread.sleep(2000);
 
             } catch (Exception e) {

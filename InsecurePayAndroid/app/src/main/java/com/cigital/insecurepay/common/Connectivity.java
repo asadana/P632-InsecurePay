@@ -29,6 +29,10 @@ import java.util.Map;
 
 public class Connectivity implements Serializable {
 
+    final static String COOKIES_HEADER = "Set-Cookie";
+    // Stores and handles cookies
+    CookieStore mCookieStore;
+    CookieManager mCookieManager = new CookieManager(mCookieStore, null);
     private Context context;
     private String path;
     private String sendToServer;
@@ -38,12 +42,6 @@ public class Connectivity implements Serializable {
     private InputStream is;
     private String serverAddress;
 
-    // Stores and handles cookies
-    CookieStore mCookieStore;
-    CookieManager mCookieManager = new CookieManager(mCookieStore, null);
-    final static String COOKIES_HEADER = "Set-Cookie";
-
-    //Constructor called if connection is to be established for get
     public Connectivity(String serverAddress) {
         this.serverAddress = serverAddress;
         mCookieStore = mCookieManager.getCookieStore();

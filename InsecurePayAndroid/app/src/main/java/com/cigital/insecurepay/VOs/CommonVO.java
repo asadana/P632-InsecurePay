@@ -1,7 +1,5 @@
 package com.cigital.insecurepay.VOs;
 
-import com.cigital.insecurepay.common.Connectivity;
-
 import java.io.Serializable;
 
 public class CommonVO implements Serializable {
@@ -10,7 +8,7 @@ public class CommonVO implements Serializable {
     private int custNo;
     private int accountNo;
     private String username;
-    private Connectivity connectivityObj;
+//    private Connectivity connectivityObj;
 
 
     public String getServerAddress() {
@@ -44,12 +42,12 @@ public class CommonVO implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
+/*
     public Connectivity getConnectivityObj() {
         return connectivityObj;
     }
 
     public void setConnectivityObj(Connectivity connectivityObj) {
         this.connectivityObj = connectivityObj;
-    }
+    }*/
 }

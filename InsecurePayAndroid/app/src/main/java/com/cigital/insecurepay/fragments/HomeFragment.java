@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.activity.LoginActivity;
 import com.google.gson.Gson;
 
 
@@ -44,10 +45,6 @@ public class HomeFragment extends Fragment {
         return viewObj;
     }
 
-    public interface OnFragmentInteractionListener {
-        void setAccNo(int accNo);
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -65,6 +62,10 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
+    public interface OnFragmentInteractionListener {
+        void setAccNo(int accNo);
+    }
+
     private class custAccountFetchTask extends AsyncTask<String, String, AccountVO> {
         private AccountVO accountDetails;
 
@@ -72,12 +73,21 @@ public class HomeFragment extends Fragment {
         protected AccountVO doInBackground(String... params) {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
-                // Fetching the connectivity object and setting context and path
+/*                // Fetching the connectivity object and setting context and path
                 commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.account_details_path));
+                */
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-                //Converts customer details to CustomerVO
+
+/*                //Converts customer details to CustomerVO
                 accountDetails = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), AccountVO.class);
+                */
+                //Converts customer details to CustomerVO
+                accountDetails = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), AccountVO.class);
+
                 Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
             } catch (Exception e) {
                 Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);

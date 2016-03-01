@@ -66,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    public static Connectivity connectivityObj;
     private final Context context = this;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -85,7 +86,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private CommonVO commonVO = new CommonVO();
     // Initializing cookieManager
     private CookieManager cookieManager = new CookieManager();
-
 //    static final String COOKIES_HEADER = "CookieID";
 
     @Override
@@ -97,10 +97,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         userPath = getString(R.string.default_path);
 
         commonVO.setServerAddress(userAddress + userPath);
+/*
         // Creating a new Connectivity object in commonVO
         commonVO.setConnectivityObj(new Connectivity(commonVO.getServerAddress()));
         // Setting application context and login path
         commonVO.getConnectivityObj().setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
+*/
+        connectivityObj = new Connectivity(commonVO.getServerAddress());
+        connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
 
         CookieHandler.setDefault(cookieManager);
 
@@ -476,9 +480,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //sendToServer contains JSON object that has credentials
                     String sendToServer = gson.toJson(sendVo);
-                    commonVO.getConnectivityObj().setSendToServer(sendToServer);
+/*                    commonVO.getConnectivityObj().setSendToServer(sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
                     String responseFromServer = commonVO.getConnectivityObj().post().trim();
+                    */
+
+                    connectivityObj.setSendToServer(sendToServer);
+                    //Call post and since there are white spaces in the response, trim is called
+                    String responseFromServer = connectivityObj.post().trim();
                     Log.d(this.getClass().getSimpleName(), responseFromServer);
                     //Convert serverResponse to respectiveVO
                     loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
