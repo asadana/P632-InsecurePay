@@ -1,8 +1,12 @@
 package com.cigital.insecurepay.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,7 +33,9 @@ public class TransferFragment extends Fragment {
     EditText etTransferDetails;
     EditText etCust_username;
     EditText etTransferAmount;
-    int fromCustNo;
+    private View Progressbar;
+    private View viewObj;
+    private View TransferFunds;
     int fromAccountNo = 2004;
     int toCustNo;
     String custUsername;
@@ -54,7 +60,9 @@ public class TransferFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
+         viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
+        TransferFunds = container.findViewById(R.id.TransferFunds);
+        Progressbar = container.findViewById(R.id.Transfer_progress);
 
         initValues(viewObj);
         addListeners();
@@ -119,9 +127,10 @@ public class TransferFragment extends Fragment {
                     etCust_username.setError("Enter Username");
                 }
                 Log.d("custUsername", "" + custUsername);
-
+                showProgress(true);
                 transfervalidationtask = new TransferValidationTask(custUsername);
                 transfervalidationtask.execute();
+
 
             }
         });
@@ -131,6 +140,41 @@ public class TransferFragment extends Fragment {
             toCustNo = transferValidationVO.getCustNo();
             transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, transferAmount, transferDetails);
             transferTask.execute();
+        }
+    }
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
+            TransferFunds.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
+            Progressbar.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
+            TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
