@@ -33,10 +33,8 @@ public class TransferFragment extends Fragment {
     EditText etTransferDetails;
     EditText etCust_username;
     EditText etTransferAmount;
-    private View Progressbar;
     private View viewObj;
-    private View TransferFunds;
-    int fromAccountNo = 2004;
+    int fromAccountNo;
     int toCustNo;
     String custUsername;
     Button btnTransfer;
@@ -61,8 +59,6 @@ public class TransferFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
          viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
-        TransferFunds = container.findViewById(R.id.TransferFunds);
-        Progressbar = container.findViewById(R.id.Transfer_progress);
 
         initValues(viewObj);
         addListeners();
@@ -71,31 +67,16 @@ public class TransferFragment extends Fragment {
 
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing values.");
-
-
-
-
-
         // Initializing all objects from fragment_transfer
         etTransferAmount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
         etTransferDetails = (EditText) viewObj.findViewById(R.id.ettransferDetails);
         etCust_username = (EditText) viewObj.findViewById(R.id.etCust_username);
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
-
-        //Implementing SharedPreferences
-
-
-
         // Initializing commonVO and transferfundsVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         // TODO: Fix transfer_validation_path
-        //transferValidationVO = ((TransferValidationVO) this.getArguments().getSerializable(getString(transfer_validation_path)));
-
         Log.d(this.getClass().getSimpleName(), "current Account No" + Integer.toString(commonVO.getAccountNo()));
         Log.d(this.getClass().getSimpleName(), Integer.toString(commonVO.getCustNo()));
-
-
-
     }
 
 
@@ -110,24 +91,17 @@ public class TransferFragment extends Fragment {
             public void onClick(View v) {
                 Log.d("in on click", "clicked");
                  transferDetails = etTransferDetails.getText().toString();
-                 transferAmount = etTransferAmount.getAlpha();
+                 transferAmount = Float.parseFloat(String.valueOf(etTransferAmount.getText()));
                 custUsername = etCust_username.getText().toString();
                 Log.d("transferDetails", "" + transferDetails);
                 Log.d("transferAmount", "" + transferAmount);
 
-              /*  sharedpreferences = this.getSharedPreferences(PREFS_NAME, Context.MODE_APPEND);
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                editor.putString(PREF_USERNAME, etCust_username.getText().toString());
-                editor.commit();*/
 
-                //custUsername = sharedpreferences.getString(PREF_USERNAME,"");
-                // etCust_username.setText(custUsername);
                 if (transferAmount == 0 || custUsername == null) {
                     etTransferAmount.setError("Enter Amount");
                     etCust_username.setError("Enter Username");
                 }
                 Log.d("custUsername", "" + custUsername);
-                showProgress(true);
                 transfervalidationtask = new TransferValidationTask(custUsername);
                 transfervalidationtask.execute();
 
@@ -138,49 +112,21 @@ public class TransferFragment extends Fragment {
     private void callingtransfertask() {
         if(transferValidationVO.isUsernameExists()) {
             toCustNo = transferValidationVO.getCustNo();
-            transferTask = new TransferTask(fromAccountNo, commonVO.getCustNo(), toCustNo, transferAmount, transferDetails);
-            transferTask.execute();
-        }
-    }
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+            if(transferAmount>0) {
 
-            TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
-            TransferFunds.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
-            Progressbar.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            Progressbar.setVisibility(show ? View.VISIBLE : View.GONE);
-            TransferFunds.setVisibility(show ? View.GONE : View.VISIBLE);
+                transferTask = new TransferTask(commonVO.getAccountNo(), commonVO.getCustNo(), toCustNo, transferAmount, transferDetails);
+                transferTask.execute();
+            }
+            else
+            {
+                transferTask = new TransferTask(fromAccountNo, toCustNo, commonVO.getCustNo(), transferAmount, transferDetails);
+                transferTask.execute();
+            }
         }
     }
 
     class TransferValidationTask extends AsyncTask<String, String, TransferValidationVO> {
 
-        private int custno;
 
         public TransferValidationTask(String custUsername) {
         }
@@ -191,15 +137,10 @@ public class TransferFragment extends Fragment {
             try {
                 // Fetching the connectivity object and setting context and path
                 // TODO: Fix transfer_validation_path
-                //commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
-
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
 
-/*                //Converts customer details to CustomerVO
-                transferValidationVO = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), TransferValidationVO.class);
-                */
                 //Converts customer details to CustomerVO
                 transferValidationVO = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), TransferValidationVO.class);
 
@@ -247,24 +188,13 @@ public class TransferFragment extends Fragment {
                 TransferFundsVO sendVo = new TransferFundsVO(fromAccountNo, fromCustNo, toCustNo, transferAmount, transferDetails);
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-/*
-
-                // Fetching the connectivity object and setting context and path
-                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
-                commonVO.getConnectivityObj().setSendToServer(sendToServer);
-                //Call post and since there are white spaces in the response, trim is called
-                amount_transferred = commonVO.getConnectivityObj().post().trim();
-*/
-
-
+                Log.e(this.getClass().getSimpleName(), ""+sendToServer);
                 // Fetching the connectivity object and setting context and path
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
                 LoginActivity.connectivityObj.setSendToServer(sendToServer);
                 //Call post and since there are white spaces in the response, trim is called
                 amount_transferred = LoginActivity.connectivityObj.post().trim();
-
                 Log.d("Response from server", amount_transferred);
-
                 Thread.sleep(2000);
 
             } catch (Exception e) {
