@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.application.common.Queries;
-import com.application.common.StringConstants;
+import com.application.common.Constants;
 import com.application.service.BO.ForgotPasswordBO;
 import com.application.service.BO.LoginValidationBO;
 
@@ -56,7 +56,7 @@ public class ForgotPasswordDao extends BaseDao {
 			if (cust_no == cust_no_compare) {
 				validUser = true;
 				params = new ArrayList<Object>();
-				params.add(StringConstants.defaultPassword);
+				params.add(Constants.defaultPassword);
 				params.add(l.getUsername());
 				int count = updateSql(Queries.UPDATE_PASSWORD, params);
 			} else

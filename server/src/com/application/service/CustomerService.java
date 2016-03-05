@@ -18,10 +18,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
-import com.application.common.StringConstants;
+import com.application.common.Constants;
 import com.application.dao.CustomerDao;
 import com.application.service.BO.CustomerBO;
 
@@ -36,22 +37,22 @@ public class CustomerService extends BaseService {
 			IllegalAccessException, NoSuchMethodException, SecurityException,
 			IllegalArgumentException, InvocationTargetException,
 			ClassNotFoundException {
-/*		
+		
+		/*		
 		HttpSession sessionObj = request.getSession();
 		logger.info("IN CUST - SESSION ID : " + sessionObj.getId());
 		logger.info("IN CUST - SESSION ID : " + sessionObj.toString());
 		*/
 		
-		logger.info("REMOVE ME: StringConstants : " + StringConstants.newCookieObj.toString());
+		logger.info("REMOVE ME: StringConstants : " + Constants.cookieList.getNewCookieList());
 		Date dateObj = Calendar.getInstance().getTime();
 		
-		logger.info("REMOVE ME: Current date: " + dateObj.toString());
-		logger.info("REMOVE ME: Cookie date: " + StringConstants.newCookieObj.getExpiry().toString());
+		NewCookie newCookieObj = Constants.cookieList.findCookie(cookieObj);
 		
 		// Check to see if the value of the cookie is correct
 		// and if the cookie is not yet expired
-		if(cookieObj.getValue().equalsIgnoreCase(StringConstants.newCookieObj.getValue())
-				&& dateObj.compareTo(StringConstants.newCookieObj.getExpiry()) > 0) {
+		if(newCookieObj != null
+				&& dateObj.compareTo(newCookieObj.getExpiry()) < 0) {
 			
 			logger.info("REMOVE ME: Inside if : " + cookieObj.toString());
 			CustomerBO customergenBO = null;
