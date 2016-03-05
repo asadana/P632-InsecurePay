@@ -19,12 +19,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
+import com.application.common.StringConstants;
 import com.application.dao.CustomerDao;
 import com.application.service.BO.CustomerBO;
 
 @Path("/custService")
 public class CustomerService extends BaseService {
 
+	@Context HttpServletRequest request;
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCustomerDetails(@CookieParam("CookieID") Cookie cookieObj, @QueryParam("custNo") int custNo)
@@ -32,8 +34,18 @@ public class CustomerService extends BaseService {
 			IllegalAccessException, NoSuchMethodException, SecurityException,
 			IllegalArgumentException, InvocationTargetException,
 			ClassNotFoundException {
-
-		if(cookieObj != null) {
+/*		
+		HttpSession sessionObj = request.getSession();
+		logger.info("IN CUST - SESSION ID : " + sessionObj.getId());
+		logger.info("IN CUST - SESSION ID : " + sessionObj.toString());
+		*/
+		logger.info(this.getClass().getSimpleName(), "REMOVE ME: local" + getNewCookieObj());
+		logger.info(this.getClass().getSimpleName(), "REMOVE ME: common" + StringConstants.newCookieObj.toString());
+		logger.info(this.getClass().getSimpleName(), "REMOVE ME: " + cookieObj.getValue());
+		
+		
+		if(cookieObj != null && cookieObj.getValue() != null) {
+			logger.info(this.getClass().getSimpleName(), "REMOVE ME: String : " + cookieObj.toString());
 			CustomerBO customergenBO = null;
 			try {
 				customergenBO = DaoFactory.getInstance(CustomerDao.class,

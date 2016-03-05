@@ -70,6 +70,7 @@ public class Connectivity implements Serializable {
                 }
                 writeIt();
                 is = conn.getInputStream();
+                response = readIt(is);
                 if (mCookieStore.getCookies().size() <= 0) {
                     Map<String, List<String>> headerFields = conn.getHeaderFields();
                     Log.d("REMOVE ME: Header: ", headerFields.toString());
@@ -80,12 +81,12 @@ public class Connectivity implements Serializable {
                             Log.d("REMOVE ME: Cookie", cookie);
                             mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
                         }
+
+                        Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
+                        Log.d("REMOVE ME", mCookieStore.getCookies().toString());
                     }
-                    Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
-                    Log.d("REMOVE ME", mCookieStore.getCookies().toString());
 
                 }
-                response = readIt(is);
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
             } finally {

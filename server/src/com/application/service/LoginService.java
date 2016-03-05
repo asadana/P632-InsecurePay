@@ -18,6 +18,7 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
+import com.application.common.StringConstants;
 import com.application.dao.LoginDao;
 import com.application.service.BO.LoginBO;
 import com.application.service.BO.LoginValidationBO;
@@ -28,7 +29,7 @@ import com.application.service.BO.LoginValidationBO;
 
 @Path("/login")
 public class LoginService extends BaseService {
-	NewCookie newCookieObj = null;
+	int counter = 0;
 
 	@Context private HttpServletRequest request;
 
@@ -37,29 +38,45 @@ public class LoginService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response validateLogin(LoginBO loginBO) {
 
-		int ageInSeconds = 60*60*24;
+		//int ageInSeconds = 60*60*24;
+		int ageInSeconds = 60;
 		LoginValidationBO validate = null;
 		try {
 			
 			validate = DaoFactory.getInstance(LoginDao.class,
 					this.getConnection()).validateUser(loginBO);
 			if (validate.isValidUser()) {
+				counter++;
+				/*
+				HttpSession sessionObj = request.getSession();
+
+				logger.info("IN LOGIN - OUT - SESSION ID : " + sessionObj.getId());
+				logger.info("IN LOGIN - OUT - SESSION String : " + sessionObj.toString());
 				
-				HttpSession session = request.getSession();
-	            session.setAttribute("User", loginBO.getUsername());
-	            //setting session to expire in 1 day
-	            session.setMaxInactiveInterval(ageInSeconds);
+				if (sessionObj.getAttribute(loginBO.getUsername()) == null) {
+					sessionObj.setAttribute("User", loginBO.getUsername());
+
+					logger.info("IN LOGIN - IN - SESSION ID : " + sessionObj.getId());
+					logger.info("IN LOGIN - IN - SESSION String : " + sessionObj.toString());
+				}
+				
+				//setting session to expire in ageInSeconds
+	            sessionObj.setMaxInactiveInterval(ageInSeconds);
+				*/
 				// Getting today's date
 				Calendar calendarObj = Calendar.getInstance();
 				// Getting tomorrow's date
-				calendarObj.add(Calendar.DAY_OF_YEAR, 1);
+				calendarObj.add(Calendar.SECOND, ageInSeconds);
+				//calendarObj.add(Calendar.DAY_OF_YEAR, 1);
 				// Grabbing the date object
 				Date dateObj = calendarObj.getTime();
 				// Generating the cookie
 				// TODO: Replace username with a low entropy string
-				newCookieObj = new NewCookie(
-	                		new Cookie("CookieID", loginBO.getUsername(), "/", ""), 
-	                		null, ageInSeconds, dateObj, false, false);
+				setNewCookieObj(new NewCookie(
+	                		new Cookie("CookieID", loginBO.getUsername() + counter, "/", ""), 
+	                		null, ageInSeconds, dateObj, false, false));
+				StringConstants.newCookieObj = getNewCookieObj();
+				logger.info(this.getClass().getSimpleName(), "REMOVE ME: " + getNewCookieObj().toString());
 			}
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
@@ -74,6 +91,6 @@ public class LoginService extends BaseService {
 				logger.error(this.getClass().getSimpleName(), e);
 			}
 		}
-		return Response.status(Response.Status.OK).entity(validate).cookie(newCookieObj).build();
+		return Response.status(Response.Status.OK).entity(validate).cookie(getNewCookieObj()).build();
 	}
 }
