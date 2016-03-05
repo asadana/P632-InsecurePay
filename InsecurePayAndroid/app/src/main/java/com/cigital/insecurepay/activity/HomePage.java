@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
@@ -40,6 +41,8 @@ public class HomePage extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        // To allow Screenshots
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         fragmentClass = HomeFragment.class;
         try {
