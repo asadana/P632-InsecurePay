@@ -15,7 +15,6 @@ import com.application.common.StringConstants;
 
 public class BaseService extends Logging {
 	private Connection conn = null;
-	public NewCookie newCookieObj = null;
 	
 	private void createConnection() throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SQLException {
@@ -41,13 +40,5 @@ public class BaseService extends Logging {
 			createConnection();
 		}
 		return conn;
-	}
-
-	public NewCookie getNewCookieObj() {
-		return newCookieObj;
-	}
-
-	public void setNewCookieObj(NewCookie newCookieObj) {
-		this.newCookieObj = newCookieObj;
 	}
 }

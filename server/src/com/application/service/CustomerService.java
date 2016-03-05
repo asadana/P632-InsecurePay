@@ -2,6 +2,8 @@ package com.application.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,13 +41,19 @@ public class CustomerService extends BaseService {
 		logger.info("IN CUST - SESSION ID : " + sessionObj.getId());
 		logger.info("IN CUST - SESSION ID : " + sessionObj.toString());
 		*/
-		logger.info(this.getClass().getSimpleName(), "REMOVE ME: local" + getNewCookieObj());
-		logger.info(this.getClass().getSimpleName(), "REMOVE ME: common" + StringConstants.newCookieObj.toString());
-		logger.info(this.getClass().getSimpleName(), "REMOVE ME: " + cookieObj.getValue());
 		
+		logger.info("REMOVE ME: StringConstants : " + StringConstants.newCookieObj.toString());
+		Date dateObj = Calendar.getInstance().getTime();
 		
-		if(cookieObj != null && cookieObj.getValue() != null) {
-			logger.info(this.getClass().getSimpleName(), "REMOVE ME: String : " + cookieObj.toString());
+		logger.info("REMOVE ME: Current date: " + dateObj.toString());
+		logger.info("REMOVE ME: Cookie date: " + StringConstants.newCookieObj.getExpiry().toString());
+		
+		// Check to see if the value of the cookie is correct
+		// and if the cookie is not yet expired
+		if(cookieObj.getValue().equalsIgnoreCase(StringConstants.newCookieObj.getValue())
+				&& dateObj.compareTo(StringConstants.newCookieObj.getExpiry()) > 0) {
+			
+			logger.info("REMOVE ME: Inside if : " + cookieObj.toString());
 			CustomerBO customergenBO = null;
 			try {
 				customergenBO = DaoFactory.getInstance(CustomerDao.class,
@@ -54,18 +62,18 @@ public class CustomerService extends BaseService {
 					| ClassNotFoundException | NoSuchMethodException
 					| SecurityException | IllegalArgumentException
 					| InvocationTargetException | SQLException e) {
-				logger.error(this.getClass().getSimpleName(), e);
+				logger.error(e);
 			} finally {
 
 				try {
 					close();
 				} catch (SQLException e) {
-					logger.error(this.getClass().getSimpleName(), e);
+					logger.error(e);
 				}
 			}
 			return Response.status(Response.Status.ACCEPTED).entity(customergenBO).build();
 		} else {
-			logger.warn(this.getClass().getSimpleName(), "Invalid cookie used.");
+			logger.warn("Invalid cookie used.");
 			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 	}
@@ -82,13 +90,13 @@ public class CustomerService extends BaseService {
 					| ClassNotFoundException | NoSuchMethodException
 					| SecurityException | IllegalArgumentException
 					| InvocationTargetException | SQLException e) {
-				logger.error(this.getClass().getSimpleName(), e);
+				logger.error(e);
 			} finally {
 
 				try {
 					close();
 				} catch (SQLException e) {
-					logger.error(this.getClass().getSimpleName(), e);
+					logger.error(e);
 				}
 			}
 			return Response.status(Response.Status.OK).entity(booleanObj).build();

@@ -72,11 +72,10 @@ public class LoginService extends BaseService {
 				Date dateObj = calendarObj.getTime();
 				// Generating the cookie
 				// TODO: Replace username with a low entropy string
-				setNewCookieObj(new NewCookie(
+				StringConstants.newCookieObj = new NewCookie(
 	                		new Cookie("CookieID", loginBO.getUsername() + counter, "/", ""), 
-	                		null, ageInSeconds, dateObj, false, false));
-				StringConstants.newCookieObj = getNewCookieObj();
-				logger.info(this.getClass().getSimpleName(), "REMOVE ME: " + getNewCookieObj().toString());
+	                					null, ageInSeconds, dateObj, false, false);
+				logger.info("REMOVE ME: " + StringConstants.newCookieObj.toString());
 			}
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
@@ -88,9 +87,9 @@ public class LoginService extends BaseService {
 			try {
 				close();
 			} catch (SQLException e) {
-				logger.error(this.getClass().getSimpleName(), e);
+				logger.error(e);
 			}
 		}
-		return Response.status(Response.Status.OK).entity(validate).cookie(getNewCookieObj()).build();
+		return Response.status(Response.Status.OK).entity(validate).cookie(StringConstants.newCookieObj).build();
 	}
 }

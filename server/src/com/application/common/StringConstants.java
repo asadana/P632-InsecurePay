@@ -9,5 +9,5 @@ public class StringConstants {
 	public final static String userName = "insecurepay";
 	public final static String password = "insecurepay";
 	public final static String defaultPassword = "12345";
-	public static NewCookie newCookieObj;
+	public static NewCookie newCookieObj = null;
 }
