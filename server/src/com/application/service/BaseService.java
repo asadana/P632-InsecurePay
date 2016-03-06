@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import javax.ws.rs.core.NewCookie;
-
 import com.application.common.Constants;
 
 /*
