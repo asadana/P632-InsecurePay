@@ -26,14 +26,11 @@ public class TransferFragment extends Fragment {
     private EditText etTransferDetails;
     private EditText etCustUsername;
     private EditText etTransferAmount;
-    private View viewObj;
     private Button btnTransfer;
     private TransferFundsVO transferFundsVO;
 
     private Gson gson = new Gson();
-    private CommonVO commonVO;
 
-    private TransferTask transferTask = null;
     private TransferValidationTask transfervalidationtask = null;
 
     public TransferFragment() {
@@ -43,7 +40,7 @@ public class TransferFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
+        View viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
 
         initValues(viewObj);
         addListeners();
@@ -58,7 +55,7 @@ public class TransferFragment extends Fragment {
         etCustUsername = (EditText) viewObj.findViewById(R.id.etCust_username);
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
         // Initializing commonVO and transferfundsVO object
-        commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        CommonVO commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         transferFundsVO = new TransferFundsVO();
         transferFundsVO.setFromAccount(commonVO.getAccountVO());
 
@@ -170,7 +167,7 @@ public class TransferFragment extends Fragment {
 
         protected void onPostExecute(AccountVO accountDetails) {
             transferFundsVO.setToAccount(accountDetails);
-            transferTask = new TransferTask(transferFundsVO);
+            TransferTask transferTask = new TransferTask(transferFundsVO);
             transferTask.execute();
         }
 

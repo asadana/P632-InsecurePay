@@ -27,7 +27,6 @@ import com.cigital.insecurepay.fragments.TransferFragment;
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
     private DrawerLayout drawer;
-    private TextView tvCustUserName;
 
     // For handling fragments
     private FragmentManager fragmentManager = getSupportFragmentManager();
@@ -68,8 +67,8 @@ public class HomePage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        tvCustUserName = (TextView)findViewById(R.id.tvNavHeaderUsername);
-        tvCustUserName.setText(((CommonVO)getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
+        TextView tvCustUserName = (TextView) findViewById(R.id.tvNavHeaderUsername);
+        tvCustUserName.setText(((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
 
 
     }

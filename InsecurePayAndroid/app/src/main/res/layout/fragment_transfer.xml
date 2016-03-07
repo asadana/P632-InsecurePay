@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Enter the customer username"
+            android:text="@string/tvTransfer_custUsername"
             android:id="@+id/textView2" />
 
         <EditText
@@ -37,7 +37,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Enter the amount"
+            android:text="@string/tvTransfer_Amount"
             android:id="@+id/textView3" />
 
         <EditText
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Message"
+            android:text="@string/tvTransfer_Message"
             android:id="@+id/textView4" />
 
         <EditText
@@ -62,7 +62,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TRANSFER"
+            android:text="@string/btnTransfer_Transfer"
             android:id="@+id/btn_transfer"
             android:layout_gravity="center_horizontal" />
 

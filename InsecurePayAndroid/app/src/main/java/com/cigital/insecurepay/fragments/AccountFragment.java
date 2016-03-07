@@ -59,8 +59,6 @@ public class AccountFragment extends Fragment {
     private Button btnUpdateInfo;
     private Button btnChangePassword;
 
-    // To retrieve and store details
-    private AccountFetchTask accountFetchTask = null;
     private CustomerVO customerVOObj;
 
     // To handle connections
@@ -197,7 +195,7 @@ public class AccountFragment extends Fragment {
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
 
         // Fetch details from the server
-        accountFetchTask = new AccountFetchTask();
+        AccountFetchTask accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
     }
 
@@ -407,12 +405,16 @@ public class AccountFragment extends Fragment {
 
         @Override
         protected void onPostExecute(final String responseFromServer) {
-            if (responseFromServer.equals("true")) {
-                Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-            } else if (responseFromServer.equals("false")) {
-                Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-            } else {
-                Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+            switch (responseFromServer) {
+                case "true":
+                    Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+                    break;
+                case "false":
+                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+                    break;
             }
 
         }
@@ -459,12 +461,16 @@ public class AccountFragment extends Fragment {
         @Override
         protected void onPostExecute(final String password_changed) {
 
-            if (password_changed.equals("false")) {
-                Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
-            } else if (password_changed.equals("true")) {
-                Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
-            } else {
-                Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
+            switch (password_changed) {
+                case "false":
+                    Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
+                    break;
+                case "true":
+                    Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
+                    break;
             }
         }
     }

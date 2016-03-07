@@ -97,4 +97,10 @@
     <string name="password_not_changed">Password was not changed</string>
     <string name="password_changed">Password Changed to </string>
 
+    <!--For Transfer Fragment-->
+    <string name="tvTransfer_custUsername">Enter the customer username</string>
+    <string name="tvTransfer_Amount">Enter the amount</string>
+    <string name="tvTransfer_Message">Message</string>
+    <string name="btnTransfer_Transfer">TRANSFER</string>
+
 </resources>
