@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
 
-    protected Gson gson = new Gson();
+    private Gson gson = new Gson();
     private EditText accountNoView;
     private EditText textSSNNoView;
     private EditText usernameView;

@@ -1,7 +1,8 @@
 package com.cigital.insecurepay.fragments;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentValues;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -34,12 +35,6 @@ public class TransferFragment extends Fragment {
 
     private TransferTask transferTask = null;
     private TransferValidationTask transfervalidationtask = null;
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
 
     public TransferFragment() {
         // Required empty public constructor
@@ -216,10 +211,27 @@ public class TransferFragment extends Fragment {
 
             if (amountTransferred.equals("false")) {
                 Toast.makeText(TransferFragment.this.getContext(), "Amount was not transferred", Toast.LENGTH_LONG).show();
-            } else if (amountTransferred.equals("true")) {
-                Toast.makeText(TransferFragment.this.getContext(), "Transaction successful", Toast.LENGTH_LONG).show();
             } else {
-                Log.e(this.getClass().getSimpleName(), "Invalid response on transfer funds");
+                if (amountTransferred.equals("true")) {
+                    Toast.makeText(TransferFragment.this.getContext(), "Transaction successful", Toast.LENGTH_LONG).show();
+                    transferFundsVO.getToAccount().setAccountBalance(transferFundsVO.getToAccount().getAccountBalance() - transferFundsVO.getTransferAmount());
+                    // build notification 
+                    // the addAction re-use the same intent to keep the example short
+                    Notification n = new Notification.Builder(getActivity())
+                            .setContentTitle("New mail from " + "test@gmail.com")
+                            .setContentText("Subject")
+                            .setSmallIcon(R.drawable.ic_transfer_funds)
+                            .setContentIntent(null)
+                            .setAutoCancel(true).build();
+
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) TransferFragment.this.getContext().getSystemService(TransferFragment.this.getContext().NOTIFICATION_SERVICE);
+
+                    notificationManager.notify(0, n);
+                } else {
+                    Log.e(this.getClass().getSimpleName(), "Invalid response on transfer funds");
+                }
             }
         }
     }
