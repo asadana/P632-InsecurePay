@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import com.application.common.StringConstants;
+import com.application.common.Constants;
 
 /*
  * Manages connection
@@ -16,11 +16,11 @@ public class BaseService extends Logging {
 	
 	private void createConnection() throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, SQLException {
-		String url = StringConstants.url;
-		String dbName = StringConstants.dbName;
-		String driver = StringConstants.driver;
-		String userName = StringConstants.userName;
-		String password = StringConstants.password;
+		String url = Constants.url;
+		String dbName = Constants.dbName;
+		String driver = Constants.driver;
+		String userName = Constants.userName;
+		String password = Constants.password;
 		Class.forName(driver).newInstance();
 		this.conn = (Connection) DriverManager.getConnection(url + dbName,
 				userName, password);

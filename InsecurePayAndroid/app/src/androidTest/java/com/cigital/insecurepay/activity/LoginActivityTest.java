@@ -41,6 +41,7 @@ public class LoginActivityTest {
     public static final String wrongUsername = "abc";
     public static final String wrongAccount = "1234234";
 
+
     public static final String URL = "http://10.0.0.3:8090/";
     public static final String path = "InsecurePayServiceServer/rest/";
 
@@ -72,6 +73,7 @@ public class LoginActivityTest {
 
         onView(withId(R.id.username))
                 .perform(typeText(correctUsername), closeSoftKeyboard());
+
         onView(withId(R.id.password)).
                 perform(typeText(wrongPassword), closeSoftKeyboard());
 
@@ -82,7 +84,6 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
-
 
     @Test
     public void loginFailTest() {

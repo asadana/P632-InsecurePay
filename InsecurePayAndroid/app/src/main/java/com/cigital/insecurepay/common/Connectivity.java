@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,11 +18,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Serializable;
+import java.net.CookieManager;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 
-public class Connectivity {
+public class Connectivity implements Serializable {
+
+    final static String COOKIES_HEADER = "Set-Cookie";
+    // Stores and handles cookies
+    CookieStore mCookieStore;
+    CookieManager mCookieManager = new CookieManager(mCookieStore, null);
     private Context context;
     private String path;
     private String sendToServer;
@@ -31,23 +42,15 @@ public class Connectivity {
     private InputStream is;
     private String serverAddress;
 
-    //Constructor called if connection is to be established for get
-    public Connectivity(Context context, String path, String serverAddress) {
-        this.context = context;
-        this.path = path;
+    public Connectivity(String serverAddress) {
         this.serverAddress = serverAddress;
-    }
-
-    //Constructor called if connection is to be established for post
-    public Connectivity(Context context, String path, String serverAddress, String sendToServer) {
-        this(context, path, serverAddress);
-        this.sendToServer = sendToServer;
+        mCookieStore = mCookieManager.getCookieStore();
     }
 
     /*
-    Sends data to server in JSON format and receives response in JSON as well
+     * Sends data to server in JSON format and receives response in JSON as well
      */
-    public String post()  {
+    public String post() {
         Log.d(this.getClass().getSimpleName(), "In Post()");
         if (checkConnection()) {
             try {
@@ -59,12 +62,28 @@ public class Connectivity {
                 conn.setChunkedStreamingMode(0);
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
+                if (mCookieStore.getCookies().size() > 0) {
+                    //TO join cookies in the request
+                    conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                    Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+                }
                 writeIt();
                 is = conn.getInputStream();
                 response = readIt(is);
+                if (mCookieStore.getCookies().size() <= 0) {
+                    Map<String, List<String>> headerFields = conn.getHeaderFields();
+                    List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
+                    if (cookieHeaderList != null) {
+                        for (String cookie : cookieHeaderList) {
+                            mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
+                        }
+
+                    }
+
+                }
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
-            }  finally {
+            } finally {
 
                 try {
                     conn.disconnect();
@@ -82,7 +101,7 @@ public class Connectivity {
     public String get(ContentValues contentValues) {
         Log.d(this.getClass().getSimpleName(), "In Get()");
         String params = null;
-        if(contentValues != null)
+        if (contentValues != null)
             params = setParameters(contentValues);
         try {
             url = new URL(serverAddress + path + params);
@@ -92,6 +111,13 @@ public class Connectivity {
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
+
+            if (mCookieStore.getCookies().size() > 0) {
+                //TO join cookies in the request
+                conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
+            }
+
             is = conn.getInputStream();
             conn.connect();
             response = readIt(is);
@@ -109,7 +135,7 @@ public class Connectivity {
         return response;
     }
 
-    private String setParameters(ContentValues contentValues){
+    private String setParameters(ContentValues contentValues) {
         String key;
         String value;
         Uri.Builder builder = new Uri.Builder();
@@ -174,7 +200,7 @@ public class Connectivity {
             outWriter.flush();
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
-        }finally {
+        } finally {
             try {
                 if (outWriter != null) {
                     outWriter.close();
@@ -186,64 +212,42 @@ public class Connectivity {
         Log.d(this.getClass().getSimpleName(), "Sent");
 
     }
+
+    public void setConnectionParameters(Context contextObj, String path) {
+        this.context = contextObj;
+        this.path = path;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public String getSendToServer() {
+        return sendToServer;
+    }
+
+    public void setSendToServer(String sendToServer) {
+        this.sendToServer = sendToServer;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
 }
-/*
-Following will be the declaration for the class variables of cookie
-
-CookieStore mCookieStore;
-CookieManager mCookieManager=new CookieManager(mCookieStore, null);
-Addition in Constructor
-mCookieStore = mCookieManager.getCookieStore();
-Above needed for both get and post with cookies
- */
-
-/*public String cookie_post() throws IOException {
-         url = new URL(serverAddress + "http://10.0.0.10:8090/InsecurePayService/rest/" + "login");
-        Log.d("Response", "URL set now opening connections" + url.toString());
-        conn = (HttpURLConnection) url.openConnection();
-        Log.d("Response", "URL Connection opened successfully");
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setChunkedStreamingMode(0);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-Type", "application/json");
-        writeIt();
-        final String COOKIES_HEADER = "Set-Cookie";
-
-        Map<String, List<String>> headerFields = conn.getHeaderFields();
-        List<String> cookieHeader = headerFields.get(COOKIES_HEADER);
-        if (cookieHeader != null) {
-            for (String cookie : cookieHeader) {
-
-                mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
-            }
-        }
-        Log.d("Response", "Cookie " + mCookieStore.getCookies().toString());
-        is = conn.getInputStream();
-        conn.connect();
-        response = readIt(is);
-        cookie_get();
-        return response;
-    }
-*/
-/*
-    public String cookie_get() throws IOException {
-        url = new URL(serverAddress + "http://10.0.0.10:8090/InsecurePayService/rest/" + "cookie");
-        Log.d("Response", "URL set now opening connections" + url.toString());
-        conn = (HttpURLConnection) url.openConnection();
-        Log.d("Response", "URL Connection opened successfully");
-        conn.setDoInput(true);
-        conn.setReadTimeout(10000);
-        conn.setConnectTimeout(15000);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        if(mCookieStore.getCookies().size()>0){
-            //TO join cookies in the request
-            conn.setRequestProperty("Cookie", TextUtils.join(";",mCookieStore.getCookies()));
-        }
-        is = conn.getInputStream();
-        conn.connect();
-        response = readIt(is);
-        return response;
-    }
-*/

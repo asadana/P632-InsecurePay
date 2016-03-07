@@ -11,38 +11,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
-import com.application.dao.AccountDao;
-import com.application.service.BO.AccountBO;
+import com.application.dao.LoginDao;
 
-@Path("/accountService")
-public class AccountService extends BaseService {
+@Path("/transferValidation")
+public class TransferValidationService extends BaseService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getCustomerDetails(@QueryParam("custNo") int custNo)
-			throws SQLException, InstantiationException,
-			IllegalAccessException, NoSuchMethodException, SecurityException,
-			IllegalArgumentException, InvocationTargetException,
-			ClassNotFoundException {
-		AccountBO accountBO = null;
+	public Response validateCust(@QueryParam("username") String username) {
+		int custNo = -1;
 		try {
-			accountBO = DaoFactory.getInstance(AccountDao.class,
-					this.getConnection()).getAccountDetails(custNo);
+			custNo = DaoFactory.getInstance(LoginDao.class,
+					this.getConnection()).checkUsername(username);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
 			logger.error(this.getClass().getSimpleName(), e);
 		} finally {
+
 			try {
 				close();
 			} catch (SQLException e) {
 				logger.error(this.getClass().getSimpleName(), e);
 			}
 		}
-		return Response.status(Response.Status.ACCEPTED).entity(accountBO)
-				.build();
+		return Response.status(Response.Status.OK).entity(custNo).build();
 
 	}
-
 }

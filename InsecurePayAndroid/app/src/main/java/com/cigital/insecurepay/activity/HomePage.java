@@ -1,7 +1,6 @@
 package com.cigital.insecurepay.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -15,20 +14,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
-import com.google.gson.Gson;
+import com.cigital.insecurepay.fragments.TransferFragment;
 
 public class HomePage extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    protected Context contextHomePage = this;
-    protected Gson gson = new Gson();
+        implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
     private DrawerLayout drawer;
-    private TextView tvCustUserName;
 
     // For handling fragments
     private FragmentManager fragmentManager = getSupportFragmentManager();
@@ -39,6 +37,8 @@ public class HomePage extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        // To allow Screenshots
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         fragmentClass = HomeFragment.class;
         try {
@@ -67,8 +67,8 @@ public class HomePage extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        tvCustUserName = (TextView)findViewById(R.id.tvNavHeaderUsername);
-        tvCustUserName.setText(((CommonVO)getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
+        TextView tvCustUserName = (TextView) findViewById(R.id.tvNavHeaderUsername);
+        tvCustUserName.setText(((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getUsername());
 
 
     }
@@ -124,6 +124,9 @@ public class HomePage extends AppCompatActivity
             Log.i(this.getClass().getSimpleName(), "Home Fragment selected");
             setTitle(R.string.nav_homepage);
         } else if (id == R.id.nav_transfer_funds) {
+            fragmentClass = TransferFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Transfer Fragment selected");
+            setTitle(R.string.nav_transfer_funds);
 
         } else if (id == R.id.nav_interest_calc) {
 
@@ -159,5 +162,12 @@ public class HomePage extends AppCompatActivity
     public void onLogOut() {
         Intent intent = new Intent(HomePage.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void setAccDetails(AccountVO accountVO) {
+        CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
+        commonVO.setAccountVO(accountVO);
+        getIntent().putExtra(getString(R.string.common_VO), commonVO);
     }
 }

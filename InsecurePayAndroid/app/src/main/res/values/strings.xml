@@ -19,6 +19,7 @@
     <string name="no_network">No network connection</string>
 
     <!--Following strings are for Login-->
+
     <string name="prompt_server_addr">Enter Server Address</string>
     <string name="account_lockout_duration">10</string>
     <string name="title_activity_home_page">HomePage</string>
@@ -41,15 +42,16 @@
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
 
-
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <!--<string name="default_address">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
-    <string name="forgot_password_path">ForgotPassword</string>
+    <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
     <string name="change_password_path">changePassword</string>
     <string name="account_details_path">accountService</string>
+    <string name="transfer_funds_path">transferFunds</string>
+    <string name="transfer_validation_path">transferValidation</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>
@@ -94,5 +96,11 @@
     <string name="error_username_does_not_exist">Username does not exist</string>
     <string name="password_not_changed">Password was not changed</string>
     <string name="password_changed">Password Changed to </string>
+
+    <!--For Transfer Fragment-->
+    <string name="tvTransfer_custUsername">Enter the customer username</string>
+    <string name="tvTransfer_Amount">Enter the amount</string>
+    <string name="tvTransfer_Message">Message</string>
+    <string name="btnTransfer_Transfer">TRANSFER</string>
 
 </resources>

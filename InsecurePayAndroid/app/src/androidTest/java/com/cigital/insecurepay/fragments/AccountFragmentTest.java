@@ -41,7 +41,7 @@ public class AccountFragmentTest {
     public static final String updateStreetAddress = "Manhattan";
     public static final String updateZip = "1234";
     public static final String updateSuccessfulToast = "Update successful";
-    /*
+
     @Test
     public void checkHomePage() {
         onView(withId(R.id.username)).
@@ -99,7 +99,6 @@ public class AccountFragmentTest {
 
 
     }
-    */
 
     @Test
     public void checkAccountUpdate() {

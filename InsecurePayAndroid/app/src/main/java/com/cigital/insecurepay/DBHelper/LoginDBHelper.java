@@ -83,8 +83,7 @@ public class LoginDBHelper extends DBHelper {
             entryTime = format.parseDateTime(cursor.getString(0));
         }
         if (cursor != null)
-            cursor.close();
-        return entryTime;
+            cursor.close();return entryTime;
     }
 
     public boolean isLocked(String username) {

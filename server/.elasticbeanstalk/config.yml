@@ -6,5 +6,5 @@ global:
   default_ec2_keyname: aws-eb-ssh-key
   default_platform: Tomcat 8 Java 8
   default_region: us-east-1
-  profile: null
+  profile: eb-cli
   sc: null

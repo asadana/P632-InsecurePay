@@ -31,7 +31,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.google.gson.Gson;
 
@@ -286,9 +286,6 @@ public class AccountFragment extends Fragment {
                         String confirmPassword = etConfirmPassword.getText().toString();
                         ChangePasswordTask changePasswordTask;
 
-                        Log.d("Password 1 ", newPassword);
-                        Log.d("Password 2 ", confirmPassword);
-
                         if (TextUtils.isEmpty(newPassword)) {
                             etNewPassword.setError(getString(R.string.error_field_required));
                             return;
@@ -339,11 +336,10 @@ public class AccountFragment extends Fragment {
             // contentValues to to store the parameter used to fetch the values
             ContentValues contentValues = new ContentValues();
             contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-
-            // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress());
+            // Fetching the connectivity object and setting context and path
+            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             // Storing server response
-            String responseFromServer = getInfoConnection.get(contentValues);
+            String responseFromServer = LoginActivity.connectivityObj.get(contentValues);
 
             Log.i(this.getClass().getSimpleName(), responseFromServer);
 
@@ -368,7 +364,7 @@ public class AccountFragment extends Fragment {
 
             // Populating customerVO with the information retrieved
             tvName.setText(customerVOObj.getCustName());
-            tvAccountNumber.setText(Integer.toString(customerVOObj.getCustNo()));
+            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
             tvUserDOB.setText(customerVOObj.getBirthDate());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
@@ -383,6 +379,8 @@ public class AccountFragment extends Fragment {
     // Inner-class to update the server
     private class AccountUpdateTask extends AsyncTask<String, String, String> {
 
+
+
         @Override
         protected String doInBackground(String... params) {
 
@@ -394,13 +392,11 @@ public class AccountFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), e.toString());
             }
-            // TODO: Delete this
-            Log.d(this.getClass().getSimpleName(), "Sending to server string: " + sendToServer);
-
-            // Establishing connection to the server
-            Connectivity getInfoConnection = new Connectivity(getContext(), getString(R.string.cust_details_path), commonVO.getServerAddress(), sendToServer);
+            // Fetching the connectivity object and setting context and path
+            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+            LoginActivity.connectivityObj.setSendToServer(sendToServer);
             // Storing server response
-            responseFromServer = getInfoConnection.post();
+            responseFromServer = LoginActivity.connectivityObj.post();
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
 
@@ -411,10 +407,10 @@ public class AccountFragment extends Fragment {
         protected void onPostExecute(final String responseFromServer) {
             switch (responseFromServer) {
                 case "true":
-                    Toast.makeText(getContext(), R.string.account_update_successful, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
                     break;
                 case "false":
-                    Toast.makeText(getContext(), R.string.account_update_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
@@ -440,14 +436,18 @@ public class AccountFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
             String password_changed = null;
             try {
-                //Parameters contain credentials which are capsuled to ChangePasswordVO objects
+                // Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
-                //sendToServer contains JSON object that has credentials
+                // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-                //Passing the context of LoginActivity to Connectivity
-                Connectivity con_login = new Connectivity(AccountFragment.this.getContext(), getString(R.string.change_password_path), commonVO.getServerAddress(), sendToServer);
-                //Call post and since there are white spaces in the response, trim is called
-                password_changed = con_login.post().trim();
+
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
+                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                // Call post and since there are white spaces in the response, trim is called
+                password_changed = LoginActivity.connectivityObj.post().trim();
+
+
                 Log.d("Response from server", password_changed);
                 Thread.sleep(2000);
                 return password_changed;
@@ -459,14 +459,14 @@ public class AccountFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(final String passwordChanged) {
+        protected void onPostExecute(final String password_changed) {
 
-            switch (passwordChanged) {
+            switch (password_changed) {
                 case "false":
-                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_not_changed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
                     break;
                 case "true":
-                    Toast.makeText(AccountFragment.this.getContext(), R.string.password_changed + password, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
@@ -479,22 +479,18 @@ public class AccountFragment extends Fragment {
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
-        DateOfBirthPickerFragment() {
-
-        }
-
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {
             int year = calenderObj.get(Calendar.YEAR);
             int month = calenderObj.get(Calendar.MONTH);
             int day = calenderObj.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getActivity(), this, year, month, day);
+            return new DatePickerDialog(getContext(), this, year, month, day);
         }
 
         // Function handles what to once new date is selected from dialog
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker veiew, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
             tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }

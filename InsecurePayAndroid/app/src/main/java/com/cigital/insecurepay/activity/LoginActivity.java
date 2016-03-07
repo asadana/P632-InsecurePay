@@ -29,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,6 +51,8 @@ import com.google.gson.Gson;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    public static Connectivity connectivityObj;
     private final Context context = this;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -81,19 +85,38 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Gson gson = new Gson();
     private Intent intent;
     private CommonVO commonVO = new CommonVO();
-
+    // Initializing cookieManager
+    private CookieManager cookieManager = new CookieManager();
+//    static final String COOKIES_HEADER = "CookieID";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // To allow Screenshots
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        // To disable screenshots in this activity
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
         userAddress = getString(R.string.default_address);
         userPath = getString(R.string.default_path);
+
         commonVO.setServerAddress(userAddress + userPath);
+/*
+        // Creating a new Connectivity object in commonVO
+        commonVO.setConnectivityObj(new Connectivity(commonVO.getServerAddress()));
+        // Setting application context and login path
+        commonVO.getConnectivityObj().setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
+*/
+        connectivityObj = new Connectivity(commonVO.getServerAddress());
+        connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
+
+        CookieHandler.setDefault(cookieManager);
 
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
+
         TextView forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
         populateAutoComplete();
 
@@ -450,10 +473,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     lockoutVO.setAddUser(true);
                 } else {
                     Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
-                    Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
-                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() + "");
                 }
-
 
                 if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
                     lockoutVO.setIsLocked(db.isLocked(username));
@@ -466,10 +486,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                     //sendToServer contains JSON object that has credentials
                     String sendToServer = gson.toJson(sendVo);
-                    //Passing the context of LoginActivity to Connectivity
-                    Connectivity con_login = new Connectivity(LoginActivity.this.getApplicationContext(), getString(R.string.login_path), commonVO.getServerAddress(), sendToServer);
+/*                    commonVO.getConnectivityObj().setSendToServer(sendToServer);
                     //Call post and since there are white spaces in the response, trim is called
-                    String responseFromServer = con_login.post().trim();
+                    String responseFromServer = commonVO.getConnectivityObj().post().trim();
+                    */
+
+                    connectivityObj.setSendToServer(sendToServer);
+                    //Call post and since there are white spaces in the response, trim is called
+                    String responseFromServer = connectivityObj.post().trim();
                     Log.d(this.getClass().getSimpleName(), responseFromServer);
                     //Convert serverResponse to respectiveVO
                     loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
@@ -521,9 +545,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } else if (lockoutVO.getLoginValidationVO().isValidUser()) {
                 try {
                     Log.d(this.getClass().getSimpleName(), "Move to next activity");
+                    Log.d("REMOVE ME", cookieManager.getCookieStore().getCookies().toString());
                     // Move to Home Page if successful login
                     Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
-                    intent = new Intent(LoginActivity.this.getApplicationContext(), HomePage.class);
+                    intent = new Intent(getApplicationContext(), HomePage.class);
                     commonVO.setUsername(username);
                     commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
                     intent.putExtra(getString(R.string.common_VO), commonVO);
