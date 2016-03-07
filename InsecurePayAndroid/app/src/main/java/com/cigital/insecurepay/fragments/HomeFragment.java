@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
         tvBalance = (TextView)viewObj.findViewById(R.id.tvHome_fillBalance);
         tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvHome_fillAccountNumber);
         commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
-        custAccountFetchTask task = new custAccountFetchTask();
+        CustAccountFetchTask task = new CustAccountFetchTask();
         task.execute();
 
 
@@ -63,28 +63,23 @@ public class HomeFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener {
-        void setAccNo(int accNo);
+        void setAccDetails(AccountVO accountVO);
     }
 
-    private class custAccountFetchTask extends AsyncTask<String, String, AccountVO> {
+    private class CustAccountFetchTask extends AsyncTask<String, String, AccountVO> {
         private AccountVO accountDetails;
 
         @Override
         protected AccountVO doInBackground(String... params) {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
-/*                // Fetching the connectivity object and setting context and path
-                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.account_details_path));
-                */
+
                 // Fetching the connectivity object and setting context and path
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-/*                //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(commonVO.getConnectivityObj().get(contentValues), AccountVO.class);
-                */
                 //Converts customer details to CustomerVO
                 accountDetails = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), AccountVO.class);
 
@@ -99,7 +94,7 @@ public class HomeFragment extends Fragment {
 
             tvBalance.setText(Float.toString(accountDetails.getAccountBalance()));
             tvAccountNumber.setText(Integer.toString(accountDetails.getAccNo()));
-            mListener.setAccNo(accountDetails.getAccNo());
+            mListener.setAccDetails(accountDetails);
 
         }
 

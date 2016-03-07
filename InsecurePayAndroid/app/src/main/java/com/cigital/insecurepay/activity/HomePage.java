@@ -1,7 +1,6 @@
 package com.cigital.insecurepay.activity;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -19,16 +18,14 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
 import com.cigital.insecurepay.fragments.TransferFragment;
-import com.google.gson.Gson;
 
 public class HomePage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
-    protected Context contextHomePage = this;
-    protected Gson gson = new Gson();
     private DrawerLayout drawer;
     private TextView tvCustUserName;
 
@@ -169,9 +166,9 @@ public class HomePage extends AppCompatActivity
     }
 
     @Override
-    public void setAccNo(int accNo) {
+    public void setAccDetails(AccountVO accountVO) {
         CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
-        commonVO.setAccountNo(accNo);
+        commonVO.setAccountVO(accountVO);
         getIntent().putExtra(getString(R.string.common_VO), commonVO);
     }
 }

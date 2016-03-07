@@ -62,7 +62,6 @@ public class Connectivity implements Serializable {
                 conn.setChunkedStreamingMode(0);
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");
-                Log.d("REMOVE ME: In post ", Integer.toString(mCookieStore.getCookies().size()));
                 if (mCookieStore.getCookies().size() > 0) {
                     //TO join cookies in the request
                     conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
@@ -73,17 +72,12 @@ public class Connectivity implements Serializable {
                 response = readIt(is);
                 if (mCookieStore.getCookies().size() <= 0) {
                     Map<String, List<String>> headerFields = conn.getHeaderFields();
-                    Log.d("REMOVE ME: Header: ", headerFields.toString());
                     List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
                     if (cookieHeaderList != null) {
-                        Log.d("REMOVE ME: Cookie H", cookieHeaderList.toString());
                         for (String cookie : cookieHeaderList) {
-                            Log.d("REMOVE ME: Cookie", cookie);
                             mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
                         }
 
-                        Log.d("REMOVE ME", Integer.toString(mCookieStore.getCookies().size()));
-                        Log.d("REMOVE ME", mCookieStore.getCookies().toString());
                     }
 
                 }
@@ -118,7 +112,6 @@ public class Connectivity implements Serializable {
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
 
-            Log.d("REMOVE ME: In get ", Integer.toString(mCookieStore.getCookies().size()));
             if (mCookieStore.getCookies().size() > 0) {
                 //TO join cookies in the request
                 conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));

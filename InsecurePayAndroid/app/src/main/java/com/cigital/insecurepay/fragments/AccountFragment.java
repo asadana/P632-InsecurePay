@@ -287,8 +287,6 @@ public class AccountFragment extends Fragment {
                         String newPassword = etNewPassword.getText().toString();
                         String confirmPassword = etConfirmPassword.getText().toString();
                         ChangePasswordTask changePasswordTask;
-                        Log.d("Password 1 ", newPassword);
-                        Log.d("Password 2 ", confirmPassword);
 
                         if (TextUtils.isEmpty(newPassword)) {
                             etNewPassword.setError(getString(R.string.error_field_required));
@@ -340,15 +338,6 @@ public class AccountFragment extends Fragment {
             // contentValues to to store the parameter used to fetch the values
             ContentValues contentValues = new ContentValues();
             contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-/*
-
-            // Fetching the connectivity object and setting context and path
-            commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-            // Storing server response
-            String responseFromServer = commonVO.getConnectivityObj().get(contentValues);
-
-*/
-
             // Fetching the connectivity object and setting context and path
             LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             // Storing server response
@@ -377,7 +366,7 @@ public class AccountFragment extends Fragment {
 
             // Populating customerVO with the information retrieved
             tvName.setText(customerVOObj.getCustName());
-            tvAccountNumber.setText(Integer.toString(commonVO.getAccountNo()));
+            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
             tvUserDOB.setText(customerVOObj.getBirthDate());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
@@ -405,15 +394,6 @@ public class AccountFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), e.toString());
             }
-/*
-
-            // Fetching the connectivity object and setting context and path
-            commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-            commonVO.getConnectivityObj().setSendToServer(sendToServer);
-            // Storing server response
-            responseFromServer = commonVO.getConnectivityObj().post();
-
-*/
             // Fetching the connectivity object and setting context and path
             LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             LoginActivity.connectivityObj.setSendToServer(sendToServer);
@@ -458,15 +438,7 @@ public class AccountFragment extends Fragment {
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
                 // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-/*
 
-                // Fetching the connectivity object and setting context and path
-                commonVO.getConnectivityObj().setConnectionParameters(getContext(), getString(R.string.change_password_path));
-                commonVO.getConnectivityObj().setSendToServer(sendToServer);
-                // Call post and since there are white spaces in the response, trim is called
-                password_changed = commonVO.getConnectivityObj().post().trim();
-
-*/
                 // Fetching the connectivity object and setting context and path
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
                 LoginActivity.connectivityObj.setSendToServer(sendToServer);

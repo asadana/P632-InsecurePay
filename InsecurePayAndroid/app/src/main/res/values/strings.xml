@@ -44,15 +44,14 @@
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="defaultAddress">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <!--<string name="default_address">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
-    <string name="forgot_password_path">ForgotPassword</string>
+    <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
     <string name="change_password_path">changePassword</string>
     <string name="account_details_path">accountService</string>
     <string name="transfer_funds_path">transferFunds</string>
     <string name="transfer_validation_path">transferValidation</string>
-    <string name="transfervalidation_VO">transfervalidationVO</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>

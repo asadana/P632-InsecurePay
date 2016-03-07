@@ -1,6 +1,5 @@
 package com.application.service;
 
-
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
@@ -12,34 +11,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
-import com.application.dao.TransferValidationDao;
-import com.application.service.BO.TransferValidationBO;
-
+import com.application.dao.LoginDao;
 
 @Path("/transferValidation")
-public class TransferValidationService extends BaseService{
+public class TransferValidationService extends BaseService {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response validateCust(@QueryParam("username") String username) {
-		TransferValidationBO validate = null;
-			try {
-				validate = DaoFactory.getInstance(TransferValidationDao.class,
-						this.getConnection()).validateCust(username);
-			} catch (InstantiationException | IllegalAccessException
-					| ClassNotFoundException | NoSuchMethodException
-					| SecurityException | IllegalArgumentException
-					| InvocationTargetException | SQLException e) {
-				logger.error(this.getClass().getSimpleName(), e);
-			} finally {
+		int custNo = -1;
+		try {
+			custNo = DaoFactory.getInstance(LoginDao.class,
+					this.getConnection()).checkUsername(username);
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException | NoSuchMethodException
+				| SecurityException | IllegalArgumentException
+				| InvocationTargetException | SQLException e) {
+			logger.error(this.getClass().getSimpleName(), e);
+		} finally {
 
-				try {
-					close();
-				} catch (SQLException e) {
-					logger.error(this.getClass().getSimpleName(), e);
-				}
+			try {
+				close();
+			} catch (SQLException e) {
+				logger.error(this.getClass().getSimpleName(), e);
 			}
-			return Response.status(Response.Status.OK).entity(validate).build();
+		}
+		return Response.status(Response.Status.OK).entity(custNo).build();
 
 	}
 }

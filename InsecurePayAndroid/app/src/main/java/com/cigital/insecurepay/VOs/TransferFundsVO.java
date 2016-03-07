@@ -1,50 +1,37 @@
 package com.cigital.insecurepay.VOs;
 
-import com.cigital.insecurepay.fragments.TransferFragment;
-
-import java.util.Date;
-
-
 public class TransferFundsVO {
 
-    private int fromCustNo;
-    private int fromAccountNo;
-    private int toCustNo;
+    private AccountVO fromAccount;
+    private AccountVO toAccount;
     private float transferAmount;
     private String transferDetails;
 
-
-
-    public TransferFundsVO(int fromAccountNo,int fromCustNo,int toCustNo,float transferAmount,String transferDetails) {
-        this.fromCustNo = fromCustNo;
-        this.fromAccountNo = fromAccountNo;
-        this.toCustNo = toCustNo;
+    public TransferFundsVO(AccountVO fromAccount, AccountVO toAccount, float transferAmount, String transferDetails) {
+        this.fromAccount = fromAccount;
+        this.toAccount = toAccount;
         this.transferAmount = transferAmount;
         this.transferDetails = transferDetails;
     }
 
-    public int getFromCustNo() {
-        return fromCustNo;
+    public TransferFundsVO(){
+
     }
 
-    public void setFromCustNo(int fromCustNo) {
-        this.fromCustNo = fromCustNo;
+    public AccountVO getFromAccount() {
+        return fromAccount;
     }
 
-    public int getFromAccountNo() {
-        return fromAccountNo;
+    public void setFromAccount(AccountVO fromAccount) {
+        this.fromAccount = fromAccount;
     }
 
-    public void setFromAccountNo(int fromAccountNo) {
-        this.fromAccountNo = fromAccountNo;
+    public AccountVO getToAccount() {
+        return toAccount;
     }
 
-    public int getToCustNo() {
-        return toCustNo;
-    }
-
-    public void setToCustNo(int toCustNo) {
-        this.toCustNo = toCustNo;
+    public void setToAccount(AccountVO toAccount) {
+        this.toAccount = toAccount;
     }
 
     public float getTransferAmount() {

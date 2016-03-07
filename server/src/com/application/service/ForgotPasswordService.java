@@ -16,7 +16,7 @@ import com.application.service.BO.ForgotPasswordBO;
 import com.application.service.BO.LoginValidationBO;
 
 
-@Path("/ForgotPassword")
+@Path("/forgotPassword")
 public class ForgotPasswordService extends BaseService{
 	
 	@POST

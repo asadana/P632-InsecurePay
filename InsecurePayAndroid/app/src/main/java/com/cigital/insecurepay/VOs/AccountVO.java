@@ -1,8 +1,9 @@
 package com.cigital.insecurepay.VOs;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AccountVO {
+public class AccountVO implements Serializable{
     private int custNo;
     private int accNo;
     private float accountBalance;
