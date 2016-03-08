@@ -68,6 +68,7 @@ public class AccountFragment extends Fragment {
     private Gson gson = new Gson();
     private CommonVO commonVO;
     private JsonFileHandler jsonFileHandlerObj;
+    private AsyncCommon asyncCommonObj;
 
     // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
@@ -197,13 +198,9 @@ public class AccountFragment extends Fragment {
         // Initializing JsonFileHandler
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
 
-        /*
-        // Fetch details from the server
-        AccountFetchTask accountFetchTask = new AccountFetchTask();
-        accountFetchTask.execute();
-        */
+        // setting post to false for get
         isPost = false;
-        AsyncCommon asyncCommonObj = new AsyncCommon(getContext(), isPost) {
+        asyncCommonObj = new AsyncCommon(getContext(), isPost) {
 
             @Override
             protected ResponseWrapper doGet() {
@@ -303,9 +300,50 @@ public class AccountFragment extends Fragment {
 
         jsonFileHandlerObj.writeToFile(gson.toJson(customerVOObj));
 
-        // Object of inner class to post update to the server
-        AccountUpdateTask accountUpdateTask = new AccountUpdateTask();
-        accountUpdateTask.execute();
+        isPost = true;
+        asyncCommonObj = new AsyncCommon(getContext(), isPost) {
+
+            @Override
+            protected ResponseWrapper doPost() {
+                super.doPost();
+
+                // Getting JSON from customerVO object to be sent
+                String sendToServer = null;
+                try {
+                    sendToServer = jsonFileHandlerObj.readFromFile();
+                } catch (IOException e) {
+                    Log.e(this.getClass().getSimpleName(), e.toString());
+                }
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
+
+                return responseWrapperObj;
+            }
+
+            @Override
+            protected void postSuccess(ResponseWrapper responseWrapperObj) {
+                super.postSuccess(responseWrapperObj);
+
+                // Storing server response
+                String responseFromServer = responseWrapperObj.getResponseString();
+                Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + responseFromServer);
+                switch (responseFromServer) {
+                    case "true":
+                        Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+                        break;
+                    // TODO: Remove this and handle it with error
+                    case "false":
+                        Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+                        break;
+                }
+            }
+        };
+        asyncCommonObj.execute();
     }
 
     // Handles tasks to be done when Change Password is clicked
@@ -378,52 +416,6 @@ public class AccountFragment extends Fragment {
         });
 
         alertD.show();
-    }
-
-    // Inner-class to update the server
-    private class AccountUpdateTask extends AsyncTask<String, String, String> {
-
-
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String responseFromServer;
-            // Getting JSON from customerVO object to be sent
-            String sendToServer = null;
-            try {
-                sendToServer = jsonFileHandlerObj.readFromFile();
-            } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), e.toString());
-            }
-            // Fetching the connectivity object and setting context and path
-            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-            LoginActivity.connectivityObj.setSendToServer(sendToServer);
-
-            ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
-            // Storing server response
-            responseFromServer = responseWrapperObj.getResponseString();
-
-            Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
-
-            return responseFromServer;
-        }
-
-        @Override
-        protected void onPostExecute(final String responseFromServer) {
-            switch (responseFromServer) {
-                case "true":
-                    Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-                    break;
-                case "false":
-                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
-                    break;
-            }
-
-        }
     }
 
     // Inner class to update the password on the server
