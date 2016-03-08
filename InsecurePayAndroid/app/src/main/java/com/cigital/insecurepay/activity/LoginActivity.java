@@ -46,6 +46,7 @@ import com.cigital.insecurepay.VOs.LoginLockoutVO;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
@@ -492,8 +493,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     */
 
                     connectivityObj.setSendToServer(sendToServer);
+
+                    ResponseWrapper responseWrapperObj = connectivityObj.post();
                     //Call post and since there are white spaces in the response, trim is called
-                    String responseFromServer = connectivityObj.post().trim();
+                    String responseFromServer = responseWrapperObj.getResponseString().trim();
                     Log.d(this.getClass().getSimpleName(), responseFromServer);
                     //Convert serverResponse to respectiveVO
                     loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);

@@ -16,6 +16,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
@@ -117,8 +118,10 @@ public class ForgotPassword extends AppCompatActivity {
 
                 connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.forgot_password_path));
                 connectivityObj.setSendToServer(sendToServer);
+
+                ResponseWrapper responseWrapperObj = connectivityObj.post();
                 // Call post and since there are white spaces in the response, trim is called
-                String responseFromServer = connectivityObj.post().trim();
+                String responseFromServer = responseWrapperObj.getResponseString().trim();
                 // Convert serverResponse to respectiveVO
                 loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
 

@@ -19,6 +19,7 @@ import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
 import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 public class TransferFragment extends Fragment {
@@ -109,8 +110,10 @@ public class TransferFragment extends Fragment {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
 
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+
                 //Converts customer details to CustomerVO
-                String custNo = LoginActivity.connectivityObj.get(contentValues);
+                String custNo = responseWrapperObj.getResponseString();
                 Log.d(this.getClass().getSimpleName(), custNo);
                 if (custNo != null) {
                     return Integer.parseInt(custNo);
@@ -155,8 +158,10 @@ public class TransferFragment extends Fragment {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), custNo);
 
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+
                 //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), AccountVO.class);
+                accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);
 
                 Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
             } catch (Exception e) {
@@ -191,8 +196,10 @@ public class TransferFragment extends Fragment {
                 // Fetching the connectivity object and setting context and path
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
                 LoginActivity.connectivityObj.setSendToServer(sendToServer);
+
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
                 //Call post and since there are white spaces in the response, trim is called
-                amountTransferred = LoginActivity.connectivityObj.post().trim();
+                amountTransferred = responseWrapperObj.getResponseString().trim();
                 Log.d("Response from server", amountTransferred);
                 Thread.sleep(2000);
 

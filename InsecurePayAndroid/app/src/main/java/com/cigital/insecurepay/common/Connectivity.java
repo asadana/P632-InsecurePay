@@ -37,8 +37,9 @@ public class Connectivity implements Serializable {
     private String path;
     private String sendToServer;
     private URL url;
-    private HttpURLConnection conn;
-    private String response;
+    private HttpURLConnection httpURLConnectionObj;
+
+    private ResponseWrapper responseWrapperObj;
     private InputStream is;
     private String serverAddress;
 
@@ -50,28 +51,38 @@ public class Connectivity implements Serializable {
     /*
      * Sends data to server in JSON format and receives response in JSON as well
      */
-    public String post() {
+    public ResponseWrapper post() {
         Log.d(this.getClass().getSimpleName(), "In Post()");
         if (checkConnection()) {
             try {
                 url = new URL(serverAddress + path);
                 Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-                conn.setChunkedStreamingMode(0);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
+                httpURLConnectionObj = (HttpURLConnection) url.openConnection();
+                httpURLConnectionObj.setDoInput(true);
+                httpURLConnectionObj.setDoOutput(true);
+                httpURLConnectionObj.setChunkedStreamingMode(0);
+                httpURLConnectionObj.setRequestMethod("POST");
+                httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
                 if (mCookieStore.getCookies().size() > 0) {
                     //TO join cookies in the request
-                    conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                    httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
                     Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
                 }
                 writeIt();
-                is = conn.getInputStream();
-                response = readIt(is);
+                is = httpURLConnectionObj.getInputStream();
+                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+/*
+
+                if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
+                        && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+                } else {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), null);
+                }
+*/
+
                 if (mCookieStore.getCookies().size() <= 0) {
-                    Map<String, List<String>> headerFields = conn.getHeaderFields();
+                    Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
                     List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
                     if (cookieHeaderList != null) {
                         for (String cookie : cookieHeaderList) {
@@ -86,7 +97,7 @@ public class Connectivity implements Serializable {
             } finally {
 
                 try {
-                    conn.disconnect();
+                    httpURLConnectionObj.disconnect();
                     is.close();
                 } catch (IOException e) {
                     Log.e(this.getClass().getSimpleName(), "Post error", e);
@@ -94,11 +105,11 @@ public class Connectivity implements Serializable {
             }
 
         }
-        return response;
+        return responseWrapperObj;
     }
 
     //Right now get is hardcoded to get Customer Details of username = foo
-    public String get(ContentValues contentValues) {
+    public ResponseWrapper get(ContentValues contentValues) {
         Log.d(this.getClass().getSimpleName(), "In Get()");
         String params = null;
         if (contentValues != null)
@@ -106,33 +117,33 @@ public class Connectivity implements Serializable {
         try {
             url = new URL(serverAddress + path + params);
             Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
+            httpURLConnectionObj = (HttpURLConnection) url.openConnection();
+            httpURLConnectionObj.setReadTimeout(10000);
+            httpURLConnectionObj.setConnectTimeout(15000);
+            httpURLConnectionObj.setRequestMethod("GET");
+            httpURLConnectionObj.setDoInput(true);
 
             if (mCookieStore.getCookies().size() > 0) {
                 //TO join cookies in the request
-                conn.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
                 Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
             }
 
-            is = conn.getInputStream();
-            conn.connect();
-            response = readIt(is);
+            is = httpURLConnectionObj.getInputStream();
+            httpURLConnectionObj.connect();
+            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "Get error", e);
         } finally {
             try {
-                conn.disconnect();
+                httpURLConnectionObj.disconnect();
                 is.close();
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Get error", e);
             }
         }
 
-        return response;
+        return responseWrapperObj;
     }
 
     private String setParameters(ContentValues contentValues) {
@@ -194,7 +205,7 @@ public class Connectivity implements Serializable {
         OutputStream out;
         OutputStreamWriter outWriter = null;
         try {
-            out = new BufferedOutputStream(conn.getOutputStream());
+            out = new BufferedOutputStream(httpURLConnectionObj.getOutputStream());
             outWriter = new OutputStreamWriter(out, "UTF-8");
             outWriter.write(sendToServer);
             outWriter.flush();
@@ -218,12 +229,13 @@ public class Connectivity implements Serializable {
         this.path = path;
     }
 
-    public String getResponse() {
-        return response;
+
+    public ResponseWrapper getResponseWrapperObj() {
+        return responseWrapperObj;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public void setResponseWrapperObj(ResponseWrapper responseWrapperObj) {
+        this.responseWrapperObj = responseWrapperObj;
     }
 
     public String getSendToServer() {

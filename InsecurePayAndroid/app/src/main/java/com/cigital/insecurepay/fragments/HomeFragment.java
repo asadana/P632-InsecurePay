@@ -15,6 +15,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 
@@ -80,8 +81,10 @@ public class HomeFragment extends Fragment {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+
                 //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(LoginActivity.connectivityObj.get(contentValues), AccountVO.class);
+                accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);
 
                 Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
             } catch (Exception e) {

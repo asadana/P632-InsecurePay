@@ -33,6 +33,7 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.common.JsonFileHandler;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -338,8 +339,9 @@ public class AccountFragment extends Fragment {
             contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
             // Fetching the connectivity object and setting context and path
             LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+            ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
             // Storing server response
-            String responseFromServer = LoginActivity.connectivityObj.get(contentValues);
+            String responseFromServer = responseWrapperObj.getResponseString();
 
             Log.i(this.getClass().getSimpleName(), responseFromServer);
 
@@ -395,8 +397,10 @@ public class AccountFragment extends Fragment {
             // Fetching the connectivity object and setting context and path
             LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
             LoginActivity.connectivityObj.setSendToServer(sendToServer);
+
+            ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
             // Storing server response
-            responseFromServer = LoginActivity.connectivityObj.post();
+            responseFromServer = responseWrapperObj.getResponseString();
 
             Log.d(this.getClass().getSimpleName(), "Server response in update: " + responseFromServer);
 
@@ -444,8 +448,11 @@ public class AccountFragment extends Fragment {
                 // Fetching the connectivity object and setting context and path
                 LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
                 LoginActivity.connectivityObj.setSendToServer(sendToServer);
+
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
+
                 // Call post and since there are white spaces in the response, trim is called
-                password_changed = LoginActivity.connectivityObj.post().trim();
+                password_changed = responseWrapperObj.getResponseString().trim();
 
 
                 Log.d("Response from server", password_changed);
