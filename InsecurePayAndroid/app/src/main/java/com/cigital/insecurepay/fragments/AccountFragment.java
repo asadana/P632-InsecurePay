@@ -32,6 +32,7 @@ import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.common.AsyncCommon;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
@@ -59,6 +60,7 @@ public class AccountFragment extends Fragment {
     private EditText etAddressZip;
     private Button btnUpdateInfo;
     private Button btnChangePassword;
+    private boolean isPost;
 
     private CustomerVO customerVOObj;
 
@@ -195,9 +197,59 @@ public class AccountFragment extends Fragment {
         // Initializing JsonFileHandler
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
 
+        /*
         // Fetch details from the server
         AccountFetchTask accountFetchTask = new AccountFetchTask();
         accountFetchTask.execute();
+        */
+        isPost = false;
+        AsyncCommon asyncCommonObj = new AsyncCommon(getContext(), isPost) {
+
+            @Override
+            protected ResponseWrapper doGet() {
+                super.doGet();
+                // contentValues to to store the parameter used to fetch the values
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
+                // Fetching the connectivity object and setting context and path
+                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+                return responseWrapperObj;
+            }
+
+            @Override
+            public void postSuccess(ResponseWrapper responseWrapperObj) {
+                super.postSuccess(responseWrapperObj);
+
+                // Storing server response
+                String responseFromServer = responseWrapperObj.getResponseString();
+                Log.i(this.getClass().getSimpleName(), responseFromServer);
+
+                // Writing to the local JSON file
+                jsonFileHandlerObj.writeToFile(responseFromServer);
+
+                // Storing server response from JSON file in the customerVOObj
+                try {
+                    customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+                } catch (IOException e) {
+                    Log.e(this.getClass().getSimpleName(), e.toString());
+                }
+                Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
+
+                // Populating customerVO with the information retrieved
+                tvName.setText(customerVOObj.getCustName());
+                tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
+                tvSSN.setText(customerVOObj.getDecodedSsn());
+                tvUserDOB.setText(customerVOObj.getBirthDate());
+                etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
+                etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
+                etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
+                etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
+                etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
+                etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+            }
+        };
+        asyncCommonObj.execute();
     }
 
     // Initializing listeners where needed
@@ -326,56 +378,6 @@ public class AccountFragment extends Fragment {
         });
 
         alertD.show();
-    }
-
-    // Inner-class for fetching information from server
-    private class AccountFetchTask extends AsyncTask<String, String, CustomerVO> {
-
-        @Override
-        protected CustomerVO doInBackground(String... params) {
-
-            // contentValues to to store the parameter used to fetch the values
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-            // Fetching the connectivity object and setting context and path
-            LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-            ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
-            // Storing server response
-            String responseFromServer = responseWrapperObj.getResponseString();
-
-            Log.i(this.getClass().getSimpleName(), responseFromServer);
-
-            Log.i(this.getClass().getSimpleName(), "Account information retrieved successfully");
-
-            // Writing to the local JSON file
-            jsonFileHandlerObj.writeToFile(responseFromServer);
-
-            // Storing server response from JSON file in the customerVOObj
-            try {
-                customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-            } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), e.toString());
-            }
-
-            return customerVOObj;
-        }
-
-        @Override
-        protected void onPostExecute(final CustomerVO customerVOObj) {
-            Log.d(this.getClass().getSimpleName(), "In post execute. Updating view.");
-
-            // Populating customerVO with the information retrieved
-            tvName.setText(customerVOObj.getCustName());
-            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
-            tvSSN.setText(customerVOObj.getDecodedSsn());
-            tvUserDOB.setText(customerVOObj.getBirthDate());
-            etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
-            etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
-            etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
-            etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
-            etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
-            etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
-        }
     }
 
     // Inner-class to update the server
