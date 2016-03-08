@@ -30,6 +30,11 @@ public class AsyncCommon extends AsyncTask<Void, Void, ResponseWrapper> {
 
     @Override
     protected ResponseWrapper doInBackground(Void... params) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.e(this.getClass().getSimpleName(), "doInBackground: " + e.toString());
+        }
         ResponseWrapper responseWrapperObj;
         if (isPost) {
             responseWrapperObj = doPost();
