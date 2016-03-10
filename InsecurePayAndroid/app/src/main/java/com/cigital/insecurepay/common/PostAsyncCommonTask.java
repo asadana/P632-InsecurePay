@@ -25,11 +25,4 @@ public class PostAsyncCommonTask<T> extends AsyncCommonTask {
             return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
         }
     }
-
-    @Override
-    protected void postSuccess(String resultObj) {
-        super.postSuccess(resultObj);
-    }
-
-
 }

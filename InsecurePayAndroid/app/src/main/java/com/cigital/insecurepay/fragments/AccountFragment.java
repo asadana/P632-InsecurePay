@@ -11,7 +11,6 @@ import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -32,11 +31,9 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.PostAsyncCommonTask;
-import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -330,7 +327,8 @@ public class AccountFragment extends Fragment {
                         }
 
                         if (newPassword.equals(confirmPassword)) {
-                            changePasswordTask = new ChangePasswordTask(commonVO.getUsername(), newPassword);
+                            changePasswordTask = new ChangePasswordTask(getContext(), commonVO.getServerAddress(),
+                                    getString(R.string.change_password_path), new ChangePasswordVO(commonVO.getUsername(), newPassword));
                             changePasswordTask.execute();
                             alertD.dismiss();
                         } else {
@@ -354,56 +352,26 @@ public class AccountFragment extends Fragment {
     }
 
     // Inner class to update the password on the server
-    public class ChangePasswordTask extends AsyncTask<String, String, String> {
+    private class ChangePasswordTask extends PostAsyncCommonTask<ChangePasswordVO> {
+        private String newPassword;
 
-        private final String username;
-        private final String password;
-
-        ChangePasswordTask(String username, String password) {
-            this.password = password;
-            this.username = username;
+        public ChangePasswordTask(Context contextObj, String serverAddress, String path,
+                                  ChangePasswordVO changePasswordVO) {
+            super(contextObj, serverAddress, path, changePasswordVO, ChangePasswordVO.class);
+            newPassword = changePasswordVO.getPassword();
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
-            String password_changed = null;
-            try {
-                // Parameters contain credentials which are capsuled to ChangePasswordVO objects
-                ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
-                // sendToServer contains JSON object that has credentials
-                String sendToServer = gsonObj.toJson(sendVo);
-
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.change_password_path));
-                connectivityObj.setSendToServer(sendToServer);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.post();
-
-                // Call post and since there are white spaces in the response, trim is called
-                password_changed = responseWrapperObj.getResponseString().trim();
-
-
-                Log.d("Response from server", password_changed);
-                Thread.sleep(2000);
-                return password_changed;
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Exception thrown in change password", e);
-            }
-            return password_changed;
-        }
-
-        @Override
-        protected void onPostExecute(final String password_changed) {
-
-            switch (password_changed) {
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+            // Checking the server response
+            switch (resultObj) {
                 case "false":
-                    Toast.makeText(AccountFragment.this.getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
                     break;
                 case "true":
-                    Toast.makeText(AccountFragment.this.getContext(), "Password Changed to " + password, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Password Changed to " + newPassword, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
@@ -412,6 +380,7 @@ public class AccountFragment extends Fragment {
         }
     }
 
+    // Inner class to fetch customer details
     private class GetCustomerDetailsTask extends GetAsyncCommonTask<CustomerVO> {
 
         public GetCustomerDetailsTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
@@ -442,6 +411,7 @@ public class AccountFragment extends Fragment {
 
     }
 
+    // Inner class to update customer details
     private class UpdateCustomerDetailsTask extends PostAsyncCommonTask<CustomerVO> {
 
         public UpdateCustomerDetailsTask(Context contextObj, String serverAddress, String path,
