@@ -32,13 +32,14 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.AsyncCommonTask;
 import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.JsonFileHandler;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -65,10 +66,11 @@ public class AccountFragment extends Fragment {
     private CustomerVO customerVOObj;
 
     // To handle connections
-    private Gson gson = new Gson();
+    private Gson gsonObj = new Gson();
     private CommonVO commonVO;
     private JsonFileHandler jsonFileHandlerObj;
-    private AsyncCommonTask getCustomerDetailsTask;
+    private GetCustomerDetailsTask getCustomerDetailsTask;
+    private UpdateCustomerDetailsTask updateCustomerDetailsTask;
 
     // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
@@ -212,7 +214,8 @@ public class AccountFragment extends Fragment {
         ContentValues contentValues = new ContentValues();
         contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-        getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(), getString(R.string.cust_details_path), contentValues);
+        getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+                getString(R.string.cust_details_path), contentValues);
         getCustomerDetailsTask.execute();
     }
 
@@ -265,52 +268,17 @@ public class AccountFragment extends Fragment {
         customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
         customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
-        jsonFileHandlerObj.writeToFile(gson.toJson(customerVOObj));
+        jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
 
-        /*asyncCommonTaskObj = new AsyncCommonTask(getContext(), isPost) {
+        try {
+            customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+        }
 
-            @Override
-            protected ResponseWrapper doPost() {
-                super.doPost();
-
-                // Getting JSON from customerVO object to be sent
-                String sendToServer = null;
-                try {
-                    sendToServer = jsonFileHandlerObj.readFromFile();
-                } catch (IOException e) {
-                    Log.e(this.getClass().getSimpleName(), e.toString());
-                }
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-                connectivityObj.setSendToServer(sendToServer);
-                ResponseWrapper responseWrapperObj = connectivityObj.post();
-
-                return responseWrapperObj;
-            }
-
-            @Override
-            protected void postSuccess(ResponseWrapper responseWrapperObj) {
-                super.postSuccess(responseWrapperObj);
-
-                // Storing server response
-                String responseFromServer = responseWrapperObj.getResponseString();
-                Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + responseFromServer);
-                switch (responseFromServer) {
-                    case "true":
-                        Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
-                        break;
-                    // TODO: Remove this and handle it with error
-                    case "false":
-                        Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
-                        break;
-                }
-            }
-        };
-        asyncCommonTaskObj.execute();*/
+        updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+                getString(R.string.cust_details_path), customerVOObj);
+        updateCustomerDetailsTask.execute();
     }
 
     // Handles tasks to be done when Change Password is clicked
@@ -404,7 +372,7 @@ public class AccountFragment extends Fragment {
                 // Parameters contain credentials which are capsuled to ChangePasswordVO objects
                 ChangePasswordVO sendVo = new ChangePasswordVO(username, password);
                 // sendToServer contains JSON object that has credentials
-                String sendToServer = gson.toJson(sendVo);
+                String sendToServer = gsonObj.toJson(sendVo);
 
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
@@ -451,10 +419,11 @@ public class AccountFragment extends Fragment {
         }
 
         @Override
-        public void postSuccess(CustomerVO customerVOObj) {
-
+        public void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
             Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
 
+            customerVOObj = objReceived;
             // Writing to the local JSON file
             jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj, CustomerVO.class));
 
@@ -469,6 +438,35 @@ public class AccountFragment extends Fragment {
             etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
             etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
             etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+        }
+
+    }
+
+    private class UpdateCustomerDetailsTask extends PostAsyncCommonTask<CustomerVO> {
+
+        public UpdateCustomerDetailsTask(Context contextObj, String serverAddress, String path,
+                                         CustomerVO customerVO) {
+            super(contextObj, serverAddress, path, customerVOObj, CustomerVO.class);
+        }
+
+
+        @Override
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + resultObj);
+            switch (resultObj) {
+                case "true":
+                    Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+                    break;
+                // TODO: Remove this and handle it with error
+                case "false":
+                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
+                    break;
+            }
         }
 
     }
