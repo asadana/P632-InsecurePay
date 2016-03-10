@@ -1,6 +1,8 @@
 package com.cigital.insecurepay.VOs;
 
-public class TransferFundsVO {
+import java.io.Serializable;
+
+public class TransferFundsVO implements Serializable {
 
     private AccountVO fromAccount;
     private AccountVO toAccount;

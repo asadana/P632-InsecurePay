@@ -3,6 +3,7 @@ package com.cigital.insecurepay.fragments;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
+import com.cigital.insecurepay.activity.TransferActivity;
 import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
@@ -28,6 +30,7 @@ public class TransferFragment extends Fragment {
     private EditText etCustUsername;
     private EditText etTransferAmount;
     private Button btnTransfer;
+    private Intent intent;
     private TransferFundsVO transferFundsVO;
 
     private Gson gson = new Gson();
@@ -175,8 +178,10 @@ public class TransferFragment extends Fragment {
 
         protected void onPostExecute(AccountVO accountDetails) {
             transferFundsVO.setToAccount(accountDetails);
-            TransferTask transferTask = new TransferTask(transferFundsVO);
-            transferTask.execute();
+            intent = new Intent(getContext(), TransferActivity.class);
+            intent.putExtra(getString(R.string.transferFunds_VO), transferFundsVO);
+            intent.putExtra(getString(R.string.common_VO), commonVO);
+            startActivity(intent);
         }
 
     }
