@@ -2,7 +2,6 @@ package com.cigital.insecurepay.fragments;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,8 +13,7 @@ import android.widget.TextView;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
-import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.common.ResponseWrapper;
+import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.google.gson.Gson;
 
 
@@ -26,6 +24,7 @@ public class HomeFragment extends Fragment {
     private CommonVO commonVO;
     private TextView tvAccountNumber;
     private OnFragmentInteractionListener mListener;
+    private ContentValues contentValues;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -39,7 +38,10 @@ public class HomeFragment extends Fragment {
         tvBalance = (TextView)viewObj.findViewById(R.id.tvHome_fillBalance);
         tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvHome_fillAccountNumber);
         commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
-        CustAccountFetchTask task = new CustAccountFetchTask();
+        contentValues = new ContentValues();
+        contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
+        CustAccountFetchTask task = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
+                getString(R.string.account_details_path), contentValues);
         task.execute();
 
 
@@ -67,41 +69,23 @@ public class HomeFragment extends Fragment {
         void setAccDetails(AccountVO accountVO);
     }
 
-    private class CustAccountFetchTask extends AsyncTask<String, String, AccountVO> {
-        private AccountVO accountDetails;
+    private class CustAccountFetchTask extends GetAsyncCommonTask<AccountVO> {
+        private AccountVO accountVOObj;
+
+        public CustAccountFetchTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+            super(contextObj, serverAddress, path, contentValues, AccountVO.class);
+        }
 
         @Override
-        protected AccountVO doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "Background");
-            try {
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            accountVOObj = objReceived;
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Customer Balance: " + accountVOObj.getAccountBalance());
 
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.account_details_path));
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-
-                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
-
-                //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);
-
-                Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
-            }
-            return accountDetails;
+            tvBalance.setText(Float.toString(accountVOObj.getAccountBalance()));
+            tvAccountNumber.setText(Integer.toString(accountVOObj.getAccNo()));
+            mListener.setAccDetails(accountVOObj);
         }
-
-        protected void onPostExecute(AccountVO accountDetails) {
-
-            tvBalance.setText(Float.toString(accountDetails.getAccountBalance()));
-            tvAccountNumber.setText(Integer.toString(accountDetails.getAccNo()));
-            mListener.setAccDetails(accountDetails);
-
-        }
-
     }
 
 }
