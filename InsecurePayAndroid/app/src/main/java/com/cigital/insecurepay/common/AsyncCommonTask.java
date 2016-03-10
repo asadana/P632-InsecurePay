@@ -14,23 +14,21 @@ import com.google.gson.Gson;
 import java.net.HttpURLConnection;
 
 
-public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, ResponseWrapper> {
+public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWrapper> {
 
     protected Connectivity connectivityObj;
     protected Gson gsonObj;
-    protected Class<T> classObj;
     private ProgressDialog progressDialogObj;
     private Context contextObj;
     private String serverAddress;
     private String path;
 
 
-    public AsyncCommonTask(Context contextObj, String serverAddress, String path, Class<T> classObj) {
+    public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
         this.serverAddress = serverAddress;
         this.contextObj = contextObj;
         this.path = path;
         this.connectivityObj = new Connectivity(this.serverAddress);
-        this.classObj = classObj;
         gsonObj = new Gson();
     }
 
@@ -63,7 +61,7 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
 
-            postSuccess(gsonObj.fromJson(responseWrapperObj.getResponseString(), classObj));
+            postSuccess(responseWrapperObj.getResponseString());
         } else {
             // TODO: Handle error here
             postFailure(responseWrapperObj);
@@ -91,7 +89,7 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         return false;
     }
 
-    protected void postSuccess(T resultObj) {
+    protected void postSuccess(String resultObj) {
         Log.i(this.getClass().getSimpleName(), "postSuccess: Successfully retrieved information");
     }
 

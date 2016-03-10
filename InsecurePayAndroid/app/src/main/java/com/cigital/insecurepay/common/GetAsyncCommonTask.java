@@ -5,13 +5,16 @@ import android.content.Context;
 
 import java.net.HttpURLConnection;
 
-public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask<T> {
+public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
+    protected T objReceived;
     private ContentValues contentValuesObj;
+    private Class<T> classObj;
 
     public GetAsyncCommonTask(Context contextObj, String serverAddress, String path,
                               ContentValues contentValues, Class<T> classObj) {
-        super(contextObj, serverAddress, path, classObj);
+        super(contextObj, serverAddress, path);
         this.contentValuesObj = contentValues;
+        this.classObj = classObj;
     }
 
     @Override
@@ -24,5 +27,9 @@ public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask<T> {
         }
     }
 
-
+    @Override
+    protected void postSuccess(String resultObj) {
+        super.postSuccess(resultObj);
+        objReceived = gsonObj.fromJson(resultObj, classObj);
+    }
 }
