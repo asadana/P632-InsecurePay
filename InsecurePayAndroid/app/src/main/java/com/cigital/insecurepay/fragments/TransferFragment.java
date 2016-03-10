@@ -108,7 +108,7 @@ public class TransferFragment extends Fragment {
             try {
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
+                connectivityObj.setConnectionParameters(getString(R.string.transfer_validation_path));
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
 
@@ -156,7 +156,7 @@ public class TransferFragment extends Fragment {
 
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
+                connectivityObj.setConnectionParameters(getString(R.string.account_details_path));
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), custNo);
@@ -198,7 +198,7 @@ public class TransferFragment extends Fragment {
                 String sendToServer = gson.toJson(transferFundsVO);
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
+                connectivityObj.setConnectionParameters(getString(R.string.transfer_funds_path));
                 connectivityObj.setSendToServer(sendToServer);
 
                 ResponseWrapper responseWrapperObj = connectivityObj.post();

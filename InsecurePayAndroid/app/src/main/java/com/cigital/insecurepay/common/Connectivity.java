@@ -2,14 +2,9 @@ package com.cigital.insecurepay.common;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.cigital.insecurepay.R;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -53,7 +48,6 @@ public class Connectivity implements Serializable {
      */
     public ResponseWrapper post() {
         Log.d(this.getClass().getSimpleName(), "In Post()");
-        if (checkConnection()) {
             try {
                 url = new URL(serverAddress + path);
                 Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
@@ -95,7 +89,7 @@ public class Connectivity implements Serializable {
                 }
             }
 
-        }
+
         return responseWrapperObj;
     }
 
@@ -149,23 +143,6 @@ public class Connectivity implements Serializable {
         return builder.build().toString();
     }
 
-    //Checks whether network is on
-    private boolean checkConnection() {
-        Log.d(this.getClass().getSimpleName(), "Checking network connections");
-        ConnectivityManager connMgr = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            Log.d(this.getClass().getSimpleName(), "Network is on");
-            return true;
-        } else {
-            Log.d(this.getClass().getSimpleName(), "Network is off");
-            Toast.makeText(context, context.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
-
-        }
-        return false;
-    }
-
     //To read the response from server
     private String readIt(InputStream stream) {
         Log.d(this.getClass().getSimpleName(), "Reading response");
@@ -215,8 +192,7 @@ public class Connectivity implements Serializable {
 
     }
 
-    public void setConnectionParameters(Context contextObj, String path) {
-        this.context = contextObj;
+    public void setConnectionParameters(String path) {
         this.path = path;
     }
 

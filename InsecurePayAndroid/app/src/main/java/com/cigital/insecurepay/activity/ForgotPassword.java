@@ -112,7 +112,7 @@ public class ForgotPassword extends AppCompatActivity {
 
                 Connectivity connectivityObj = null;
 
-                connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.forgot_password_path));
+                connectivityObj.setConnectionParameters(getString(R.string.forgot_password_path));
                 connectivityObj.setSendToServer(sendToServer);
 
                 ResponseWrapper responseWrapperObj = connectivityObj.post();

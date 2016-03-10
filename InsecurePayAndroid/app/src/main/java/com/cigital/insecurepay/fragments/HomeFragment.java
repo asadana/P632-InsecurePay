@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
 
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
+                connectivityObj.setConnectionParameters(getString(R.string.account_details_path));
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());

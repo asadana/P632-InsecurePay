@@ -9,6 +9,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,13 +32,13 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.common.AsyncCommon;
+import com.cigital.insecurepay.common.AsyncCommonTask;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -68,7 +69,7 @@ public class AccountFragment extends Fragment {
     private Gson gson = new Gson();
     private CommonVO commonVO;
     private JsonFileHandler jsonFileHandlerObj;
-    private AsyncCommon asyncCommonObj;
+    private AsyncCommonTask getCustomerDetailsTask;
 
     // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
@@ -77,10 +78,12 @@ public class AccountFragment extends Fragment {
     // TextWatcher objects to handle on edit events for EditText fields
     private TextWatcher twEmail = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -90,10 +93,12 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressStreet = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -103,10 +108,12 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressCity = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -116,10 +123,12 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressState = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -129,10 +138,12 @@ public class AccountFragment extends Fragment {
     };
     private TextWatcher twAddressZip = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -143,10 +154,12 @@ public class AccountFragment extends Fragment {
 
     private TextWatcher twPhone = new TextWatcher() {
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
@@ -197,57 +210,11 @@ public class AccountFragment extends Fragment {
 
         // Initializing JsonFileHandler
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-        // setting post to false for get
-        isPost = false;
-        asyncCommonObj = new AsyncCommon(getContext(), isPost) {
-
-            @Override
-            protected ResponseWrapper doGet() {
-                super.doGet();
-                // contentValues to to store the parameter used to fetch the values
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
-                return responseWrapperObj;
-            }
-
-            @Override
-            public void postSuccess(ResponseWrapper responseWrapperObj) {
-                super.postSuccess(responseWrapperObj);
-
-                // Storing server response
-                String responseFromServer = responseWrapperObj.getResponseString();
-                Log.i(this.getClass().getSimpleName(), responseFromServer);
-
-                // Writing to the local JSON file
-                jsonFileHandlerObj.writeToFile(responseFromServer);
-
-                // Storing server response from JSON file in the customerVOObj
-                try {
-                    customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-                } catch (IOException e) {
-                    Log.e(this.getClass().getSimpleName(), e.toString());
-                }
-                Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
-
-                // Populating customerVO with the information retrieved
-                tvName.setText(customerVOObj.getCustName());
-                tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
-                tvSSN.setText(customerVOObj.getDecodedSsn());
-                tvUserDOB.setText(customerVOObj.getBirthDate());
-                etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
-                etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
-                etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
-                etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
-                etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
-                etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
-            }
-        };
-        asyncCommonObj.execute();
+        getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(), getString(R.string.cust_details_path), contentValues);
+        getCustomerDetailsTask.execute();
     }
 
     // Initializing listeners where needed
@@ -302,7 +269,7 @@ public class AccountFragment extends Fragment {
         jsonFileHandlerObj.writeToFile(gson.toJson(customerVOObj));
 
         isPost = true;
-        asyncCommonObj = new AsyncCommon(getContext(), isPost) {
+        /*asyncCommonTaskObj = new AsyncCommonTask(getContext(), isPost) {
 
             @Override
             protected ResponseWrapper doPost() {
@@ -345,7 +312,7 @@ public class AccountFragment extends Fragment {
                 }
             }
         };
-        asyncCommonObj.execute();
+        asyncCommonTaskObj.execute();*/
     }
 
     // Handles tasks to be done when Change Password is clicked
@@ -443,7 +410,7 @@ public class AccountFragment extends Fragment {
 
                 // Fetching the connectivity object and setting context and path
                 Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
+                connectivityObj.setConnectionParameters(getString(R.string.change_password_path));
                 connectivityObj.setSendToServer(sendToServer);
 
                 ResponseWrapper responseWrapperObj = connectivityObj.post();
@@ -477,6 +444,45 @@ public class AccountFragment extends Fragment {
                     break;
             }
         }
+    }
+
+    private class GetCustomerDetailsTask extends GetAsyncCommonTask<CustomerVO> {
+
+        public GetCustomerDetailsTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+            super(contextObj, serverAddress, path, contentValues, CustomerVO.class);
+        }
+
+        @Override
+        public void postSuccess(CustomerVO customerVOObj) {
+
+            /* Storing server response
+            String responseFromServer = responseWrapperObj.getResponseString();
+            Log.i(this.getClass().getSimpleName(), responseFromServer);
+
+            // Writing to the local JSON file
+            jsonFileHandlerObj.writeToFile(responseFromServer);
+
+            // Storing server response from JSON file in the customerVOObj
+            try {
+                customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), e.toString());
+            }
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");*/
+
+            // Populating customerVO with the information retrieved
+            tvName.setText(customerVOObj.getCustName());
+            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
+            tvSSN.setText(customerVOObj.getDecodedSsn());
+            tvUserDOB.setText(customerVOObj.getBirthDate());
+            etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
+            etAddressStreet.setText(customerVOObj.getStreet(), TextView.BufferType.EDITABLE);
+            etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
+            etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
+            etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
+            etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+        }
+
     }
 
     // Inner class for DialogFragment

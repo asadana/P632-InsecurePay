@@ -473,7 +473,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     String sendToServer = gson.toJson(sendVo);
 
                     Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                    connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.login_path));
+                    connectivityObj.setConnectionParameters(getString(R.string.login_path));
 
                     connectivityObj.setSendToServer(sendToServer);
 
