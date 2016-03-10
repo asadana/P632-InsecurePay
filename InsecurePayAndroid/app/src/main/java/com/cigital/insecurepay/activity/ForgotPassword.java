@@ -37,7 +37,6 @@ public class ForgotPassword extends AppCompatActivity {
         // To allow Screenshots
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         accountNoView = (EditText) findViewById(R.id.etForgotPassword_AccountNo);
@@ -100,7 +99,7 @@ public class ForgotPassword extends AppCompatActivity {
 
         @Override
         protected LoginValidationVO doInBackground(String... params) {
-            // TODO: attempt authentication against a network service.
+
             Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
 
             LoginValidationVO loginValidationVO = null;
@@ -109,12 +108,9 @@ public class ForgotPassword extends AppCompatActivity {
                 ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
                 // sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(sendVo);
-
-/*                // Fetching the connectivityObj and setting path and sendToServer
-                Connectivity connectivityObj = ((CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO))).getConnectivityObj();
-                */
                 // Fetching the connectivityObj and setting path and sendToServer
-                Connectivity connectivityObj = LoginActivity.connectivityObj;
+
+                Connectivity connectivityObj = null;
 
                 connectivityObj.setConnectionParameters(getApplicationContext(), getString(R.string.forgot_password_path));
                 connectivityObj.setSendToServer(sendToServer);

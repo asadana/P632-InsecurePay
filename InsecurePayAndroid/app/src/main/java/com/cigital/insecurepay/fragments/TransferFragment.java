@@ -18,7 +18,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
-import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
@@ -31,6 +31,7 @@ public class TransferFragment extends Fragment {
     private TransferFundsVO transferFundsVO;
 
     private Gson gson = new Gson();
+    CommonVO commonVO;
 
     private TransferValidationTask transfervalidationtask = null;
 
@@ -56,7 +57,7 @@ public class TransferFragment extends Fragment {
         etCustUsername = (EditText) viewObj.findViewById(R.id.etCust_username);
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
         // Initializing commonVO and transferfundsVO object
-        CommonVO commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         transferFundsVO = new TransferFundsVO();
         transferFundsVO.setFromAccount(commonVO.getAccountVO());
 
@@ -106,11 +107,12 @@ public class TransferFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "Background");
             try {
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_validation_path));
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.username), custUsername);
 
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
 
                 //Converts customer details to CustomerVO
                 String custNo = responseWrapperObj.getResponseString();
@@ -153,12 +155,13 @@ public class TransferFragment extends Fragment {
             try {
 
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), custNo);
 
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
 
                 //Converts customer details to CustomerVO
                 accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);
@@ -194,10 +197,11 @@ public class TransferFragment extends Fragment {
                 //sendToServer contains JSON object that has credentials
                 String sendToServer = gson.toJson(transferFundsVO);
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
-                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.transfer_funds_path));
+                connectivityObj.setSendToServer(sendToServer);
 
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
+                ResponseWrapper responseWrapperObj = connectivityObj.post();
                 //Call post and since there are white spaces in the response, trim is called
                 amountTransferred = responseWrapperObj.getResponseString().trim();
                 Log.d("Response from server", amountTransferred);

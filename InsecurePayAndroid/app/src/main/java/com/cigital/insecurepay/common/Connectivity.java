@@ -31,8 +31,8 @@ public class Connectivity implements Serializable {
 
     final static String COOKIES_HEADER = "Set-Cookie";
     // Stores and handles cookies
-    CookieStore mCookieStore;
-    CookieManager mCookieManager = new CookieManager(mCookieStore, null);
+    private static CookieStore mCookieStore;
+    private static CookieManager mCookieManager = new CookieManager(mCookieStore, null);
     private Context context;
     private String path;
     private String sendToServer;
@@ -71,15 +71,6 @@ public class Connectivity implements Serializable {
                 writeIt();
                 is = httpURLConnectionObj.getInputStream();
                 responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
-/*
-
-                if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
-                        && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
-                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
-                } else {
-                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), null);
-                }
-*/
 
                 if (mCookieStore.getCookies().size() <= 0) {
                     Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();

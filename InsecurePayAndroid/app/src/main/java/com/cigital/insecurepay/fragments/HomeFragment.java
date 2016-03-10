@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
-import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
@@ -76,12 +76,13 @@ public class HomeFragment extends Fragment {
             try {
 
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.account_details_path));
 
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
 
                 //Converts customer details to CustomerVO
                 accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);

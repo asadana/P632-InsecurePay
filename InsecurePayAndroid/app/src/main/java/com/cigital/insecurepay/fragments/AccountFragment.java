@@ -31,8 +31,8 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.CustomerVO;
-import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.common.AsyncCommon;
+import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
@@ -209,8 +209,9 @@ public class AccountFragment extends Fragment {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.get(contentValues);
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
                 return responseWrapperObj;
             }
 
@@ -315,9 +316,10 @@ public class AccountFragment extends Fragment {
                     Log.e(this.getClass().getSimpleName(), e.toString());
                 }
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
-                LoginActivity.connectivityObj.setSendToServer(sendToServer);
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.cust_details_path));
+                connectivityObj.setSendToServer(sendToServer);
+                ResponseWrapper responseWrapperObj = connectivityObj.post();
 
                 return responseWrapperObj;
             }
@@ -440,10 +442,11 @@ public class AccountFragment extends Fragment {
                 String sendToServer = gson.toJson(sendVo);
 
                 // Fetching the connectivity object and setting context and path
-                LoginActivity.connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
-                LoginActivity.connectivityObj.setSendToServer(sendToServer);
+                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
+                connectivityObj.setConnectionParameters(getContext(), getString(R.string.change_password_path));
+                connectivityObj.setSendToServer(sendToServer);
 
-                ResponseWrapper responseWrapperObj = LoginActivity.connectivityObj.post();
+                ResponseWrapper responseWrapperObj = connectivityObj.post();
 
                 // Call post and since there are white spaces in the response, trim is called
                 password_changed = responseWrapperObj.getResponseString().trim();
