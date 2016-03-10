@@ -39,6 +39,7 @@ import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -61,7 +62,6 @@ public class AccountFragment extends Fragment {
     private EditText etAddressZip;
     private Button btnUpdateInfo;
     private Button btnChangePassword;
-    private boolean isPost;
 
     private CustomerVO customerVOObj;
 
@@ -268,7 +268,6 @@ public class AccountFragment extends Fragment {
 
         jsonFileHandlerObj.writeToFile(gson.toJson(customerVOObj));
 
-        isPost = true;
         /*asyncCommonTaskObj = new AsyncCommonTask(getContext(), isPost) {
 
             @Override
@@ -446,16 +445,16 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private class GetCustomerDetailsTask extends GetAsyncCommonTask<CustomerVO> {
+    private class GetCustomerDetailsTask extends GetAsyncCommonTask {
 
         public GetCustomerDetailsTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
-            super(contextObj, serverAddress, path, contentValues, CustomerVO.class);
+            super(contextObj, serverAddress, path, contentValues);
         }
 
         @Override
-        public void postSuccess(CustomerVO customerVOObj) {
+        public void postSuccess(ResponseWrapper responseWrapperObj) {
 
-            /* Storing server response
+            // Storing server response
             String responseFromServer = responseWrapperObj.getResponseString();
             Log.i(this.getClass().getSimpleName(), responseFromServer);
 
@@ -468,7 +467,7 @@ public class AccountFragment extends Fragment {
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), e.toString());
             }
-            Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");*/
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
 
             // Populating customerVO with the information retrieved
             tvName.setText(customerVOObj.getCustName());

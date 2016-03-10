@@ -2,28 +2,25 @@ package com.cigital.insecurepay.common;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.util.Log;
 
-public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask<T> {
-    private ContentValues contentValues;
+import java.net.HttpURLConnection;
 
-    public GetAsyncCommonTask(Context contextObj, String serverAddress, String path, ContentValues contentValues, Class<T> cls) {
-        super(contextObj, serverAddress, path, cls);
-        this.contentValues = contentValues;
+public abstract class GetAsyncCommonTask extends AsyncCommonTask {
+    private ContentValues contentValuesObj;
 
+    public GetAsyncCommonTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+        super(contextObj, serverAddress, path);
+        this.contentValuesObj = contentValues;
     }
 
     @Override
-    protected ResponseWrapper doInBackground(Object... params) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Log.e(this.getClass().getSimpleName(), "doInBackground: " + e.toString());
+    protected ResponseWrapper doInBackground(Void... params) {
+        super.doInBackground(params);
+        if (checkConnection()) {
+            return connectivityObj.get(contentValuesObj);
+        } else {
+            return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
         }
-        ResponseWrapper responseWrapperObj = null;
-        connectivityObj.setConnectionParameters(path);
-        responseWrapperObj = connectivityObj.get(contentValues);
-        return responseWrapperObj;
     }
 
 

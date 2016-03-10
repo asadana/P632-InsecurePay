@@ -9,29 +9,24 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
-import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 
 
-public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, ResponseWrapper> {
+public abstract class AsyncCommonTask extends AsyncTask<Void, Void, ResponseWrapper> {
 
-    private ProgressDialog progressDialogObj;
-    protected Context contextObj;
     protected Connectivity connectivityObj;
+    private ProgressDialog progressDialogObj;
+    private Context contextObj;
     private String serverAddress;
-    protected String path;
-    private Gson gson = new Gson();
-    protected Class<T> cls;
+    private String path;
 
 
-    public AsyncCommonTask(Context contextObj, String serverAddress, String path, Class<T> cls) {
+    public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
         this.serverAddress = serverAddress;
         this.contextObj = contextObj;
         this.path = path;
         this.connectivityObj = new Connectivity(this.serverAddress);
-        this.cls = cls;
-
     }
 
     @Override
@@ -43,6 +38,18 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         progressDialogObj.show();
     }
 
+
+    @Override
+    protected ResponseWrapper doInBackground(Void... params) {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Log.e(this.getClass().getSimpleName(), "doInBackground: " + e.toString());
+        }
+        connectivityObj.setConnectionParameters(path);
+        return null;
+    }
+
     @Override
     protected void onPostExecute(ResponseWrapper responseWrapperObj) {
         super.onPostExecute(responseWrapperObj);
@@ -51,7 +58,7 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
             // TODO: do stuff here
-            postSuccess(gson.fromJson(responseWrapperObj.getResponseString(), cls));
+            postSuccess(responseWrapperObj);
         } else {
             // TODO: Handle error here
             postFailure(responseWrapperObj);
@@ -61,11 +68,8 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         progressDialogObj.dismiss();
     }
 
-    protected void postFailure(ResponseWrapper responseWrapperObj) {
-        Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
-    }
 
-    private boolean checkConnection() {
+    protected boolean checkConnection() {
         Log.d(this.getClass().getSimpleName(), "Checking network connections");
         ConnectivityManager connMgr = (ConnectivityManager) contextObj
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -74,6 +78,7 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
             Log.d(this.getClass().getSimpleName(), "Network is on");
             return true;
         } else {
+            // TODO: Handle error here
             Log.d(this.getClass().getSimpleName(), "Network is off");
             Toast.makeText(contextObj, contextObj.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
 
@@ -81,5 +86,11 @@ public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, Respons
         return false;
     }
 
-    public abstract void postSuccess(T result);
+    protected void postSuccess(ResponseWrapper responseWrapperObj) {
+        Log.i(this.getClass().getSimpleName(), "postSuccess: Successfully retrieved information");
+    }
+
+    protected void postFailure(ResponseWrapper responseWrapperObj) {
+        Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
+    }
 }
