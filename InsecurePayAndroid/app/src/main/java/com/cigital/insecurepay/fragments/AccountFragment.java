@@ -39,7 +39,6 @@ import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -445,29 +444,19 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private class GetCustomerDetailsTask extends GetAsyncCommonTask {
+    private class GetCustomerDetailsTask extends GetAsyncCommonTask<CustomerVO> {
 
         public GetCustomerDetailsTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
-            super(contextObj, serverAddress, path, contentValues);
+            super(contextObj, serverAddress, path, contentValues, CustomerVO.class);
         }
 
         @Override
-        public void postSuccess(ResponseWrapper responseWrapperObj) {
+        public void postSuccess(CustomerVO customerVOObj) {
 
-            // Storing server response
-            String responseFromServer = responseWrapperObj.getResponseString();
-            Log.i(this.getClass().getSimpleName(), responseFromServer);
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
 
             // Writing to the local JSON file
-            jsonFileHandlerObj.writeToFile(responseFromServer);
-
-            // Storing server response from JSON file in the customerVOObj
-            try {
-                customerVOObj = gson.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-            } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), e.toString());
-            }
-            Log.d(this.getClass().getSimpleName(), "postSuccess: Updating view.");
+            jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj, CustomerVO.class));
 
             // Populating customerVO with the information retrieved
             tvName.setText(customerVOObj.getCustName());

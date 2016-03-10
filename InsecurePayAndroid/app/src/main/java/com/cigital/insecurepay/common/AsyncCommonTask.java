@@ -9,24 +9,29 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
+import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
 
 
-public abstract class AsyncCommonTask extends AsyncTask<Void, Void, ResponseWrapper> {
+public abstract class AsyncCommonTask<T> extends AsyncTask<Object, Void, ResponseWrapper> {
 
     protected Connectivity connectivityObj;
+    protected Gson gsonObj;
+    protected Class<T> classObj;
     private ProgressDialog progressDialogObj;
     private Context contextObj;
     private String serverAddress;
     private String path;
 
 
-    public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
+    public AsyncCommonTask(Context contextObj, String serverAddress, String path, Class<T> classObj) {
         this.serverAddress = serverAddress;
         this.contextObj = contextObj;
         this.path = path;
         this.connectivityObj = new Connectivity(this.serverAddress);
+        this.classObj = classObj;
+        gsonObj = new Gson();
     }
 
     @Override
@@ -40,7 +45,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Void, Void, ResponseWrap
 
 
     @Override
-    protected ResponseWrapper doInBackground(Void... params) {
+    protected ResponseWrapper doInBackground(Object... params) {
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
@@ -57,8 +62,8 @@ public abstract class AsyncCommonTask extends AsyncTask<Void, Void, ResponseWrap
         // Checking if the response is in 2xx range
         if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
-            // TODO: do stuff here
-            postSuccess(responseWrapperObj);
+
+            postSuccess(gsonObj.fromJson(responseWrapperObj.getResponseString(), classObj));
         } else {
             // TODO: Handle error here
             postFailure(responseWrapperObj);
@@ -86,7 +91,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Void, Void, ResponseWrap
         return false;
     }
 
-    protected void postSuccess(ResponseWrapper responseWrapperObj) {
+    protected void postSuccess(T resultObj) {
         Log.i(this.getClass().getSimpleName(), "postSuccess: Successfully retrieved information");
     }
 
