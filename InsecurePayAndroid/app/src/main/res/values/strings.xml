@@ -84,6 +84,15 @@
     <string name="btnAccount_change_password">Change Password</string>
     <string name="etAccount_phone_hint">0000000000</string>
 
+    <!--For Transfer Funds Activity-->
+    <string name="tvTransfer_fromAccountNo">Your Account No</string>
+    <string name="tvTransfer_fromCustNo">Your Customer No</string>
+    <string name="tvTransfer_toAccountNo">Recepient Account No</string>
+    <string name="tvTransfer_toCustNo">Recepient Customer No</string>
+    <string name="tvtransferAmount">Transfer Amount</string>
+    <string name="tvtransferDetails">Transfer Details</string>
+
+
     <!--For Forgot Password -->
     <string name="etForgotPass_AccountNumber">Enter your Account Number</string>
     <string name="etForgotPass_ssnNumber">Enter your SSN Number</string>
@@ -102,5 +111,6 @@
     <string name="tvTransfer_Amount">Enter the amount</string>
     <string name="tvTransfer_Message">Message</string>
     <string name="btnTransfer_Transfer">TRANSFER</string>
+    <string name="title_activity_transfer">TransferActivity</string>
 
 </resources>
