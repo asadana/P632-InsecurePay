@@ -1,6 +1,8 @@
 package com.cigital.insecurepay.activity;
 
-import android.os.AsyncTask;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,9 +15,7 @@ import android.widget.Toast;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
-import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.common.ResponseWrapper;
-import com.google.gson.Gson;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 
 public class TransferActivity extends AppCompatActivity {
 
@@ -30,7 +30,6 @@ public class TransferActivity extends AppCompatActivity {
     private Button btnTransfer;
     private TransferFundsVO transferFundsVO;
     private CommonVO commonVO;
-    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,46 +83,21 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     private void onClickTransfer() {
-        Log.d("OnClickTransfer", "transfer");
-        TransferTask transferTask = new TransferTask(transferFundsVO);
+        Log.d(this.getClass().getSimpleName(), "onClickTransfer: Transferring");
+        TransferTask transferTask = new TransferTask(this, commonVO.getServerAddress(),
+                getString(R.string.transfer_funds_path), transferFundsVO);
         transferTask.execute();
     }
 
-    private class TransferTask extends AsyncTask<String, String, String> {
-        private TransferFundsVO transferFundsVO;
+    private class TransferTask extends PostAsyncCommonTask<TransferFundsVO> {
 
-        TransferTask(TransferFundsVO transferFundsVO) {
-            this.transferFundsVO = transferFundsVO;
+        public TransferTask(Context contextObj, String serverAddress, String path, TransferFundsVO objToBeSent) {
+            super(contextObj, serverAddress, path, objToBeSent, TransferFundsVO.class);
         }
 
         @Override
-        protected String doInBackground(String... params) {
-
-            Log.d(this.getClass().getSimpleName(), "In background, sending transfer details");
-            String amountTransferred = null;
-            try {
-                //sendToServer contains JSON object that has credentials
-                String sendToServer = gson.toJson(transferFundsVO);
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.transfer_funds_path));
-                connectivityObj.setSendToServer(sendToServer);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.post();
-                //Call post and since there are white spaces in the response, trim is called
-                amountTransferred = responseWrapperObj.getResponseString().trim();
-                Log.d("Response from server", amountTransferred);
-                Thread.sleep(2000);
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Exception thrown in transfer funds", e);
-            }
-
-            return amountTransferred;
-        }
-
-        @Override
-        protected void onPostExecute(final String amountTransferred) {
+        protected void postSuccess(String amountTransferred) {
+            super.postSuccess(amountTransferred);
 
             if (amountTransferred.equals("false")) {
                 Toast.makeText(TransferActivity.this.getApplicationContext(), "Amount was not transferred", Toast.LENGTH_LONG).show();
@@ -131,20 +105,21 @@ public class TransferActivity extends AppCompatActivity {
                 if (amountTransferred.equals("true")) {
                     Toast.makeText(TransferActivity.this.getApplicationContext(), "Transaction successful", Toast.LENGTH_LONG).show();
                     transferFundsVO.getToAccount().setAccountBalance(transferFundsVO.getToAccount().getAccountBalance() - transferFundsVO.getTransferAmount());
+
                     // build notification 
                     // the addAction re-use the same intent to keep the example short
-                   /* Notification n = new Notification.Builder(getActivity())
+                    Notification n = new Notification.Builder(getApplicationContext())
                             .setContentTitle("New mail from " + "test@gmail.com")
                             .setContentText("Subject")
                             .setSmallIcon(R.drawable.ic_transfer_funds)
                             .setContentIntent(null)
-                            .setAutoCancel(true).build();*/
+                            .setAutoCancel(true).build();
 
 
-                    //NotificationManager notificationManager =
-                    //(NotificationManager) TransferFragment.this.getContext().getSystemService(TransferFragment.this.getContext().NOTIFICATION_SERVICE);
+                    NotificationManager notificationManager =
+                            (NotificationManager) getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
-                    // notificationManager.notify(0, n);
+                    notificationManager.notify(0, n);
                 } else {
                     Log.e(this.getClass().getSimpleName(), "Invalid response on transfer funds");
                 }
