@@ -1,7 +1,5 @@
 package com.cigital.insecurepay.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -14,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -45,8 +42,7 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.LoginLockoutVO;
 import com.cigital.insecurepay.VOs.LoginVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
-import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.common.ResponseWrapper;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.google.gson.Gson;
 
 import org.joda.time.DateTime;
@@ -70,19 +66,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask authTask = null;
+    private UserLoginTask userLoginTask = null;
     // UI references.
     private AutoCompleteTextView usernameView;
     private EditText passwordView;
-    private View progressView;
-    private View loginFormView;
     private SharedPreferences loginPreferences;
     private CheckBox rememberMeCheck;
     private String userAddress;
     private String userPath;
     private Gson gson = new Gson();
     private Intent intent;
-    private CommonVO commonVO = new CommonVO();
+    private CommonVO commonVO;
+    private LoginLockoutVO lockoutVO;
+    private LoginValidationVO loginValidationVO;
+    private LoginVO loginVOObj;
+    private LoginDBHelper loginDBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +95,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         userAddress = getString(R.string.default_address);
         userPath = getString(R.string.default_path);
 
+        commonVO = new CommonVO();
         commonVO.setServerAddress(userAddress + userPath);
 
         // Set up the login form.
@@ -134,9 +133,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
-        loginFormView = findViewById(R.id.login_form);
-        progressView = findViewById(R.id.login_progress);
 
         rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
@@ -199,7 +195,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if (authTask != null) {
+        if (userLoginTask != null) {
             return;
         }
 
@@ -239,11 +235,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             //Store credentials if password Remember Me is true
             saveLoginPreferences();
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            authTask = new UserLoginTask(username, password);
-            authTask.execute();
+            lockoutVO = new LoginLockoutVO();
+            try {
+                //Check after account lockout
+                loginDBHelper = new LoginDBHelper(LoginActivity.this);
+
+                lockoutVO.setTrialTime(loginDBHelper.getTimestamp(username));
+                lockoutVO.setIsLocked(false);
+
+                if (lockoutVO.getTrialTime() == null) {
+                    lockoutVO.setAddUser(true);
+                } else {
+                    Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
+                }
+
+                if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
+                    lockoutVO.setIsLocked(loginDBHelper.isLocked(username));
+                }
+
+                if (!lockoutVO.isLocked()) {
+                    //Parameters contain credentials which are capsuled to LoginVO objects
+                    loginVOObj = new LoginVO(username, password);
+                    // perform the user login attempt.
+                    userLoginTask = new UserLoginTask(this, commonVO.getServerAddress(),
+                            getString(R.string.login_path), loginVOObj);
+                    userLoginTask.execute();
+                }
+
+            } catch (Exception e) {
+                Log.e(this.getClass().getSimpleName(), "attemptLogin: ", e);
+            }
         }
     }
 
@@ -262,42 +283,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             loginPrefsEditor.clear();
             loginPrefsEditor.apply();
-        }
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            loginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -430,98 +415,46 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * the user.
      */
 
-    public class UserLoginTask extends AsyncTask<String, String, LoginLockoutVO> {
+    public class UserLoginTask extends PostAsyncCommonTask<LoginVO> {
 
-        private final String username;
-        private final String password;
 
-        UserLoginTask(String username, String password) {
-            this.username = username;
-            this.password = password;
+        public UserLoginTask(Context contextObj, String serverAddress, String path, LoginVO objToBeSent) {
+            super(contextObj, serverAddress, path, objToBeSent, LoginVO.class);
+            Log.d(this.getClass().getSimpleName(), "Sending credentials");
         }
 
         @Override
-        protected LoginLockoutVO doInBackground(String... params) {
-            // TODO: attempt authentication against a network service.
-            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
-            LoginValidationVO loginValidationVO;
-            LoginLockoutVO lockoutVO = new LoginLockoutVO();
-            try {
-                //Check after account lockout
-                LoginDBHelper db = new LoginDBHelper(LoginActivity.this);
+        protected void onCancelled() {
+            userLoginTask = null;
+        }
 
+        @Override
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+            //Convert serverResponse to respectiveVO
+            loginValidationVO = gson.fromJson(resultObj, LoginValidationVO.class);
 
-                lockoutVO.setTrialTime(db.getTimestamp(username));
-                lockoutVO.setIsLocked(false);
+            lockoutVO.setLoginValidationVO(loginValidationVO);
 
-                if (lockoutVO.getTrialTime() == null) {
-                    lockoutVO.setAddUser(true);
+            if (lockoutVO.getLoginValidationVO().isUsernameExists()) {
+                if (lockoutVO.getLoginValidationVO().isValidUser()) {
+                    // delete row
+                    loginDBHelper.deleteTrial(loginVOObj.getUsername());
                 } else {
-                    Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
-                }
-
-                if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
-                    lockoutVO.setIsLocked(db.isLocked(username));
-                }
-
-                if (!lockoutVO.isLocked()) {
-                    Log.d(this.getClass().getSimpleName(), "Sending credentials");
-                    //Parameters contain credentials which are capsuled to LoginVO objects
-                    LoginVO sendVo = new LoginVO(username, password);
-
-                    //sendToServer contains JSON object that has credentials
-                    String sendToServer = gson.toJson(sendVo);
-
-                    Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                    connectivityObj.setConnectionParameters(getString(R.string.login_path));
-
-                    connectivityObj.setSendToServer(sendToServer);
-
-                    ResponseWrapper responseWrapperObj = connectivityObj.post();
-                    //Call post and since there are white spaces in the response, trim is called
-                    String responseFromServer = responseWrapperObj.getResponseString().trim();
-                    Log.d(this.getClass().getSimpleName(), responseFromServer);
-                    //Convert serverResponse to respectiveVO
-                    loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
-
-                    lockoutVO.setLoginValidationVO(loginValidationVO);
-
-                    if (!lockoutVO.getLoginValidationVO().isUsernameExists())
-                        return lockoutVO;
-
-                    if (lockoutVO.getLoginValidationVO().isValidUser()) {
-                        // delete row
-                        db.deleteTrial(username);
+                    if (lockoutVO.isAddUser()) {
+                        lockoutVO.setTrialCount(1);
+                        loginDBHelper.addTrial(loginVOObj.getUsername());
                     } else {
-
-                        if (lockoutVO.isAddUser()) {
-                            lockoutVO.setTrialCount(1);
-                            db.addTrial(username);
-                        } else {
-                            lockoutVO.setTrialCount(db.getTrial(username) + 1);
-                            if (lockoutVO.getTrialCount() > 3)
-                                lockoutVO.setIsLocked(true);
-                            db.updateTrial(username, lockoutVO.getTrialCount(), lockoutVO.isLocked());
-                        }
-
-
+                        lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
+                        if (lockoutVO.getTrialCount() > 3)
+                            lockoutVO.setIsLocked(true);
+                        loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
                     }
-
-
                 }
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "err", e);
-                return lockoutVO;
             }
-            return lockoutVO;
-        }
 
-        @Override
-        protected void onPostExecute(final LoginLockoutVO lockoutVO) {
-            authTask = null;
-            showProgress(false);
-
+            userLoginTask = null;
 
             if (lockoutVO.isLocked()) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
@@ -533,7 +466,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // Move to Home Page if successful login
                     Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     intent = new Intent(getApplicationContext(), HomePage.class);
-                    commonVO.setUsername(username);
+                    commonVO.setUsername(loginVOObj.getUsername());
                     commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
                     intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
@@ -544,18 +477,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                 passwordView.setError(getString(R.string.error_incorrect_password));
             }
-
         }
-
-        @Override
-        protected void onCancelled() {
-            authTask = null;
-            showProgress(false);
-        }
-
     }
-
 }
+
+
+
 
 
 

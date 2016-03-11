@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.net.HttpURLConnection;
 
-public class PostAsyncCommonTask<T> extends AsyncCommonTask {
+public abstract class PostAsyncCommonTask<T> extends AsyncCommonTask {
     protected T objToBeSent;
     private Class<T> classObj;
 
