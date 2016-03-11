@@ -38,6 +38,7 @@ import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -245,7 +246,7 @@ public class AccountFragment extends Fragment {
         tvUserDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment();
+                DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment(AccountFragment.this.getContext());
                 // Calling show with FragmentManager and a unique tag name
                 dateDialogFragment.show(getActivity().getFragmentManager(), "datePicker");
             }
@@ -447,14 +448,24 @@ public class AccountFragment extends Fragment {
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
-        @SuppressLint("NewApi")
+        private Context context;
+
+        public DateOfBirthPickerFragment(Context context) {
+            this.context = context;
+            try {
+                calenderObj.setTime(dateFormatObj.parse(customerVOObj.getBirthDate()));
+            } catch (ParseException e) {
+                Log.e(this.getClass().getSimpleName(), "DateOfBirthPickerFragment: ", e);
+            }
+        }
+
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {
             int year = calenderObj.get(Calendar.YEAR);
             int month = calenderObj.get(Calendar.MONTH);
             int day = calenderObj.get(Calendar.DAY_OF_MONTH);
 
-            return new DatePickerDialog(getContext(), this, year, month, day);
+            return new DatePickerDialog(context, this, year, month, day);
         }
 
         // Function handles what to once new date is selected from dialog

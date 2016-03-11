@@ -3,6 +3,7 @@ package com.application.dao;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class CustomerDao extends BaseDao {
 	public boolean updateCustomerDetails(CustomerBO customerBO)
 			throws SQLException, InstantiationException,
 			IllegalAccessException, ClassNotFoundException {
+		SimpleDateFormat simpleDateFormatObj = new SimpleDateFormat("yyyy-MM-dd");
 
 		List<Object> params = new ArrayList<Object>();
 		params.add(customerBO.getCustName());
@@ -51,7 +53,7 @@ public class CustomerDao extends BaseDao {
 		params.add(customerBO.getZipcode());
 		params.add(customerBO.getPhoneNo());
 		params.add(customerBO.getEmail());
-		params.add(customerBO.getBirthDate());
+		params.add(new java.sql.Date(customerBO.getBirthDate().getTime()));
 		params.add(customerBO.getCustNo());
 		
 		if (updateSql(Queries.UPDATE_CUSTOMER_DETAILS, params) > 0) {

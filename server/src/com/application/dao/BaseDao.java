@@ -1,7 +1,7 @@
 package com.application.dao;
 
 import java.sql.Connection;
-import java.util.Date;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,7 +46,7 @@ public class BaseDao {
 			} else if (param instanceof String) {
 				ps.setString(i, param.toString());
 			} else if (param instanceof Date) {
-				ps.setDate(i, new java.sql.Date(((Date) param).getTime()));
+				ps.setDate(i, (Date) param);
 			} else if(param instanceof Float){
 				ps.setFloat(i, ((Float)param).floatValue());
 			}
