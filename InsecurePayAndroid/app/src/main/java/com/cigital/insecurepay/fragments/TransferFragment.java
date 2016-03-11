@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -21,9 +20,8 @@ import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
 import com.cigital.insecurepay.activity.TransferActivity;
-import com.cigital.insecurepay.common.Connectivity;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
-import com.cigital.insecurepay.common.ResponseWrapper;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.google.gson.Gson;
 
 public class TransferFragment extends Fragment {
@@ -148,41 +146,20 @@ public class TransferFragment extends Fragment {
         }
     }
 
-    private class TransferTask extends AsyncTask<String, String, String> {
-        private TransferFundsVO transferFundsVO;
 
-        TransferTask(TransferFundsVO transferFundsVO) {
-            this.transferFundsVO = transferFundsVO;
+    /* Intializing of TransferTask
+     * TransferTask transferTask = new TransferTask(getContext(), commonVO.getServerAddress(),
+     *      getString(R.string.transfer_funds_path), transferFundsVO);
+     */
+    private class TransferTask extends PostAsyncCommonTask<TransferFundsVO> {
+
+        public TransferTask(Context contextObj, String serverAddress, String path, TransferFundsVO objToBeSent) {
+            super(contextObj, serverAddress, path, objToBeSent, TransferFundsVO.class);
         }
 
         @Override
-        protected String doInBackground(String... params) {
-
-            Log.d(this.getClass().getSimpleName(), "In background, sending transfer details");
-            String amountTransferred = null;
-            try {
-                //sendToServer contains JSON object that has credentials
-                String sendToServer = gson.toJson(transferFundsVO);
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.transfer_funds_path));
-                connectivityObj.setSendToServer(sendToServer);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.post();
-                //Call post and since there are white spaces in the response, trim is called
-                amountTransferred = responseWrapperObj.getResponseString().trim();
-                Log.d("Response from server", amountTransferred);
-                Thread.sleep(2000);
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Exception thrown in transfer funds", e);
-            }
-
-            return amountTransferred;
-        }
-
-        @Override
-        protected void onPostExecute(final String amountTransferred) {
+        protected void postSuccess(String amountTransferred) {
+            super.postSuccess(amountTransferred);
 
             if (amountTransferred.equals("false")) {
                 Toast.makeText(TransferFragment.this.getContext(), "Amount was not transferred", Toast.LENGTH_LONG).show();
