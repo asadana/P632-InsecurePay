@@ -119,53 +119,33 @@ public class TransferFragment extends Fragment {
                 if (custNo == -1) {
                     etCustUsername.setError("Invalid User");
                 } else {
-                    custAccountFetchTask = new CustAccountFetchTask(custNo);
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(getString(R.string.cust_no), custNo);
+                    custAccountFetchTask = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
+                            getString(R.string.account_details_path), contentValues);
                     custAccountFetchTask.execute();
                 }
             }
         }
     }
 
-    private class CustAccountFetchTask extends AsyncTask<String, String, AccountVO> {
-        private int custNo;
+    private class CustAccountFetchTask extends GetAsyncCommonTask<AccountVO> {
 
-        CustAccountFetchTask(int custNo) {
-            this.custNo = custNo;
+        public CustAccountFetchTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+            super(contextObj, serverAddress, path, contentValues, AccountVO.class);
         }
 
         @Override
-        protected AccountVO doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "Background");
-            AccountVO accountDetails = null;
-            try {
-
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.account_details_path));
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.cust_no), custNo);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
-
-                //Converts customer details to CustomerVO
-                accountDetails = gson.fromJson(responseWrapperObj.getResponseString(), AccountVO.class);
-
-                Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountDetails.getAccountBalance());
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
-            }
-            return accountDetails;
-        }
-
-        protected void onPostExecute(AccountVO accountDetails) {
-            transferFundsVO.setToAccount(accountDetails);
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            AccountVO accountVOObj = objReceived;
+            Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountVOObj.getAccountBalance());
+            transferFundsVO.setToAccount(accountVOObj);
             intent = new Intent(getContext(), TransferActivity.class);
             intent.putExtra(getString(R.string.transferFunds_VO), transferFundsVO);
             intent.putExtra(getString(R.string.common_VO), commonVO);
             startActivity(intent);
         }
-
     }
 
     private class TransferTask extends AsyncTask<String, String, String> {
