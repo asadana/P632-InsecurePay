@@ -3,6 +3,7 @@ package com.cigital.insecurepay.activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,6 +31,7 @@ public class TransferActivity extends AppCompatActivity {
     private Button btnTransfer;
     private TransferFundsVO transferFundsVO;
     private CommonVO commonVO;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,6 @@ public class TransferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_transfer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tvtransferAmount = (TextView) findViewById(R.id.tvTransfer_filledAmount);
         tvFromAccountNo = (TextView) findViewById(R.id.tvTransfer_filledfromAccountNo);
@@ -121,6 +121,9 @@ public class TransferActivity extends AppCompatActivity {
                             (NotificationManager) getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
 
                     notificationManager.notify(0, n);
+                    intent = new Intent(getApplicationContext(), HomePage.class);
+                    intent.putExtra(getString(R.string.common_VO), commonVO);
+                    startActivity(intent);
                 } else {
                     Log.e(this.getClass().getSimpleName(), "Invalid response on transfer funds");
                 }
