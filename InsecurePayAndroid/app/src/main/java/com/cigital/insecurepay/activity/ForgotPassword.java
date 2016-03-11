@@ -1,6 +1,6 @@
 package com.cigital.insecurepay.activity;
 
-import android.os.AsyncTask;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,10 +13,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.ForgotPasswordVO;
 import com.cigital.insecurepay.VOs.LoginValidationVO;
-import com.cigital.insecurepay.common.Connectivity;
-import com.cigital.insecurepay.common.ResponseWrapper;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.google.gson.Gson;
 
 public class ForgotPassword extends AppCompatActivity {
@@ -26,10 +26,13 @@ public class ForgotPassword extends AppCompatActivity {
     private EditText textSSNNoView;
     private EditText usernameView;
     private ForgotPasswordTask forgotPassTask = null;
+    private CommonVO commonVOObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundleObj = getIntent().getExtras();
+        commonVOObj = (CommonVO) bundleObj.get(getString(R.string.common_VO));
         setContentView(R.layout.activity_forgot_password);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -68,8 +71,11 @@ public class ForgotPassword extends AppCompatActivity {
                     // There was an error; focus the first form field with an error.
                     focusView.requestFocus();
                 } else {
-                    forgotPassTask = new ForgotPasswordTask(Integer.parseInt(accountNo), sSNNo, username);
-                    forgotPassTask.execute(accountNo, sSNNo, username);
+                    // Parameters contain credentials which are capsuled to ForgotPasswordVO objects
+                    ForgotPasswordVO forgotPasswordVO = new ForgotPasswordVO(Integer.parseInt(accountNo), sSNNo, username);
+                    forgotPassTask = new ForgotPasswordTask(ForgotPassword.this, commonVOObj.getServerAddress(),
+                            getString(R.string.forgot_password_path), forgotPasswordVO);
+                    forgotPassTask.execute();
                 }
             }
         });
@@ -84,67 +90,37 @@ public class ForgotPassword extends AppCompatActivity {
      * Represents an asynchronous validation task used to authenticate
      * the user.
      */
+    public class ForgotPasswordTask extends PostAsyncCommonTask<ForgotPasswordVO> {
 
-    public class ForgotPasswordTask extends AsyncTask<String, String, LoginValidationVO> {
-
-        private final int accountNo;
-        private final String sSNNo;
-        private final String username;
-
-        ForgotPasswordTask(int accountNo, String sSNNo, String username) {
-            this.accountNo = accountNo;
-            this.sSNNo = sSNNo;
-            this.username = username;
+        public ForgotPasswordTask(Context contextObj, String serverAddress, String path, ForgotPasswordVO objToBeSent) {
+            super(contextObj, serverAddress, path, objToBeSent, ForgotPasswordVO.class);
         }
 
         @Override
-        protected LoginValidationVO doInBackground(String... params) {
-
-            Log.d(this.getClass().getSimpleName(), "In background, validating user credentials");
-
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
             LoginValidationVO loginValidationVO = null;
             try {
-                // Parameters contain credentials which are capsuled to ForgotPasswordVO objects
-                ForgotPasswordVO sendVo = new ForgotPasswordVO(accountNo, sSNNo, username);
-                // sendToServer contains JSON object that has credentials
-                String sendToServer = gson.toJson(sendVo);
-                // Fetching the connectivityObj and setting path and sendToServer
-
-                Connectivity connectivityObj = null;
-
-                connectivityObj.setConnectionParameters(getString(R.string.forgot_password_path));
-                connectivityObj.setSendToServer(sendToServer);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.post();
-                // Call post and since there are white spaces in the response, trim is called
-                String responseFromServer = responseWrapperObj.getResponseString().trim();
+                Log.d("REMOVE ME: ", "doInBackground: " + resultObj);
                 // Convert serverResponse to respectiveVO
-                loginValidationVO = gson.fromJson(responseFromServer, LoginValidationVO.class);
-
-                Thread.sleep(2000);
-                return loginValidationVO;
+                loginValidationVO = gson.fromJson(resultObj, LoginValidationVO.class);
 
             } catch (Exception e) {
-                return loginValidationVO;
+                Log.e(this.getClass().getSimpleName(), "postSuccess: ", e);
             }
-        }
-
-        @Override
-        protected void onPostExecute(final LoginValidationVO loginValidationVO) {
-
-            if (!loginValidationVO.isUsernameExists()) {
-                usernameView.setError(getString(R.string.error_username_does_not_exist));
-                usernameView.requestFocus();
-            } else {
-                if (!loginValidationVO.isValidUser()) {
-                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.information_mismatch), Toast.LENGTH_LONG).show();
+            if (loginValidationVO != null) {
+                if (!loginValidationVO.isUsernameExists()) {
+                    usernameView.setError(getString(R.string.error_username_does_not_exist));
+                    usernameView.requestFocus();
                 } else {
-                    Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_link_sent), Toast.LENGTH_LONG).show();
+                    if (!loginValidationVO.isValidUser()) {
+                        Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.information_mismatch), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(ForgotPassword.this.getApplicationContext(), getString(R.string.default_password_link_sent), Toast.LENGTH_LONG).show();
+                    }
+
                 }
-
             }
-
         }
-
     }
 }
