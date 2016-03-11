@@ -4,6 +4,7 @@
 
 package com.cigital.insecurepay.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -416,7 +417,7 @@ public class AccountFragment extends Fragment {
 
         public UpdateCustomerDetailsTask(Context contextObj, String serverAddress, String path,
                                          CustomerVO customerVO) {
-            super(contextObj, serverAddress, path, customerVOObj, CustomerVO.class);
+            super(contextObj, serverAddress, path, customerVO, CustomerVO.class);
         }
 
 
@@ -442,9 +443,11 @@ public class AccountFragment extends Fragment {
     }
 
     // Inner class for DialogFragment
+    @SuppressLint("ValidFragment")
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
+        @SuppressLint("NewApi")
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {
             int year = calenderObj.get(Calendar.YEAR);
@@ -456,7 +459,7 @@ public class AccountFragment extends Fragment {
 
         // Function handles what to once new date is selected from dialog
         @Override
-        public void onDateSet(DatePicker veiew, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
             tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }
