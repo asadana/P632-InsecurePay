@@ -91,6 +91,7 @@
     <string name="tvTransfer_toCustNo">Recepient Customer No</string>
     <string name="tvtransferAmount">Transfer Amount</string>
     <string name="tvtransferDetails">Transfer Details</string>
+    <string name="btnCancel">CANCEL</string>
     <string name="transferFunds_VO">transferFundsVO</string>
 
 
