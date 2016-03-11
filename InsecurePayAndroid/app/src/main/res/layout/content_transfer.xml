@@ -151,8 +151,8 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:id="@+id/btnCancel"
-        android:layout_marginStart="40dp"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="55dp"
+        android:layout_below="@+id/relativeLayout"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -160,8 +160,8 @@
         android:layout_height="wrap_content"
         android:text=" Transfer "
         android:id="@+id/btnTransfer"
-        android:layout_marginStart="57dp"
         android:layout_alignTop="@+id/btnCancel"
-        android:layout_toEndOf="@+id/btnCancel" />
+        android:layout_alignEnd="@+id/relativeLayout"
+        android:layout_marginEnd="65dp" />
 
 </RelativeLayout>

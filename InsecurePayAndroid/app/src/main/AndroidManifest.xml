@@ -53,7 +53,12 @@
         <activity
             android:name=".activity.TransferActivity"
             android:label="@string/title_activity_transfer"
+            android:parentActivityName=".activity.HomePage"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.cigital.insecurepay.activity.HomePage" />
     </application>
 
 </manifest>

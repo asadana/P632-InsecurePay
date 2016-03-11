@@ -57,7 +57,8 @@ public class TransferActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //onClickCancel();
+                Log.d("OnClickCancel", "cancel");
+                onBackPressed();
             }
         });
         btnTransfer.setOnClickListener(new View.OnClickListener() {
