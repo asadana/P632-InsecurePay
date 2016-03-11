@@ -3,6 +3,7 @@ package com.cigital.insecurepay.fragments;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,22 +22,23 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransferFundsVO;
 import com.cigital.insecurepay.activity.TransferActivity;
 import com.cigital.insecurepay.common.Connectivity;
+import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 public class TransferFragment extends Fragment {
 
+    CommonVO commonVO;
     private EditText etTransferDetails;
     private EditText etCustUsername;
     private EditText etTransferAmount;
     private Button btnTransfer;
     private Intent intent;
     private TransferFundsVO transferFundsVO;
-
     private Gson gson = new Gson();
-    CommonVO commonVO;
-
-    private TransferValidationTask transfervalidationtask = null;
+    private TransferValidationTask transfervalidationtask;
+    private CustAccountFetchTask custAccountFetchTask;
+    private TransferTask transferTask;
 
     public TransferFragment() {
         // Required empty public constructor
@@ -90,7 +92,10 @@ public class TransferFragment extends Fragment {
                 }
                 transferFundsVO.setTransferAmount(transferAmount);
                 transferFundsVO.setTransferDetails(transferDetails);
-                transfervalidationtask = new TransferValidationTask(custUsername);
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(getString(R.string.username), custUsername);
+                transfervalidationtask = new TransferValidationTask(getContext(), commonVO.getServerAddress(),
+                        getString(R.string.transfer_validation_path), contentValues);
                 transfervalidationtask.execute();
 
 
@@ -98,50 +103,27 @@ public class TransferFragment extends Fragment {
         });
     }
 
-    private class TransferValidationTask extends AsyncTask<String, String, Integer> {
-        private String custUsername;
+    private class TransferValidationTask extends GetAsyncCommonTask<String> {
 
-        public TransferValidationTask(String custUsername) {
-            this.custUsername = custUsername;
+
+        public TransferValidationTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+            super(contextObj, serverAddress, path, contentValues, String.class);
         }
 
         @Override
-        protected Integer doInBackground(String... params) {
-            Log.d(this.getClass().getSimpleName(), "Background");
-            try {
-                // Fetching the connectivity object and setting context and path
-                Connectivity connectivityObj = new Connectivity(commonVO.getServerAddress());
-                connectivityObj.setConnectionParameters(getString(R.string.transfer_validation_path));
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(getString(R.string.username), custUsername);
-
-                ResponseWrapper responseWrapperObj = connectivityObj.get(contentValues);
-
-                //Converts customer details to CustomerVO
-                String custNo = responseWrapperObj.getResponseString();
-                Log.d(this.getClass().getSimpleName(), custNo);
-                if (custNo != null) {
-                    return Integer.parseInt(custNo);
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+            if (resultObj != null) {
+                int custNo = Integer.parseInt(resultObj);
+                if (custNo == -1) {
+                    etCustUsername.setError("Invalid User");
+                } else {
+                    custAccountFetchTask = new CustAccountFetchTask(custNo);
+                    custAccountFetchTask.execute();
                 }
-
-            } catch (Exception e) {
-                Log.e(this.getClass().getSimpleName(), "Error while connecting: ", e);
             }
-            return -1;
         }
-
-        protected void onPostExecute(Integer custNo) {
-            if (custNo == -1) {
-                etCustUsername.setError("Invalid User");
-            } else {
-                CustAccountFetchTask custAccountFetchTask = new CustAccountFetchTask(custNo);
-                custAccountFetchTask.execute();
-            }
-
-
-        }
-
-
     }
 
     private class CustAccountFetchTask extends AsyncTask<String, String, AccountVO> {
