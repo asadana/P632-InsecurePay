@@ -158,8 +158,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btnTransfer_Transfer"
-        android:id="@+id/btnTransfer"
+        android:text="@string/btnConfirm"
+        android:id="@+id/btnConfirm"
         android:layout_alignTop="@+id/btnCancel"
         android:layout_alignEnd="@+id/relativeLayout"
         android:layout_marginEnd="65dp" />

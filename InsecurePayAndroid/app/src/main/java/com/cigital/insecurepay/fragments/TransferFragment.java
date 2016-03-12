@@ -23,9 +23,9 @@ import com.google.gson.Gson;
 public class TransferFragment extends Fragment {
 
     private CommonVO commonVO;
-    private EditText etTransferDetails;
-    private EditText etCustUsername;
-    private EditText etTransferAmount;
+    private EditText etTransfer_Details;
+    private EditText etTransfer_CustUsername;
+    private EditText etTransfer_Amount;
     private Button btnTransfer;
     private Intent intent;
     private TransferFundsVO transferFundsVO;
@@ -50,9 +50,9 @@ public class TransferFragment extends Fragment {
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing values.");
         // Initializing all objects from fragment_transfer
-        etTransferAmount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
-        etTransferDetails = (EditText) viewObj.findViewById(R.id.ettransferDetails);
-        etCustUsername = (EditText) viewObj.findViewById(R.id.etCust_username);
+        etTransfer_Amount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
+        etTransfer_Details = (EditText) viewObj.findViewById(R.id.ettransferDetails);
+        etTransfer_CustUsername = (EditText) viewObj.findViewById(R.id.etCust_username);
         btnTransfer = (Button) viewObj.findViewById(R.id.btn_transfer);
         // Initializing commonVO and transferfundsVO object
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -73,15 +73,15 @@ public class TransferFragment extends Fragment {
                 String custUsername;
                 String transferDetails;
                 float transferAmount;
-                transferDetails = etTransferDetails.getText().toString();
-                transferAmount = Float.parseFloat(String.valueOf(etTransferAmount.getText()));
-                custUsername = etCustUsername.getText().toString();
+                transferDetails = etTransfer_Details.getText().toString();
+                transferAmount = Float.parseFloat(String.valueOf(etTransfer_Amount.getText()));
+                custUsername = etTransfer_CustUsername.getText().toString();
 
                 if (transferAmount == 0) {
-                    etTransferAmount.setError("Enter Amount");
+                    etTransfer_Amount.setError("Enter Amount");
                 }
                 if (custUsername == null) {
-                    etCustUsername.setError("Enter Username");
+                    etTransfer_CustUsername.setError("Enter Username");
                 }
                 transferFundsVO.setTransferAmount(transferAmount);
                 transferFundsVO.setTransferDetails(transferDetails);
@@ -110,7 +110,7 @@ public class TransferFragment extends Fragment {
             if (resultObj != null) {
                 int custNo = Integer.parseInt(resultObj);
                 if (custNo == -1) {
-                    etCustUsername.setError("Invalid User");
+                    etTransfer_CustUsername.setError("Invalid User");
                 } else {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(getString(R.string.cust_no), custNo);

@@ -29,7 +29,7 @@ public class TransferActivity extends AppCompatActivity {
     private TextView tvToCustomerNo;
     private TextView tvtransferDetails;
     private Button btnCancel;
-    private Button btnTransfer;
+    private Button btnConfirm;
     private TransferFundsVO transferFundsVO;
     private CommonVO commonVO;
     private Intent intent;
@@ -48,7 +48,7 @@ public class TransferActivity extends AppCompatActivity {
         tvToCustomerNo = (TextView) findViewById(R.id.tvTransfer_filledtoCustNo);
         tvtransferDetails = (TextView) findViewById(R.id.tvTransfer_filledDetails);
         btnCancel = (Button) findViewById(R.id.btnCancel);
-        btnTransfer = (Button) findViewById(R.id.btnTransfer);
+        btnConfirm = (Button) findViewById(R.id.btnConfirm);
 
         commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
         transferFundsVO = (TransferFundsVO) getIntent().getSerializableExtra(getString(R.string.transferFunds_VO));
@@ -62,7 +62,7 @@ public class TransferActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        btnTransfer.setOnClickListener(new View.OnClickListener() {
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onClickTransfer();

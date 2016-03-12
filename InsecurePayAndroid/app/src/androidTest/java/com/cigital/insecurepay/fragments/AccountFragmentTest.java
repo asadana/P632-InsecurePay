@@ -1,12 +1,15 @@
 package com.cigital.insecurepay.fragments;
 
 import android.support.test.espresso.contrib.DrawerActions;
+import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.DatePicker;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
 
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +22,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
@@ -29,10 +33,10 @@ public class AccountFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    public static final String correctPassword = "12345";
+    public static final String correctPassword = "abc";
     public static final String correctUsername = "foo";
     public static final String newPassword = "abc";
-    public static final String changePasswordToast = "Password changed to " + newPassword;
+    public static final String changePasswordToast = "Password Changed to " + newPassword;
 
     public static final String updateEmail = "foofan@gmail.com";
     public static final String updatePhoneNo = "123456";
@@ -40,7 +44,11 @@ public class AccountFragmentTest {
     public static final String updateCity = "New York City";
     public static final String updateStreetAddress = "Manhattan";
     public static final String updateZip = "1234";
+    public static final int updateYear = 1994;
+    public static final int updateMonth = 10;
+    public static final int updateDay = 15;
     public static final String updateSuccessfulToast = "Update successful";
+
 
     @Test
     public void checkHomePage() {
@@ -74,9 +82,6 @@ public class AccountFragmentTest {
 
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withText(changePasswordToast))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
@@ -138,6 +143,14 @@ public class AccountFragmentTest {
         onView(withId(R.id.etAccount_fillAddressZip))
                 .perform(clearText(), typeText(updateZip), closeSoftKeyboard());
 
+        onView(withId(R.id.tvAccount_fillUserDOB))
+                .perform(click());
+
+        //Set date
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(updateYear, updateMonth, updateDay));
+        onView(withId(android.R.id.button1)).perform(click());
+
+
         //Click on Update
         onView(withId(R.id.btnAccount_update))
                 .perform(click());
@@ -184,6 +197,11 @@ public class AccountFragmentTest {
         onView(withId(R.id.etAccount_fillAddressZip))
                 .check(matches(withText(updateZip)));
 
+        onView(withId(R.id.tvAccount_fillUserDOB))
+                .check(matches(withText(updateYear + "-" + updateMonth + "-" + updateDay)));
+
 
     }
+
+
 }

@@ -2,14 +2,9 @@ package com.cigital.insecurepay.activity;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
-import android.widget.EditText;
 
 import com.cigital.insecurepay.R;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +46,7 @@ public class LoginActivityTest {
 
 
     @Test
-    public void changeServerAdress() {
+    public void changeServerAddress() {
 
         // Open the overflow menu OR open the options menu,
         // depending on if the device has a hardware or software overflow menu button.
@@ -98,7 +93,6 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
-
     @Test
     public void loginPassTest() {
         init();
@@ -113,8 +107,77 @@ public class LoginActivityTest {
         release();
     }
 
+    @Test
+    public void accountLockedTest() {
+        onView(withId(R.id.username)).
+                perform(typeText(correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(wrongPassword), closeSoftKeyboard());
 
-   /* @Test
+        // First attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        // Second attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        // Third attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        // Fourth attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+
+        onView(withText(R.string.login_failed_account_locked))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }
+
+    /*@Test
+    public void rememberMeCheckTest(){
+        // check the checkbox
+        onView(withId(R.id.saveLoginCheckBox))
+                .check(matches(not(isChecked())))
+                .perform(click())
+                .check(matches(isChecked()));
+
+        onView(withId(R.id.username)).
+                perform(typeText(correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(correctPassword), closeSoftKeyboard());
+
+
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        onView(withText(R.string.action_logout))
+                .perform(click());
+
+        onView(withId(R.id.username)).check(matches(inTextEdit(correctUsername)));
+    }
+    //A matcher to match the credentials after coming back to the app
+    public static Matcher<View> inTextEdit(final String credentials) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view instanceof EditText)) {
+                    return false;
+                }
+
+                String text = ((EditText) view).getText().toString();
+
+                return credentials.equals(text);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+            }
+        };
+    }
+*/
+   /*@Test
     public void loginUsernameExistsTest() {
         onView(withId(R.id.username)).
                 perform(typeText(wrongUsername), closeSoftKeyboard());
@@ -123,7 +186,7 @@ public class LoginActivityTest {
         // First attempt with wrong username
         onView(withId(R.id.username)).check(matches(withError(
                 loginActivityActivityTestRule.getActivity().getString(R.string.username_does_not_exist))));
-    }*/
+    }
 
     private static Matcher<View> withError(final String expected) {
         return new TypeSafeMatcher<View>() {
@@ -142,21 +205,6 @@ public class LoginActivityTest {
 
             }
         };
-    }
-   /*@Test
-    public void accountLockedTest() {
-        onView(withId(R.id.username)).
-                perform(typeText(typeUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(typeText(typePassword), closeSoftKeyboard());
-        // Second attempt
-        onView(withId(R.id.sign_in_button))
-                .perform(click());
-        // Third attempt
-        onView(withId(R.id.sign_in_button))
-                .perform(click());
-        onView(withText(R.string.login_failed_account_locked))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
     }*/
+
 }

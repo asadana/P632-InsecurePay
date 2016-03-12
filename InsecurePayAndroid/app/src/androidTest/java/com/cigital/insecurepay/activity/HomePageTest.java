@@ -28,7 +28,7 @@ public class HomePageTest {
     public static final String correctPassword = "12345";
     public static final String correctUsername = "foo";
     public static final String correctAccountNumber = "2005";
-    public static final String correctBalance = "591.0";
+    public static final String correctBalance = "908.4";
 
     @Test
     public void checkHomePage() {
