@@ -2,6 +2,7 @@ package com.cigital.insecurepay.activity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -107,13 +108,17 @@ public class TransferActivity extends AppCompatActivity {
                     Toast.makeText(TransferActivity.this.getApplicationContext(), "Transaction successful", Toast.LENGTH_LONG).show();
                     transferFundsVO.getToAccount().setAccountBalance(transferFundsVO.getToAccount().getAccountBalance() - transferFundsVO.getTransferAmount());
 
+                    Intent intentNew= new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
+                    intentNew.putExtra(getString(R.string.common_VO), commonVO);
+                    PendingIntent pIntent= PendingIntent.getActivity(TransferActivity.this.getApplicationContext(), (int) System.currentTimeMillis(),intentNew, 0);
+
                     // build notification 
                     // the addAction re-use the same intent to keep the example short
                     Notification n = new Notification.Builder(getApplicationContext())
                             .setContentTitle("New mail from " + "test@gmail.com")
                             .setContentText("Subject")
                             .setSmallIcon(R.drawable.ic_transfer_funds)
-                            .setContentIntent(null)
+                            .setContentIntent(pIntent)
                             .setAutoCancel(true).build();
 
 
