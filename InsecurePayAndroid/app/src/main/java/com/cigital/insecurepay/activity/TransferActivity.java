@@ -110,13 +110,14 @@ public class TransferActivity extends AppCompatActivity {
 
                     Intent intentNew= new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
                     intentNew.putExtra(getString(R.string.common_VO), commonVO);
+                    intentNew.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     PendingIntent pIntent= PendingIntent.getActivity(TransferActivity.this.getApplicationContext(), (int) System.currentTimeMillis(),intentNew, 0);
 
                     // build notification 
                     // the addAction re-use the same intent to keep the example short
                     Notification n = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("New mail from " + "test@gmail.com")
-                            .setContentText("Subject")
+                            .setContentTitle("Transfer successful")
+                            .setContentText("Insecure Pay")
                             .setSmallIcon(R.drawable.ic_transfer_funds)
                             .setContentIntent(pIntent)
                             .setAutoCancel(true).build();
