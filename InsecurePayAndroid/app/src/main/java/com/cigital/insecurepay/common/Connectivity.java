@@ -48,46 +48,48 @@ public class Connectivity implements Serializable {
      */
     public ResponseWrapper post() {
         Log.d(this.getClass().getSimpleName(), "In Post()");
-            try {
-                url = new URL(serverAddress + path);
-                Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
-                httpURLConnectionObj = (HttpURLConnection) url.openConnection();
-                httpURLConnectionObj.setDoInput(true);
-                httpURLConnectionObj.setDoOutput(true);
-                httpURLConnectionObj.setChunkedStreamingMode(0);
-                httpURLConnectionObj.setRequestMethod("POST");
-                httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
-                if (mCookieStore.getCookies().size() > 0) {
-                    //TO join cookies in the request
-                    httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-                    Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
-                }
-                writeIt();
-                is = httpURLConnectionObj.getInputStream();
-                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+        try {
+            url = new URL(serverAddress + path);
+            Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
+            httpURLConnectionObj = (HttpURLConnection) url.openConnection();
+            httpURLConnectionObj.setDoInput(true);
+            httpURLConnectionObj.setDoOutput(true);
+            httpURLConnectionObj.setChunkedStreamingMode(0);
+            httpURLConnectionObj.setRequestMethod("POST");
+            httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
+            if (mCookieStore.getCookies().size() > 0) {
+                //TO join cookies in the request
+                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+            }
+            writeIt();
+            is = httpURLConnectionObj.getInputStream();
+            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
 
-                if (mCookieStore.getCookies().size() <= 0) {
-                    Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
-                    List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
-                    if (cookieHeaderList != null) {
-                        for (String cookie : cookieHeaderList) {
-                            mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
-                        }
-
+            if (mCookieStore.getCookies().size() <= 0) {
+                Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
+                List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
+                if (cookieHeaderList != null) {
+                    for (String cookie : cookieHeaderList) {
+                        mCookieStore.add(null, HttpCookie.parse(cookie).get(0));
                     }
 
                 }
+
+            }
+        } catch (IOException e) {
+            Log.e(this.getClass().getSimpleName(), "Post error", e);
+        } finally {
+
+            try {
+                if (httpURLConnectionObj != null)
+                    httpURLConnectionObj.disconnect();
+                if (is != null)
+                    is.close();
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
-            } finally {
-
-                try {
-                    httpURLConnectionObj.disconnect();
-                    is.close();
-                } catch (IOException e) {
-                    Log.e(this.getClass().getSimpleName(), "Post error", e);
-                }
             }
+        }
 
 
         return responseWrapperObj;
@@ -121,8 +123,10 @@ public class Connectivity implements Serializable {
             Log.e(this.getClass().getSimpleName(), "Get error", e);
         } finally {
             try {
-                httpURLConnectionObj.disconnect();
-                is.close();
+                if (httpURLConnectionObj != null)
+                    httpURLConnectionObj.disconnect();
+                if (is != null)
+                    is.close();
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Get error", e);
             }
@@ -158,7 +162,8 @@ public class Connectivity implements Serializable {
             Log.e(this.getClass().getSimpleName(), "Reading response error", e);
         } finally {
             try {
-                reader.close();
+                if (reader != null)
+                    reader.close();
             } catch (IOException e) {
                 Log.e(this.getClass().getSimpleName(), "Reading response error", e);
             }
