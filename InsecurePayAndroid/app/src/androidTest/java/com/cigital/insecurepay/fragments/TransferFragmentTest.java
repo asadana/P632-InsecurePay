@@ -45,6 +45,7 @@ public class TransferFragmentTest {
     public static final String transferMessage = "Thank you so much!";
     public static final String transferNotification = "Transaction successful";
 
+
     @Test
     public void checkHomePage() {
         init();
@@ -150,4 +151,6 @@ public class TransferFragmentTest {
 */
         release();
     }
+
+
 }

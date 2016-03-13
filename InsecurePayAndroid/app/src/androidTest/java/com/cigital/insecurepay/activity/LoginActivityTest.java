@@ -2,9 +2,14 @@ package com.cigital.insecurepay.activity;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import android.widget.EditText;
 
 import com.cigital.insecurepay.R;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +26,7 @@ import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.Intents.release;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -31,12 +37,12 @@ import static org.hamcrest.CoreMatchers.not;
 public class LoginActivityTest {
 
     public static final String correctUsername = "foo";
+    public static final String correctPassword = "abc";
     public static final String wrongPassword = "abcdef";
-    public static final String correctPassword = "12345";
     public static final String wrongUsername = "abc";
+
+
     public static final String wrongAccount = "1234234";
-
-
     public static final String URL = "http://10.0.0.3:8090/";
     public static final String path = "InsecurePayServiceServer/rest/";
 
@@ -80,7 +86,7 @@ public class LoginActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-    @Test
+    /*@Test
     public void loginFailTest() {
         onView(withId(R.id.username)).
                 perform(typeText(correctUsername), closeSoftKeyboard());
@@ -92,7 +98,7 @@ public class LoginActivityTest {
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
-    }
+    }*/
     @Test
     public void loginPassTest() {
         init();
@@ -117,23 +123,34 @@ public class LoginActivityTest {
         // First attempt
         onView(withId(R.id.sign_in_button))
                 .perform(click());
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
         // Second attempt
         onView(withId(R.id.sign_in_button))
                 .perform(click());
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
         // Third attempt
         onView(withId(R.id.sign_in_button))
                 .perform(click());
-        // Fourth attempt
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+
         onView(withId(R.id.sign_in_button))
                 .perform(click());
-
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
         onView(withText(R.string.login_failed_account_locked))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
-    /*@Test
-    public void rememberMeCheckTest(){
+    @Test
+    public void rememberMeTest() {
         // check the checkbox
         onView(withId(R.id.saveLoginCheckBox))
                 .check(matches(not(isChecked())))
@@ -155,6 +172,14 @@ public class LoginActivityTest {
                 .perform(click());
 
         onView(withId(R.id.username)).check(matches(inTextEdit(correctUsername)));
+        onView(withId(R.id.password)).check(matches(inTextEdit(correctPassword)));
+
+        onView(withId(R.id.saveLoginCheckBox))
+                .check(matches(isChecked()))
+                .perform(click());
+
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
     }
     //A matcher to match the credentials after coming back to the app
     public static Matcher<View> inTextEdit(final String credentials) {
@@ -176,7 +201,7 @@ public class LoginActivityTest {
             }
         };
     }
-*/
+
    /*@Test
     public void loginUsernameExistsTest() {
         onView(withId(R.id.username)).

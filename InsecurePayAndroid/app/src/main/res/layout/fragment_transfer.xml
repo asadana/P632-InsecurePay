@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/tvTransfer_custUsername"
-            android:id="@+id/textView2" />
+            android:id="@+id/tvTransfer_username" />
 
         <EditText
             android:layout_width="371dp"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/tvTransfer_Amount"
-            android:id="@+id/textView3" />
+            android:id="@+id/tvTransfer_amount" />
 
         <EditText
             android:layout_width="match_parent"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="@string/tvTransfer_Message"
-            android:id="@+id/textView4" />
+            android:id="@+id/tvTransfer_message" />
 
         <EditText
             android:layout_width="match_parent"
