@@ -9,13 +9,13 @@ public class AccountBO {
 	private int custNo;
     private int accNo;
     private float accountBalance;
-    private Date accountOpenDate;
+    
 
-    public AccountBO(int custNo, int accNo, float accountBalance, Date accountOpenDate) {
+    public AccountBO(int custNo, int accNo, float accountBalance) {
         this.custNo = custNo;
         this.accNo = accNo;
         this.accountBalance = accountBalance;
-        this.accountOpenDate = accountOpenDate;
+        
     }
 
     public AccountBO() {}
@@ -44,14 +44,7 @@ public class AccountBO {
         this.accountBalance = accountBalance;
     }
 
-    public Date getAccountOpenDate() {
-        return accountOpenDate;
-    }
 
-    public void setAccountOpenDate(Date accountOpenDate) {
-        this.accountOpenDate = accountOpenDate;
-    }
-    
 	
 	
 }

@@ -27,7 +27,6 @@ public class AccountDao extends BaseDao {
 			account.setCustNo(custNo);
 			account.setAccNo(rs.getInt("account_no"));
 			account.setAccountBalance(rs.getFloat("account_balance"));
-			//account.setAccountOpenDate(rs.getDate("account_opendate"));
 		}
 		return account;
 	}
