@@ -31,7 +31,9 @@
         <EditText
             android:layout_width="371dp"
             android:layout_height="wrap_content"
-            android:id="@+id/etCust_username" />
+            android:id="@+id/etCust_username"
+            android:inputType="textAutoCorrect"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -57,7 +59,8 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/ettransferDetails" />
+            android:id="@+id/ettransferDetails"
+            android:inputType="textAutoCorrect"/>
 
         <Button
             android:layout_width="wrap_content"
