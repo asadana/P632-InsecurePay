@@ -22,12 +22,12 @@ import com.cigital.insecurepay.common.PostAsyncCommonTask;
 public class TransferActivity extends AppCompatActivity {
 
     // View objects
-    private TextView tvtransferAmount;
+    private TextView tvTransferAmount;
     private TextView tvFromAccountNo;
     private TextView tvToAccountNo;
     private TextView tvFromCustomerNo;
     private TextView tvToCustomerNo;
-    private TextView tvtransferDetails;
+    private TextView tvTransferDetails;
     private Button btnCancel;
     private Button btnConfirm;
     private TransferFundsVO transferFundsVO;
@@ -41,12 +41,12 @@ public class TransferActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        tvtransferAmount = (TextView) findViewById(R.id.tvTransfer_filledAmount);
+        tvTransferAmount = (TextView) findViewById(R.id.tvTransfer_filledAmount);
         tvFromAccountNo = (TextView) findViewById(R.id.tvTransfer_filledfromAccountNo);
         tvToAccountNo = (TextView) findViewById(R.id.tvTransfer_filledtoAccountNo);
         tvFromCustomerNo = (TextView) findViewById(R.id.tvTransfer_filledfromCustNo);
         tvToCustomerNo = (TextView) findViewById(R.id.tvTransfer_filledtoCustNo);
-        tvtransferDetails = (TextView) findViewById(R.id.tvTransfer_filledDetails);
+        tvTransferDetails = (TextView) findViewById(R.id.tvTransfer_filledDetails);
         btnCancel = (Button) findViewById(R.id.btnCancel);
         btnConfirm = (Button) findViewById(R.id.btnConfirm);
 
@@ -79,8 +79,8 @@ public class TransferActivity extends AppCompatActivity {
         tvFromCustomerNo.setText(Integer.toString(transferFundsVO.getFromAccount().getCustNo()));
         tvToAccountNo.setText(Integer.toString(transferFundsVO.getToAccount().getAccNo()));
         tvToCustomerNo.setText(Integer.toString(transferFundsVO.getToAccount().getCustNo()));
-        tvtransferDetails.setText(transferFundsVO.getTransferDetails());
-        tvtransferAmount.setText(Float.toString(transferFundsVO.getTransferAmount()));
+        tvTransferDetails.setText(transferFundsVO.getTransferDetails());
+        tvTransferAmount.setText(Float.toString(transferFundsVO.getTransferAmount()));
 
     }
 
@@ -106,7 +106,6 @@ public class TransferActivity extends AppCompatActivity {
             } else {
                 if (amountTransferred.equals("true")) {
                     Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_successful), Toast.LENGTH_LONG).show();
-                    transferFundsVO.getToAccount().setAccountBalance(transferFundsVO.getToAccount().getAccountBalance() - transferFundsVO.getTransferAmount());
 
                     Intent intentNew= new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
                     intentNew.putExtra(getString(R.string.common_VO), commonVO);
@@ -117,7 +116,7 @@ public class TransferActivity extends AppCompatActivity {
                     // the addAction re-use the same intent to keep the example short
                     Notification n = new Notification.Builder(getApplicationContext())
                             .setContentTitle("Transfer successful")
-                            .setContentText("Insecure Pay")
+                            .setContentText("Amount Transferred from Acc No " + tvFromAccountNo.getText() + " to Acc No " + tvToAccountNo.getText())
                             .setSmallIcon(R.drawable.ic_transfer_funds)
                             .setContentIntent(pIntent)
                             .setAutoCancel(true).build();

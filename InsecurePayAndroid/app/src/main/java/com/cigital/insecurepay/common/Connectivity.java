@@ -95,7 +95,6 @@ public class Connectivity implements Serializable {
         return responseWrapperObj;
     }
 
-    //Right now get is hardcoded to get Customer Details of username = foo
     public ResponseWrapper get(ContentValues contentValues) {
         Log.d(this.getClass().getSimpleName(), "In Get()");
         String params = null;

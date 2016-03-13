@@ -2,13 +2,17 @@ package com.cigital.insecurepay.common;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.activity.LoginActivity;
 import com.google.gson.Gson;
 
 import java.net.HttpURLConnection;
@@ -58,7 +62,19 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         super.onPostExecute(responseWrapperObj);
 
         // Checking if the response is in 2xx range
-        if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
+        if (responseWrapperObj == null) {
+            AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
+            alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Session Expired");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(contextObj, LoginActivity.class);
+                            contextObj.startActivity(intent);
+                        }
+                    });
+            alertDialog.show();
+        } else if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
 
             postSuccess(responseWrapperObj.getResponseString());
