@@ -28,8 +28,7 @@ public class LoginDBHelper extends DBHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS LoginTrials;");
-        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " DATETIME DEFAULT CURRENT_TIMESTAMP , " + isLocked + " int )");
-        db.execSQL("CREATE TRIGGER update_date_time AFTER UPDATE ON LoginTrials BEGIN update LoginTrials SET curr_time = datetime('now') WHERE cust_username = NEW.cust_username; END;");
+        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " DATETIME , " + isLocked + " int )");
     }
 
     @Override
@@ -45,6 +44,7 @@ public class LoginDBHelper extends DBHelper {
         values.put(TRIALS, 1);
         values.put(CUST_USERNAME, username);
         values.put(isLocked, 0);
+        values.put(CURR_TIME, format.print(DateTime.now()));
         db.insert(LOGIN_TRIALS, null, values);
     }
 
@@ -55,6 +55,7 @@ public class LoginDBHelper extends DBHelper {
         ContentValues values = new ContentValues();
         values.put(TRIALS, trial);
         values.put(isLocked, locked);
+        values.put(CURR_TIME, format.print(DateTime.now()));
         db.update(LOGIN_TRIALS, values, CUST_USERNAME + "='" + username + "'", null);
     }
 
@@ -80,7 +81,7 @@ public class LoginDBHelper extends DBHelper {
         Cursor cursor = db.rawQuery("select " + CURR_TIME + " from " + LOGIN_TRIALS + " where " + CUST_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            entryTime = format.parseDateTime(cursor.getString(0));
+            entryTime = format.withOffsetParsed().parseDateTime(cursor.getString(0));
         }
         if (cursor != null)
             cursor.close();return entryTime;

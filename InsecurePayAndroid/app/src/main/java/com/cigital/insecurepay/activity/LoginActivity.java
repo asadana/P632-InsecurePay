@@ -247,11 +247,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     lockoutVO.setAddUser(true);
                 } else {
                     Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
+                    Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
+                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() + "");
                 }
 
                 if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
                     lockoutVO.setIsLocked(loginDBHelper.isLocked(username));
                 }
+
+                Log.d(this.getClass().getSimpleName(), Boolean.toString(lockoutVO.isLocked()));
 
                 if (!lockoutVO.isLocked()) {
                     //Parameters contain credentials which are capsuled to LoginVO objects
@@ -260,6 +264,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     userLoginTask = new UserLoginTask(this, commonVO.getServerAddress(),
                             getString(R.string.login_path), loginVOObj);
                     userLoginTask.execute();
+                } else {
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
@@ -447,6 +453,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         loginDBHelper.addTrial(loginVOObj.getUsername());
                     } else {
                         lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
+                        Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
                         if (lockoutVO.getTrialCount() > 3)
                             lockoutVO.setIsLocked(true);
                         loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
@@ -455,6 +462,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             userLoginTask = null;
+
+            Log.d(this.getClass().getSimpleName(), Boolean.toString(lockoutVO.isLocked()));
 
             if (lockoutVO.isLocked()) {
                 Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
