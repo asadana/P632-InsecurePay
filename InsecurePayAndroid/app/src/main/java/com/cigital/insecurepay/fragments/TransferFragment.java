@@ -91,7 +91,7 @@ public class TransferFragment extends Fragment {
                     etTransfer_Amount.requestFocus();
                     return;
                 }
-                if (custUsername == null) {
+                if (custUsername.equals("")) {
                     etTransfer_CustUsername.setError("Enter Username");
                     etTransfer_CustUsername.requestFocus();
                     return;
@@ -125,6 +125,7 @@ public class TransferFragment extends Fragment {
                 int custNo = Integer.parseInt(resultObj);
                 if (custNo == -1) {
                     etTransfer_CustUsername.setError("Invalid User");
+                    etTransfer_CustUsername.requestFocus();
                 } else {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(getString(R.string.cust_no), custNo);
