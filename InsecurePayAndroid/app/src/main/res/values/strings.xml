@@ -94,6 +94,8 @@
     <string name="btnCancel">CANCEL</string>
     <string name="transferFunds_VO">transferFundsVO</string>
     <string name="btnConfirm">Confirm</string>
+    <string name="transfer_successful"> Transfer successful</string>
+    <string name="transfer_unsuccessful"> Amount was not transferred</string>
 
     <!--For Forgot Password -->
     <string name="etForgotPass_AccountNumber">Enter your Account Number</string>

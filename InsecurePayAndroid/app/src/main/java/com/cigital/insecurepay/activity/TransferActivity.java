@@ -102,10 +102,10 @@ public class TransferActivity extends AppCompatActivity {
             super.postSuccess(amountTransferred);
 
             if (amountTransferred.equals("false")) {
-                Toast.makeText(TransferActivity.this.getApplicationContext(), "Amount was not transferred", Toast.LENGTH_LONG).show();
+                Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_unsuccessful), Toast.LENGTH_LONG).show();
             } else {
                 if (amountTransferred.equals("true")) {
-                    Toast.makeText(TransferActivity.this.getApplicationContext(), "Transaction successful", Toast.LENGTH_LONG).show();
+                    Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_successful), Toast.LENGTH_LONG).show();
                     transferFundsVO.getToAccount().setAccountBalance(transferFundsVO.getToAccount().getAccountBalance() - transferFundsVO.getTransferAmount());
 
                     Intent intentNew= new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
