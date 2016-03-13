@@ -20,6 +20,9 @@ import com.cigital.insecurepay.activity.TransferActivity;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.google.gson.Gson;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TransferFragment extends Fragment {
 
     private CommonVO commonVO;
@@ -32,6 +35,9 @@ public class TransferFragment extends Fragment {
     private Gson gson = new Gson();
     private TransferValidationTask transfervalidationtask;
     private CustAccountFetchTask custAccountFetchTask;
+
+    private static final Pattern sPattern
+            = Pattern.compile("^-?[0-9]\\d*(\\.\\d+)?$");
 
     public TransferFragment() {
         // Required empty public constructor
@@ -73,16 +79,24 @@ public class TransferFragment extends Fragment {
                 String custUsername;
                 String transferDetails;
                 float transferAmount;
+                String amount = String.valueOf(etTransfer_Amount.getText());
+                Matcher m = sPattern.matcher(amount);
+
                 transferDetails = etTransfer_Details.getText().toString();
-                transferAmount = Float.parseFloat(String.valueOf(etTransfer_Amount.getText()));
+
                 custUsername = etTransfer_CustUsername.getText().toString();
 
-                if (transferAmount == 0) {
-                    etTransfer_Amount.setError("Enter Amount");
+                if (!m.matches()) {
+                    etTransfer_Amount.setError("Enter Valid Amount");
+                    etTransfer_Amount.requestFocus();
+                    return;
                 }
                 if (custUsername == null) {
                     etTransfer_CustUsername.setError("Enter Username");
+                    etTransfer_CustUsername.requestFocus();
+                    return;
                 }
+                transferAmount = Float.parseFloat(amount);
                 transferFundsVO.setTransferAmount(transferAmount);
                 transferFundsVO.setTransferDetails(transferDetails);
                 ContentValues contentValues = new ContentValues();
