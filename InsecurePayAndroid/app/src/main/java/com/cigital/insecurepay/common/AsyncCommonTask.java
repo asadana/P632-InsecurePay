@@ -24,15 +24,13 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
     protected Gson gsonObj;
     private ProgressDialog progressDialogObj;
     private Context contextObj;
-    private String serverAddress;
     private String path;
 
 
     public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
-        this.serverAddress = serverAddress;
         this.contextObj = contextObj;
         this.path = path;
-        this.connectivityObj = new Connectivity(this.serverAddress);
+        this.connectivityObj = new Connectivity(serverAddress);
         gsonObj = new Gson();
     }
 
@@ -63,6 +61,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
         // Checking if the response is in 2xx range
         if (responseWrapperObj == null) {
+            connectivityObj.deleteCookies();
             AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
             alertDialog.setTitle("Alert");
             alertDialog.setMessage("Session Expired");

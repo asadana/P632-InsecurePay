@@ -21,10 +21,8 @@ public class HomeFragment extends Fragment {
 
     private Gson gson = new Gson();
     private TextView tvBalance;
-    private CommonVO commonVO;
     private TextView tvAccountNumber;
     private OnFragmentInteractionListener mListener;
-    private ContentValues contentValues;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -37,8 +35,8 @@ public class HomeFragment extends Fragment {
         View viewObj = inflater.inflate(R.layout.fragment_home, container, false);
         tvBalance = (TextView)viewObj.findViewById(R.id.tvHome_fillBalance);
         tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvHome_fillAccountNumber);
-        commonVO = ((CommonVO)this.getArguments().getSerializable(getString(R.string.common_VO)));
-        contentValues = new ContentValues();
+        CommonVO commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        ContentValues contentValues = new ContentValues();
         contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
         CustAccountFetchTask task = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.account_details_path), contentValues);

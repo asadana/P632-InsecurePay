@@ -28,11 +28,8 @@ public class TransferActivity extends AppCompatActivity {
     private TextView tvFromCustomerNo;
     private TextView tvToCustomerNo;
     private TextView tvTransferDetails;
-    private Button btnCancel;
-    private Button btnConfirm;
     private TransferFundsVO transferFundsVO;
     private CommonVO commonVO;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +45,8 @@ public class TransferActivity extends AppCompatActivity {
         tvFromCustomerNo = (TextView) findViewById(R.id.tvTransfer_filledfromCustNo);
         tvToCustomerNo = (TextView) findViewById(R.id.tvTransfer_filledtoCustNo);
         tvTransferDetails = (TextView) findViewById(R.id.tvTransfer_filledDetails);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        btnConfirm = (Button) findViewById(R.id.btnConfirm);
+        Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        Button btnConfirm = (Button) findViewById(R.id.btnConfirm);
 
         commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
         transferFundsVO = (TransferFundsVO) getIntent().getSerializableExtra(getString(R.string.transferFunds_VO));
@@ -110,10 +107,10 @@ public class TransferActivity extends AppCompatActivity {
                 if (amountTransferred.equals("true")) {
                     Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_successful), Toast.LENGTH_LONG).show();
 
-                    Intent intentNew= new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
+                    Intent intentNew = new Intent(TransferActivity.this.getApplicationContext(), HomePage.class);
                     intentNew.putExtra(getString(R.string.common_VO), commonVO);
                     intentNew.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    PendingIntent pIntent= PendingIntent.getActivity(TransferActivity.this.getApplicationContext(), (int) System.currentTimeMillis(),intentNew, 0);
+                    PendingIntent pIntent = PendingIntent.getActivity(TransferActivity.this.getApplicationContext(), (int) System.currentTimeMillis(), intentNew, 0);
 
                     // build notification 
                     // the addAction re-use the same intent to keep the example short
@@ -126,10 +123,10 @@ public class TransferActivity extends AppCompatActivity {
 
 
                     NotificationManager notificationManager =
-                            (NotificationManager) getApplicationContext().getSystemService(getApplicationContext().NOTIFICATION_SERVICE);
+                            (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
                     notificationManager.notify(0, n);
-                    intent = new Intent(getApplicationContext(), HomePage.class);
+                    Intent intent = new Intent(getApplicationContext(), HomePage.class);
                     intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
                 } else {

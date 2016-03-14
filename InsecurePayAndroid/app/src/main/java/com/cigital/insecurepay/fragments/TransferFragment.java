@@ -33,11 +33,9 @@ public class TransferFragment extends Fragment {
     private EditText etTransfer_CustUsername;
     private EditText etTransfer_Amount;
     private Button btnTransfer;
-    private Intent intent;
     private TransferFundsVO transferFundsVO;
     private Gson gson = new Gson();
     private TransferValidationTask transfervalidationtask;
-    private CustAccountFetchTask custAccountFetchTask;
 
     private static final Pattern sPattern
             = Pattern.compile("^-?[0-9]\\d*(\\.\\d+)?$");
@@ -125,7 +123,7 @@ public class TransferFragment extends Fragment {
                 } else {
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(getString(R.string.cust_no), custNo);
-                    custAccountFetchTask = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
+                    CustAccountFetchTask custAccountFetchTask = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
                             getString(R.string.account_details_path), contentValues);
                     custAccountFetchTask.execute();
                 }
@@ -145,7 +143,7 @@ public class TransferFragment extends Fragment {
             AccountVO accountVOObj = objReceived;
             Log.d(this.getClass().getSimpleName(), "Customer Balance: " + accountVOObj.getAccountBalance());
             transferFundsVO.setToAccount(accountVOObj);
-            intent = new Intent(getContext(), TransferActivity.class);
+            Intent intent = new Intent(getContext(), TransferActivity.class);
             intent.putExtra(getString(R.string.transferFunds_VO), transferFundsVO);
             intent.putExtra(getString(R.string.common_VO), commonVO);
             startActivity(intent);

@@ -68,8 +68,6 @@ public class AccountFragment extends Fragment {
     private Gson gsonObj = new Gson();
     private CommonVO commonVO;
     private JsonFileHandler jsonFileHandlerObj;
-    private GetCustomerDetailsTask getCustomerDetailsTask;
-    private UpdateCustomerDetailsTask updateCustomerDetailsTask;
 
     // Objects to handle Date format conversion
     private Calendar calenderObj = Calendar.getInstance();
@@ -213,7 +211,7 @@ public class AccountFragment extends Fragment {
         ContentValues contentValues = new ContentValues();
         contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
 
-        getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+        GetCustomerDetailsTask getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.cust_details_path), contentValues);
         getCustomerDetailsTask.execute();
     }
@@ -275,7 +273,7 @@ public class AccountFragment extends Fragment {
             Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
         }
 
-        updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+        UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.cust_details_path), customerVOObj);
         updateCustomerDetailsTask.execute();
     }
@@ -372,10 +370,10 @@ public class AccountFragment extends Fragment {
             // Checking the server response
             switch (resultObj) {
                 case "false":
-                    Toast.makeText(getContext(), "Password was not changed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.password_not_changed), Toast.LENGTH_LONG).show();
                     break;
                 case "true":
-                    Toast.makeText(getContext(), "Password Changed to " + newPassword, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.password_changed) + newPassword, Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
@@ -431,10 +429,10 @@ public class AccountFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + resultObj);
             switch (resultObj) {
                 case "true":
-                    Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
                     break;
                 case "false":
-                    Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");

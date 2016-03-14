@@ -108,7 +108,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tvTransfer_toCustNo"
             android:layout_marginTop="19dp"
-            android:text="@string/tvtransferAmount"
+            android:text="@string/tvTransferAmount"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -118,7 +118,7 @@
             android:layout_alignBaseline="@+id/tvTransfer_Amount"
             android:layout_alignStart="@+id/tvTransfer_filledfromCustNo"
             android:layout_marginStart="0dp"
-            android:text="@string/tvtransferAmount"
+            android:text="@string/tvTransferAmount"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -128,7 +128,7 @@
             android:layout_alignStart="@+id/tvTransfer_fromCustNo"
             android:layout_below="@+id/tvTransfer_Amount"
             android:layout_marginTop="19dp"
-            android:text="@string/tvtransferDetails"
+            android:text="@string/tvTransferDetails"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -138,7 +138,7 @@
             android:layout_alignBaseline="@+id/tvTransfer_Details"
             android:layout_alignStart="@+id/tvTransfer_filledAmount"
             android:layout_marginStart="0dp"
-            android:text="@string/tvtransferDetails"
+            android:text="@string/tvTransferDetails"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>

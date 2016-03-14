@@ -78,7 +78,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private Intent intent;
     private CommonVO commonVO;
     private LoginLockoutVO lockoutVO;
-    private LoginValidationVO loginValidationVO;
     private LoginVO loginVOObj;
     private LoginDBHelper loginDBHelper;
 
@@ -248,11 +247,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
                     Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
-                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() + "");
+                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() + "");
                 }
 
-                if (!(lockoutVO.isAddUser() || Minutes.minutesBetween(DateTime.now(), lockoutVO.getTrialTime()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)))) {
+                if (!lockoutVO.isAddUser()) {
                     lockoutVO.setIsLocked(loginDBHelper.isLocked(username));
+                    if (Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)) && lockoutVO.isLocked()) {
+                        loginDBHelper.deleteTrial(loginVOObj.getUsername());
+                        lockoutVO.setAddUser(true);
+                        lockoutVO.setIsLocked(false);
+                    }
                 }
 
                 Log.d(this.getClass().getSimpleName(), Boolean.toString(lockoutVO.isLocked()));
@@ -444,27 +448,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             super.postSuccess(resultObj);
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
             //Convert serverResponse to respectiveVO
-            loginValidationVO = gson.fromJson(resultObj, LoginValidationVO.class);
+            LoginValidationVO loginValidationVO = gson.fromJson(resultObj, LoginValidationVO.class);
 
             lockoutVO.setLoginValidationVO(loginValidationVO);
 
             if (lockoutVO.getLoginValidationVO().isUsernameExists()) {
-                if (lockoutVO.getLoginValidationVO().isValidUser()) {
-                    // delete row
-                    loginDBHelper.deleteTrial(loginVOObj.getUsername());
+                if (lockoutVO.isAddUser()) {
+                    lockoutVO.setTrialCount(1);
+                    loginDBHelper.addTrial(loginVOObj.getUsername());
                 } else {
-                    if (lockoutVO.isAddUser()) {
-                        lockoutVO.setTrialCount(1);
-                        loginDBHelper.addTrial(loginVOObj.getUsername());
-                    } else {
-                        lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
-                        Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
-                        if (lockoutVO.getTrialCount() > 3)
-                            lockoutVO.setIsLocked(true);
-                        loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
-                    }
+                    lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
+                    Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
+                    if (lockoutVO.getTrialCount() > 3)
+                        lockoutVO.setIsLocked(true);
+                    loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
                 }
             }
+
 
             userLoginTask = null;
 

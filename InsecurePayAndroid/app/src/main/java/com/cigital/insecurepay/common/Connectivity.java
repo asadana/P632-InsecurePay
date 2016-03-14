@@ -207,6 +207,10 @@ public class Connectivity implements Serializable {
         this.responseWrapperObj = responseWrapperObj;
     }
 
+    public void deleteCookies() {
+        mCookieStore.removeAll();
+    }
+
     public String getSendToServer() {
         return sendToServer;
     }
