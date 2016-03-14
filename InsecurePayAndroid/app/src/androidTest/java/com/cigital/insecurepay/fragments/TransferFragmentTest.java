@@ -29,14 +29,10 @@ import static android.support.test.espresso.intent.matcher.IntentMatchers.hasCom
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-/**
- * Created by janakbhalla on 11/03/16.
- */
 @RunWith(AndroidJUnit4.class)
 public class TransferFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-    //public final ActivityTestRule<LoginActivity> TransferActivityTestRule = new ActivityTestRule<>(TransferActivity.class);
 
     public static final String senderPassword = "12345";
     public static final String senderUsername = "voraj";
@@ -108,7 +104,7 @@ public class TransferFragmentTest {
         //Enter message
         onView(withId(R.id.ettransferDetails)).
                 perform(typeText(transferMessage), closeSoftKeyboard());
-//Click on Transfer
+        //Click on Transfer
         onView(withId(R.id.btn_transfer))
                 .perform(click());
 
@@ -120,11 +116,10 @@ public class TransferFragmentTest {
         onView(withId(R.id.etCust_username)).check(matches(inTextEdit(receiverUsername)));
         onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(transferAmount))));
         //Check receiverUsername
-
-
         release();
     }
 
+    //Matcher to match string in TextEdit
     public static Matcher<View> inTextEdit(final String input) {
         return new TypeSafeMatcher<View>() {
 
@@ -133,9 +128,7 @@ public class TransferFragmentTest {
                 if (!(view instanceof EditText)) {
                     return false;
                 }
-
                 String text = ((EditText) view).getText().toString();
-
                 return input.equals(text);
             }
 
@@ -144,6 +137,5 @@ public class TransferFragmentTest {
             }
         };
     }
-
-
+    
 }

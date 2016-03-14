@@ -43,8 +43,6 @@ public class HomeFragment extends Fragment {
         CustAccountFetchTask task = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.account_details_path), contentValues);
         task.execute();
-
-
         return viewObj;
     }
 

@@ -41,6 +41,7 @@ public class TransferActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //Setup the Transfer Activity
         tvTransferAmount = (TextView) findViewById(R.id.tvTransfer_filledAmount);
         tvFromAccountNo = (TextView) findViewById(R.id.tvTransfer_filledfromAccountNo);
         tvToAccountNo = (TextView) findViewById(R.id.tvTransfer_filledtoAccountNo);
@@ -101,9 +102,11 @@ public class TransferActivity extends AppCompatActivity {
         protected void postSuccess(String amountTransferred) {
             super.postSuccess(amountTransferred);
 
+            //Handles the case when transfer could not take place
             if (amountTransferred.equals("false")) {
                 Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_unsuccessful), Toast.LENGTH_LONG).show();
             } else {
+                // Case when transfer is successful
                 if (amountTransferred.equals("true")) {
                     Toast.makeText(TransferActivity.this.getApplicationContext(), getString(R.string.transfer_successful), Toast.LENGTH_LONG).show();
 

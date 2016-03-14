@@ -58,7 +58,7 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setRequestMethod("POST");
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
             if (mCookieStore.getCookies().size() > 0) {
-                //TO join cookies in the request
+                //To join cookies in the request
                 httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
                 Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
             }
@@ -90,8 +90,6 @@ public class Connectivity implements Serializable {
                 Log.e(this.getClass().getSimpleName(), "Post error", e);
             }
         }
-
-
         return responseWrapperObj;
     }
 
@@ -110,7 +108,7 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setDoInput(true);
 
             if (mCookieStore.getCookies().size() > 0) {
-                //TO join cookies in the request
+                //To join cookies in the request
                 httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
                 Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
             }

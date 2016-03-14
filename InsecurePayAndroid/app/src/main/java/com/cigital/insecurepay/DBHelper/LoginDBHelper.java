@@ -20,7 +20,6 @@ public class LoginDBHelper extends DBHelper {
     public static final String isLocked = "isLocked";
     DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
-
     public LoginDBHelper(Context context) {
         super(context);
     }
@@ -87,6 +86,7 @@ public class LoginDBHelper extends DBHelper {
             cursor.close();return entryTime;
     }
 
+    //Checks if the account is locked due to 3 or more unsuccessful login attempts
     public boolean isLocked(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         boolean locked = false;

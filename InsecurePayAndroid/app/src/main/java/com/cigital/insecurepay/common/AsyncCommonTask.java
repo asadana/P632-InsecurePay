@@ -79,7 +79,6 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
             postSuccess(responseWrapperObj.getResponseString());
         } else {
-            // TODO: Handle error here
             postFailure(responseWrapperObj);
         }
 
@@ -97,8 +96,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
             Log.d(this.getClass().getSimpleName(), "Network is on");
             return true;
         } else {
-            // TODO: Handle error here
-            Log.d(this.getClass().getSimpleName(), "Network is off");
+            Log.e(this.getClass().getSimpleName(), "Network is off");
             Toast.makeText(contextObj, contextObj.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
 
         }

@@ -40,16 +40,12 @@ public class LoginActivityTest {
     public static final String correctPassword = "abc";
     public static final String wrongPassword = "abcdef";
     public static final String wrongUsername = "abc";
-
-
     public static final String wrongAccount = "1234234";
     public static final String URL = "http://10.0.0.3:8090/";
     public static final String path = "InsecurePayServiceServer/rest/";
 
-
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-
 
     @Test
     public void changeServerAddress() {
@@ -86,19 +82,7 @@ public class LoginActivityTest {
                 .check(matches(isDisplayed()));
     }
 
-    /*@Test
-    public void loginFailTest() {
-        onView(withId(R.id.username)).
-                perform(typeText(correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(typeText(wrongPassword), closeSoftKeyboard());
-        // First attempt
-        onView(withId(R.id.sign_in_button))
-                .perform(click());
-        onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-    }*/
+
     @Test
     public void loginPassTest() {
         init();
@@ -230,6 +214,20 @@ public class LoginActivityTest {
 
             }
         };
+    }*/
+
+       /*@Test
+    public void loginFailTest() {
+        onView(withId(R.id.username)).
+                perform(typeText(correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(typeText(wrongPassword), closeSoftKeyboard());
+        // First attempt
+        onView(withId(R.id.sign_in_button))
+                .perform(click());
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
     }*/
 
 }

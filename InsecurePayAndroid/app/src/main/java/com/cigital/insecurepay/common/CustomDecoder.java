@@ -2,7 +2,6 @@ package com.cigital.insecurepay.common;
 
 import android.util.Base64;
 
-
 public class CustomDecoder {
 
     private static final String key = "abc";

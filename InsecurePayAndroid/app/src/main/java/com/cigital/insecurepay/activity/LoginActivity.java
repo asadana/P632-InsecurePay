@@ -274,11 +274,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-
+    /*
+    Checks if the password length is at least 2
+     */
     private boolean isPasswordValid(String password) {
         return password.length() > 2;
     }
 
+    /*
+    Stores the username and password if Remember Me is checked
+     */
     private void saveLoginPreferences() {
         SharedPreferences.Editor loginPrefsEditor = loginPreferences.edit();
         if (rememberMeCheck.isChecked()) {

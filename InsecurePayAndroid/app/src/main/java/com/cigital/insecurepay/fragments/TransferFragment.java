@@ -23,6 +23,9 @@ import com.google.gson.Gson;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * TransferFragment extends Fragment and is used for transferring funds.
+ */
 public class TransferFragment extends Fragment {
 
     private CommonVO commonVO;
@@ -47,7 +50,6 @@ public class TransferFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View viewObj = inflater.inflate(R.layout.fragment_transfer, container, false);
-
         initValues(viewObj);
         addListeners();
         return viewObj;
@@ -64,14 +66,11 @@ public class TransferFragment extends Fragment {
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         transferFundsVO = new TransferFundsVO();
         transferFundsVO.setFromAccount(commonVO.getAccountVO());
-
-
     }
 
     // Initializing listeners where needed
     private void addListeners() {
         Log.i(this.getClass().getSimpleName(), "Adding Listeners");
-
 
         btnTransfer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,9 +80,7 @@ public class TransferFragment extends Fragment {
                 float transferAmount;
                 String amount = String.valueOf(etTransfer_Amount.getText());
                 Matcher m = sPattern.matcher(amount);
-
                 transferDetails = etTransfer_Details.getText().toString();
-
                 custUsername = etTransfer_CustUsername.getText().toString();
 
                 if (!m.matches()) {
@@ -111,7 +108,6 @@ public class TransferFragment extends Fragment {
     }
 
     private class TransferValidationTask extends GetAsyncCommonTask<String> {
-
 
         public TransferValidationTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
             super(contextObj, serverAddress, path, contentValues, String.class);

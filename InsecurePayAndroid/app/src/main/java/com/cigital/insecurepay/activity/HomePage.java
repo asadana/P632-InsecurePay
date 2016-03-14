@@ -140,7 +140,6 @@ public class HomePage extends AppCompatActivity
             if (fragmentClass != null) {
                 fragment = (Fragment) fragmentClass.newInstance();
             }
-            Log.i(this.getClass().getSimpleName(), "Creating fragment");
         } catch (Exception e) {
             Log.e(this.getClass().getSimpleName(), e.toString());
         }
@@ -164,6 +163,7 @@ public class HomePage extends AppCompatActivity
         startActivity(intent);
     }
 
+    //Set Account Details in CommonVO
     @Override
     public void setAccDetails(AccountVO accountVO) {
         CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));

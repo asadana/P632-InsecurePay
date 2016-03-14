@@ -253,7 +253,7 @@ public class AccountFragment extends Fragment {
         });
     }
 
-    // Handles tasks to be done when Update button clicked
+    // Handles tasks to be done when Update button is clicked
     private void onClickUpdateInformation() {
         Log.i(this.getClass().getSimpleName(), "Updating customer information.");
 
@@ -316,6 +316,7 @@ public class AccountFragment extends Fragment {
                             return;
                         }
 
+                        //To enforce minimum 3 character length password
                         if ((newPassword.length() < 3) || (confirmPassword.length() < 3)) {
                             etConfirmPassword.setError("Minimum 3 characters length required");
                             etNewPassword.setText("");
@@ -328,6 +329,7 @@ public class AccountFragment extends Fragment {
                             return;
                         }
 
+                        //Checks to see if both entries of new password match
                         if (newPassword.equals(confirmPassword)) {
                             changePasswordTask = new ChangePasswordTask(getContext(), commonVO.getServerAddress(),
                                     getString(R.string.change_password_path), new ChangePasswordVO(commonVO.getUsername(), newPassword));
@@ -431,7 +433,6 @@ public class AccountFragment extends Fragment {
                 case "true":
                     Toast.makeText(getContext(), "Update successful", Toast.LENGTH_SHORT).show();
                     break;
-                // TODO: Remove this and handle it with error
                 case "false":
                     Toast.makeText(getContext(), "Update failed", Toast.LENGTH_SHORT).show();
                     break;

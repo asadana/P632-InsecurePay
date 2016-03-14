@@ -37,7 +37,6 @@ public class AccountFragmentTest {
     public static final String correctUsername = "foo";
     public static final String newPassword = "abc";
     public static final String changePasswordToast = "Password Changed to " + newPassword;
-
     public static final String updateEmail = "foofan@gmail.com";
     public static final String updatePhoneNo = "123456";
     public static final String updateState = "New York";
@@ -202,6 +201,5 @@ public class AccountFragmentTest {
 
 
     }
-
 
 }

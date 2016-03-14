@@ -9,7 +9,7 @@ public class AccountVO implements Serializable{
     private float accountBalance;
 
 
-    public AccountVO(int custNo, int accNo, float accountBalance, Date accountOpenDate) {
+    public AccountVO(int custNo, int accNo, float accountBalance) {
         this.custNo = custNo;
         this.accNo = accNo;
         this.accountBalance = accountBalance;
