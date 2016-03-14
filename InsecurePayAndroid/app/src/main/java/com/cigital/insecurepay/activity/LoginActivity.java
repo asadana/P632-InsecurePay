@@ -101,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
 
-        TextView forgotPasswordView = (TextView) findViewById(R.id.btn_forgot_password);
+        TextView forgotPasswordView = (TextView) findViewById(R.id.btnForgotPassword);
         populateAutoComplete();
 
         passwordView = (EditText) findViewById(R.id.password);
@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mUsernameSignInButton = (Button) findViewById(R.id.sign_in_button);
+        Button mUsernameSignInButton = (Button) findViewById(R.id.btnSignIn);
         mUsernameSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
