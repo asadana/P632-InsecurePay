@@ -12,13 +12,11 @@
     tools:context="com.cigital.insecurepay.activity.TransferActivity"
     tools:showIn="@layout/activity_transfer">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:id="@+id/relativeLayout">
-
 
         <TextView
             android:id="@+id/tvTransfer_fromAccountNo"
@@ -142,7 +140,6 @@
             android:layout_marginStart="0dp"
             android:text="@string/tvtransferDetails"
             android:textAppearance="?android:attr/textAppearanceSmall" />
-
 
     </RelativeLayout>
 

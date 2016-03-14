@@ -5,14 +5,11 @@
     android:orientation="vertical"
     tools:context="com.cigital.insecurepay.fragments.HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:stretchColumns="*"
         android:padding="@dimen/abc_button_inset_vertical_material">
-
 
         <TableRow
             android:layout_width="wrap_content"
