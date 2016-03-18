@@ -52,6 +52,7 @@
     <string name="nav_homepage">Home</string>
     <string name="nav_account_manage">Account Management</string>
     <string name="nav_transfer_funds">Transfer Funds</string>
+    <string name="nav_activity_history">Activity History</string>
     <string name="nav_interest_calc">Interest Calculator</string>
     <string name="nav_support_chat">Support Chat</string>
     <string name="nav_logout">Logout</string>

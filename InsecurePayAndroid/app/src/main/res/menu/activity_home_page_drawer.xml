@@ -13,6 +13,9 @@
             android:id="@+id/nav_transfer_funds"
             android:title="@string/nav_transfer_funds" />
         <item
+            android:id="@+id/nav_activity_history"
+            android:title="@string/nav_activity_history" />
+        <item
             android:id="@+id/nav_interest_calc"
             android:title="@string/nav_interest_calc" />
 
