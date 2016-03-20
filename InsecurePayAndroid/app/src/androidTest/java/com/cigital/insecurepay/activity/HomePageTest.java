@@ -26,9 +26,9 @@ public class HomePageTest {
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     public static final String correctPassword = "12345";
-    public static final String correctUsername = "foo";
-    public static final String correctAccountNumber = "2005";
-    public static final String correctBalance = "908.4";
+    public static final String correctUsername = "voraj";
+    public static final String correctAccountNumber = "2000";
+    public static final String correctBalance = "106.12";
 
     @Test
     public void checkHomePage() {
@@ -37,7 +37,7 @@ public class HomePageTest {
         onView(withId(R.id.password)).
                 perform(typeText(correctPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         onView(withId(R.id.tvHome_fillAccountNumber))

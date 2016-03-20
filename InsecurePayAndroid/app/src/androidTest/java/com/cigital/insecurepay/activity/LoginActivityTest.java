@@ -75,7 +75,7 @@ public class LoginActivityTest {
                 perform(typeText(wrongPassword), closeSoftKeyboard());
 
         // First attempt
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
@@ -91,7 +91,7 @@ public class LoginActivityTest {
         onView(withId(R.id.password)).
                 perform(typeText(correctPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         intended(hasComponent(HomePage.class.getName()));
         release();
@@ -105,25 +105,25 @@ public class LoginActivityTest {
                 perform(typeText(wrongPassword), closeSoftKeyboard());
 
         // First attempt
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
         // Second attempt
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
         // Third attempt
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
 
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
@@ -147,7 +147,7 @@ public class LoginActivityTest {
                 perform(typeText(correctPassword), closeSoftKeyboard());
 
 
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
@@ -162,7 +162,7 @@ public class LoginActivityTest {
                 .check(matches(isChecked()))
                 .perform(click());
 
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
     }
     //A matcher to match the credentials after coming back to the app

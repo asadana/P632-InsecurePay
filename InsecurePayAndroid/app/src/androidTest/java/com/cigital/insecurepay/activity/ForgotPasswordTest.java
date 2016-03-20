@@ -30,14 +30,14 @@ public class ForgotPasswordTest {
     public static final String correctAccountNo = "2000";
     public static final String defaultPassword = "12345";
     public static final String correctPassword = "123";
-    public static final String correctUsername = "foo";
+    public static final String correctUsername = "voraj";
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void passwordRestPass() {
-        onView(withId(R.id.btn_forgot_password)).
+        onView(withId(R.id.btnForgotPassword)).
                 perform(click());
         // Enter account number
         onView(withId(R.id.etForgotPassword_AccountNo)).
@@ -63,7 +63,7 @@ public class ForgotPasswordTest {
         onView(withId(R.id.password)).
                 perform(typeText(defaultPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
         intended(hasComponent(HomePage.class.getName()));
         release();
@@ -72,7 +72,7 @@ public class ForgotPasswordTest {
 
     @Test
     public void passwordRestFail() {
-        onView(withId(R.id.btn_forgot_password)).
+        onView(withId(R.id.btnForgotPassword)).
                 perform(click());
         // Enter account number
         onView(withId(R.id.etForgotPassword_AccountNo)).

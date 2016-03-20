@@ -52,7 +52,7 @@ public class TransferFragmentTest {
         onView(withId(R.id.password)).
                 perform(typeText(senderPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         // Open Drawer

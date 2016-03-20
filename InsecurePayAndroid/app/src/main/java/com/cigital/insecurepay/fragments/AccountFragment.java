@@ -373,7 +373,7 @@ public class AccountFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.password_not_changed), Toast.LENGTH_LONG).show();
                     break;
                 case "true":
-                    Toast.makeText(getContext(), getString(R.string.password_changed) + newPassword, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), getString(R.string.password_changed) + " '" + newPassword + "'", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Log.e(this.getClass().getSimpleName(), "Invalid response on password change");

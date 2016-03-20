@@ -36,7 +36,7 @@ public class AccountFragmentTest {
     public static final String correctPassword = "abc";
     public static final String correctUsername = "foo";
     public static final String newPassword = "abc";
-    public static final String changePasswordToast = "Password Changed to " + newPassword;
+    public static final String changePasswordToast = "Password Changed to '" + newPassword + "'   ";
     public static final String updateEmail = "foofan@gmail.com";
     public static final String updatePhoneNo = "123456";
     public static final String updateState = "New York";
@@ -56,7 +56,7 @@ public class AccountFragmentTest {
         onView(withId(R.id.password)).
                 perform(typeText(correctPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         // Open Drawer
@@ -98,7 +98,7 @@ public class AccountFragmentTest {
                 perform(typeText(newPassword), closeSoftKeyboard());
 
 
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
 
@@ -111,7 +111,7 @@ public class AccountFragmentTest {
         onView(withId(R.id.password)).
                 perform(typeText(correctPassword), closeSoftKeyboard());
         // First attempt with correct username and password
-        onView(withId(R.id.sign_in_button))
+        onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         // Open Drawer
