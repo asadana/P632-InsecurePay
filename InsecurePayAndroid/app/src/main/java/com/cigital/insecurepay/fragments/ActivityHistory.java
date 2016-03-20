@@ -7,42 +7,43 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.TransferFundsVO;
+import com.google.gson.Gson;
 
 
 public class ActivityHistory extends Fragment {
 
+    private Gson gson = new Gson();
+    private TextView tvAccountNumber;
+    private EditText etAccountNumber;
     private OnFragmentInteractionListener mListener;
+    private TransferFundsVO transferfundsVO;
 
     public ActivityHistory() {
         // Required empty public constructor
     }
 
-    public static ActivityHistory newInstance(String param1, String param2) {
-        ActivityHistory fragment = new ActivityHistory();
-        Bundle args = new Bundle();
-
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        View viewObj = inflater.inflate(R.layout.fragment_home, container, false);
+        etAccountNumber = (EditText)viewObj.findViewById(R.id.etAccountNumber);
+        tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvAccountNumber);
         return inflater.inflate(R.layout.fragment_activity_history, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(TransferFundsVO transferFundsVO) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+            mListener.onFragmentInteraction(transferfundsVO);
         }
     }
 
@@ -75,6 +76,6 @@ public class ActivityHistory extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(TransferFundsVO transferFundsVO);
     }
 }

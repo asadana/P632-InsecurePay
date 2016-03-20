@@ -1,32 +1,71 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cigital.insecurepay.fragments.ActivityHistory">
+    tools:context="com.cigital.insecurepay.fragments.ActivityHistory"
+    android:fillViewport="false">
 
     <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp">
 
-         <TextView
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Enter Account Number"
-             android:id="@+id/textView" />
+            android:id="@+id/tvAccountNumber"
+            android:ems="10"
+            android:layout_column="0"
+            android:textSize="@dimen/abc_floating_window_z" />
 
 
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:inputType="number"
             android:ems="10"
             android:id="@+id/etAccountNumber"
-            android:layout_gravity="left|top"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
-    </RelativeLayout>
+            android:layout_column="0"
+            android:textSize="@dimen/abc_button_padding_horizontal_material" />
+    </TableRow>
 
-</ScrollView>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amazon purchase"
+            android:textStyle="bold"
+            android:id="@+id/tv1"
+            android:layout_column="0" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-$34"
+            android:id="@+id/textView"
+            android:layout_column="17" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/nav_header_vertical_spacing"
+            android:text="02.23.2015"
+            android:id="@+id/textView3"
+            android:layout_column="26" />
+    </TableRow>
+</TableLayout>
