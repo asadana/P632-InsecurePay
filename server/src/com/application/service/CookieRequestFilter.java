@@ -28,7 +28,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 
 		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword"))) {
 			Logging.logger.info("REMOVE ME: StringConstants : "
-					+ Constants.cookieList.getNewCookieList());
+					+ Constants.cookieList.displayCookies());
 			Map<String, Cookie> cookies = clientRequest.getCookies();
 			if (cookies.size() == 0) {
 				Logging.logger.warn("Cookies list null");

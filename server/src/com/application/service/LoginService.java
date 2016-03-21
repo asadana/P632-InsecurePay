@@ -37,8 +37,8 @@ public class LoginService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response validateLogin(LoginBO loginBO) {
 
-		int ageInSeconds = 60*60*24;
-		//int ageInSeconds = 60 * 2;
+		//int ageInSeconds = 60*60*24;
+		int ageInSeconds = 60 * 2;
 		LoginValidationBO validate = null;
 		NewCookie newCookieObj = null;
 
@@ -61,7 +61,7 @@ public class LoginService extends BaseService {
 				newCookieObj = new NewCookie(new Cookie("CookieID",
 						loginBO.getUsername() + Constants.counter, "/", ""),
 						null, ageInSeconds, dateObj, false, false);
-				Constants.cookieList.addCookie(newCookieObj);
+				Constants.cookieList.addCookie(newCookieObj, validate.getCustNo());
 				logger.info("REMOVE ME: " + newCookieObj.toString());
 				logger.info("REMOVE ME: " + Constants.cookieList);
 
