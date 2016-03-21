@@ -36,14 +36,14 @@ public class CookieListWrapper {
 		return false;
 	}
 	
-	public NewCookie findCookie(Cookie cookieObj) {
+	public Entry<NewCookie, Integer> findCookie(Cookie cookieObj) {
 		Iterator<Entry<NewCookie, Integer>> iteratorObj = cookieMap.entrySet().iterator();
 		NewCookie newCookieObj;
 		while(iteratorObj.hasNext()) {
 			Entry<NewCookie, Integer> currentEntry = (Entry<NewCookie, Integer>) iteratorObj.next();
 			newCookieObj = currentEntry.getKey();
 			if(newCookieObj.getValue().equalsIgnoreCase(cookieObj.getValue())) {
-				return newCookieObj;
+				return currentEntry;
 			}
 		}
 		return null;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -36,8 +37,14 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 			} else {
 				Logging.logger.info("Request Cookies :" + cookies.toString());
 				Cookie cookieObj = cookies.get("CookieID");
-				NewCookie newCookieObj = Constants.cookieList
+				Entry<NewCookie, Integer> cookieFound = Constants.cookieList
 						.findCookie(cookieObj);
+				NewCookie newCookieObj = null;
+				int custNo = 1;
+				if (cookieFound != null) {
+					newCookieObj = cookieFound.getKey();
+					custNo = cookieFound.getValue();
+				}
 				Date dateObj = Calendar.getInstance().getTime();
 				// Check to see if the value of the cookie is correct
 				// and if the cookie is not yet expired
@@ -48,6 +55,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 				} else {
 					Logging.logger.info("REMOVE ME: Inside if : "
 							+ cookieObj.toString());
+					clientRequest.getHeaders().add("CustNo", Integer.toString(custNo));
 				}
 			}
 		}

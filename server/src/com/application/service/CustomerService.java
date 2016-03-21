@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -21,7 +22,7 @@ public class CustomerService extends BaseService {
 	
 		@GET
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response getCustomerDetails(@QueryParam("custNo") int custNo)
+		public Response getCustomerDetails(@QueryParam("custNo") int custNo, @HeaderParam("CustNo") String cookieCustNo)
 				throws SQLException, InstantiationException,
 				IllegalAccessException, NoSuchMethodException, SecurityException,
 				IllegalArgumentException, InvocationTargetException,
@@ -30,7 +31,7 @@ public class CustomerService extends BaseService {
 			CustomerBO customergenBO = null;
 			try {
 				customergenBO = DaoFactory.getInstance(CustomerDao.class,
-						this.getConnection()).getCustomerDetails(custNo);
+						this.getConnection()).getCustomerDetails(Integer.parseInt(cookieCustNo));
 			} catch (InstantiationException | IllegalAccessException
 					| ClassNotFoundException | NoSuchMethodException
 					| SecurityException | IllegalArgumentException
