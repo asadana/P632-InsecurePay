@@ -253,7 +253,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (!lockoutVO.isAddUser()) {
                     lockoutVO.setIsLocked(loginDBHelper.isLocked(username));
                     if (Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)) && lockoutVO.isLocked()) {
-                        loginDBHelper.deleteTrial(loginVOObj.getUsername());
+                        loginDBHelper.deleteTrial(username);
                         lockoutVO.setAddUser(true);
                         lockoutVO.setIsLocked(false);
                     }
@@ -453,15 +453,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             lockoutVO.setLoginValidationVO(loginValidationVO);
 
             if (lockoutVO.getLoginValidationVO().isUsernameExists()) {
-                if (lockoutVO.isAddUser()) {
-                    lockoutVO.setTrialCount(1);
-                    loginDBHelper.addTrial(loginVOObj.getUsername());
-                } else {
-                    lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
-                    Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
-                    if (lockoutVO.getTrialCount() > 3)
-                        lockoutVO.setIsLocked(true);
-                    loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
+                if (!lockoutVO.getLoginValidationVO().isValidUser()) {
+                    if (lockoutVO.isAddUser()) {
+                        lockoutVO.setTrialCount(1);
+                        loginDBHelper.addTrial(loginVOObj.getUsername());
+                    } else {
+                        lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
+                        Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
+                        if (lockoutVO.getTrialCount() > 3)
+                            lockoutVO.setIsLocked(true);
+                        loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
+                    }
                 }
             }
 
