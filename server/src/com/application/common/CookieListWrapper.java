@@ -48,6 +48,20 @@ public class CookieListWrapper {
 		}
 		return null;
 	}
+	
+	public boolean updateCustNo(Cookie cookieObj, int custNo) {
+		Iterator<Entry<NewCookie, Integer>> iteratorObj = cookieMap.entrySet().iterator();
+		NewCookie newCookieObj;
+		while(iteratorObj.hasNext()) {
+			Entry<NewCookie, Integer> currentEntry = (Entry<NewCookie, Integer>) iteratorObj.next();
+			newCookieObj = currentEntry.getKey();
+			if(newCookieObj.getValue().equalsIgnoreCase(cookieObj.getValue())) {
+				currentEntry.setValue(custNo);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public String displayCookies() {
 		return cookieMap.toString();

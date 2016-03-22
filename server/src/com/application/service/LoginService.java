@@ -38,7 +38,7 @@ public class LoginService extends BaseService {
 	public Response validateLogin(LoginBO loginBO) {
 
 		//int ageInSeconds = 60*60*24;
-		int ageInSeconds = 60 * 2;
+		int ageInSeconds = 60 * 5;
 		LoginValidationBO validate = null;
 		NewCookie newCookieObj = null;
 
