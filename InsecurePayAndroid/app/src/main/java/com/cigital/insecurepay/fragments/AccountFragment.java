@@ -409,6 +409,7 @@ public class AccountFragment extends Fragment {
             etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
             etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
             etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+            btnUpdateInfo.setEnabled(false);
         }
 
     }
@@ -430,6 +431,7 @@ public class AccountFragment extends Fragment {
             switch (resultObj) {
                 case "true":
                     Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
+                    btnUpdateInfo.setEnabled(false);
                     break;
                 case "false":
                     Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
