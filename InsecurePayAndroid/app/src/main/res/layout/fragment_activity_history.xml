@@ -1,71 +1,39 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cigital.insecurepay.fragments.ActivityHistory"
-    android:fillViewport="false">
+    android:weightSum="1">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Enter Account Number"
-            android:id="@+id/tvAccountNumber"
-            android:ems="10"
-            android:layout_column="0"
-            android:textSize="@dimen/abc_floating_window_z" />
-
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
         <EditText
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:hint="Enter Account No"
+            android:layout_width="183dp"
+            android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/etAccountNumber"
-            android:layout_column="0"
-            android:textSize="@dimen/abc_button_padding_horizontal_material" />
-    </TableRow>
+            android:id="@+id/etActivityHistory_AccountNo" />
+    </android.support.design.widget.TextInputLayout>
 
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/btnSubmit" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Amazon purchase"
-            android:textStyle="bold"
-            android:id="@+id/tv1"
-            android:layout_column="0" />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/lvActivityHistory_transactionList" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-$34"
-            android:id="@+id/textView"
-            android:layout_column="17" />
+</LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/nav_header_vertical_spacing"
-            android:text="02.23.2015"
-            android:id="@+id/textView3"
-            android:layout_column="26" />
-    </TableRow>
-</TableLayout>
