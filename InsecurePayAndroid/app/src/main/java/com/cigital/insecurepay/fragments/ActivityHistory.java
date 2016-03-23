@@ -40,6 +40,10 @@ public class ActivityHistory extends Fragment {
         result.add(new TransactionVO("test", "25/01/92", 305, 25));
         result.add(new TransactionVO("payment", "25/02/92", 330, 15));
         result.add(new TransactionVO("bill payment", "15/4/92", 345, 55));
+        result.add(new TransactionVO("shopping", "25/02/92", 300, 5));
+        result.add(new TransactionVO("test", "25/01/92", 305, 25));
+        result.add(new TransactionVO("payment", "25/02/92", 330, 15));
+        result.add(new TransactionVO("bill payment", "15/4/92", 345, 55));
         Log.i("Activity History", "calling transaction adapter");
         adapter = new TransactionAdapter(this.getContext(), R.layout.row, result);
         lvTransactionList.setAdapter(adapter);
