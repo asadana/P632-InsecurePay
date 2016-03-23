@@ -8,8 +8,10 @@ public class TransactionVO implements Serializable {
     private String date;
     private int finalAmount;
     private int transactionAmount;
+    private int type;
 
-    public TransactionVO(String description, String date, int finalAmount, int transactionAmount) {
+    public TransactionVO(String description, String date, int finalAmount, int transactionAmount, int type) {
+        this.type = type;
         this.transactionAmount = transactionAmount;
         this.description = description;
         this.date = date;
@@ -46,5 +48,13 @@ public class TransactionVO implements Serializable {
 
     public void setTransactionAmount(int transactionAmount) {
         this.transactionAmount = transactionAmount;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
