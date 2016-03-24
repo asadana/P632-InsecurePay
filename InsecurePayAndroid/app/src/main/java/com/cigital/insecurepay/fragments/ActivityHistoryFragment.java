@@ -26,12 +26,16 @@ public class ActivityHistoryFragment extends Fragment {
 
     private ListView lvTransactionList;
     private EditText etAccountNumber;
-    private int accountNumber;
-    private TransactionAdapter adapter;
+    private View viewObj;
+    private Button btnSubmit;
+
     private CommonVO commonVO;
+
+    private TransactionAdapter adapter;
+    private int accountNumber;
+
     private AccountNoValidationTask accountnovalidationtask;
     private ActivityHistoryFetchTask activityHistoryFetchTask;
-    View viewObj;
 
     public ActivityHistoryFragment() {
         // Required empty public constructor
@@ -45,7 +49,7 @@ public class ActivityHistoryFragment extends Fragment {
 
         viewObj = inflater.inflate(R.layout.fragment_activity_history, container, false);
         etAccountNumber = (EditText) viewObj.findViewById(R.id.etActivityHistory_AccountNo);
-        Button btnSubmit = (Button) viewObj.findViewById(R.id.btnSubmit);
+        btnSubmit = (Button) viewObj.findViewById(R.id.btnSubmit);
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         etAccountNumber.setText(String.valueOf(commonVO.getAccountVO().getAccNo()));
 
