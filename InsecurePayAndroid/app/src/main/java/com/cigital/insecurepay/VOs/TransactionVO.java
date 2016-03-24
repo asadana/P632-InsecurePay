@@ -6,8 +6,8 @@ public class TransactionVO implements Serializable {
 
     private String description;
     private String date;
-    private int finalAmount;
-    private int transactionAmount;
+    private float finalAmount;
+    private float transactionAmount;
     private int type;
 
     public TransactionVO(String description, String date, int finalAmount, int transactionAmount, int type) {
@@ -34,19 +34,19 @@ public class TransactionVO implements Serializable {
         this.date = date;
     }
 
-    public int getFinalAmount() {
+    public float getFinalAmount() {
         return finalAmount;
     }
 
-    public void setFinalAmount(int finalAmount) {
+    public void setFinalAmount(float finalAmount) {
         this.finalAmount = finalAmount;
     }
 
-    public int getTransactionAmount() {
+    public float getTransactionAmount() {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(int transactionAmount) {
+    public void setTransactionAmount(float transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 

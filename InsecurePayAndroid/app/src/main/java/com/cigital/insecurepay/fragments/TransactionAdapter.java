@@ -30,7 +30,7 @@ public class TransactionAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.row, null);
+            convertView = inflater.inflate(R.layout.transaction_format, null);
         }
 
         int type;
@@ -46,8 +46,8 @@ public class TransactionAdapter extends ArrayAdapter {
 
         tvActivityHistory_Description.setText(transactionVOList.get(position).getDescription());
         tvActivityHistory_Date.setText(transactionVOList.get(position).getDate());
-        tvActivityHistory_FinalAmount.setText("" + transactionVOList.get(position).getFinalAmount());
-        tvActivityHistory_TransactionAmount.setText("" + transactionVOList.get(position).getTransactionAmount());
+        tvActivityHistory_FinalAmount.setText("$" + transactionVOList.get(position).getFinalAmount());
+        tvActivityHistory_TransactionAmount.setText("$" + transactionVOList.get(position).getTransactionAmount());
         type = transactionVOList.get(position).getType();
         if (type == 1) //type 1 is debit and type 2 is credit
             tvActivityHistory_TransactionAmount.setTextColor(Color.RED);
