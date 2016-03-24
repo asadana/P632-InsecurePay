@@ -30,13 +30,13 @@ public class ChangePasswordService extends BaseService {
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
-			logger.error(this.getClass().getSimpleName(), e);
+			logger.error(e);
 		} finally {
 
 			try {
 				close();
 			} catch (SQLException e) {
-				logger.error(this.getClass().getSimpleName(), e);
+				logger.error(e);
 			}
 		}
 		return Response.status(Response.Status.OK).entity(passwordChanged)
