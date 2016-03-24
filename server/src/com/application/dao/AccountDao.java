@@ -30,4 +30,21 @@ public class AccountDao extends BaseDao {
 		}
 		return account;
 	}
+	
+	public Boolean accountNoValid(int accountNo) throws InstantiationException, IllegalAccessException,
+	ClassNotFoundException, SQLException {
+		
+		Boolean accountValid = false;
+		ResultSet rs = null;
+		List<Object> params = new ArrayList<Object>();
+		params.add(accountNo);
+		rs = querySql(Queries.GET_ACCOUNT_TBL_WITH_ACCNO, params);
+		if (rs.next()) 
+			accountValid = true;
+		else
+			accountValid = false;	
+	
+		return accountValid;
+		
+	}
 }
