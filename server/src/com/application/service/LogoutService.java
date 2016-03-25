@@ -10,7 +10,8 @@ public class LogoutService extends BaseService{
 
 	public void Logout()
 	{
-		Constants.cookieList.deleteCookie();
+		Constants.cookieList.deleteCookies();
+		Logging.logger.debug("Cookies after deletion : " + Constants.cookieList.displayCookies());
 	}
 
 }

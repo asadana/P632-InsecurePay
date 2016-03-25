@@ -64,7 +64,7 @@ public class CookieList {
 		cookieArrayList.add(cookieWrapperObj);
 	}
 
-	public void deleteCookie() {
+	public void deleteCookies() {
 
 		Iterator<CookieWrapper> iteratorObj = cookieArrayList.iterator();
 		Date dateObj = Calendar.getInstance().getTime();
@@ -124,9 +124,7 @@ public class CookieList {
 				cookieString.add(currentCookie.getNewCookieObj().toString() + " --> CustNo: "
 				+ Integer.toString(currentCookie.getCustNo()) + " --> LastAccessed: "
 				+ currentCookie.getLastAccessed().toString());
-
 			}
-			
 			return cookieString.toString();
 		}
 		
