@@ -10,11 +10,11 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 
-public class CookieListWrapper {
+public class CookieList {
 
 	private HashMap<NewCookie, Integer> cookieMap;
 
-	public CookieListWrapper() {
+	public CookieList() {
 		cookieMap = new HashMap<NewCookie, Integer>();
 	}
 

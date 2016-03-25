@@ -8,6 +8,6 @@ public class Constants {
 	public final static String userName = "insecurepay";
 	public final static String password = "insecurepay";
 	public final static String defaultPassword = "12345";
-	public static CookieListWrapper cookieList = new CookieListWrapper();
+	public static CookieList cookieList = new CookieList();
 	public static int counter = 100;
 }

@@ -26,14 +26,12 @@ public class CustomerService extends BaseService {
 		@GET
 		@Produces(MediaType.APPLICATION_JSON)
 		public Response getCustomerDetails(@QueryParam("custNo") int custNo,
-				//@CookieParam("CookieID") Cookie cookieObj, 
 				@HeaderParam("CustNo") String cookieCustNo)
 				throws SQLException, InstantiationException,
 				IllegalAccessException, NoSuchMethodException, SecurityException,
 				IllegalArgumentException, InvocationTargetException,
 				ClassNotFoundException {
 	
-			//Constants.cookieList.updateCustNo(cookieObj, custNo);
 			CustomerBO customergenBO = null;
 			try {
 				customergenBO = DaoFactory.getInstance(CustomerDao.class,
