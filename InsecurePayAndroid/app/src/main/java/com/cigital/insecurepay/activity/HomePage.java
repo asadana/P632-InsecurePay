@@ -21,6 +21,7 @@ import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.fragments.AccountFragment;
+import com.cigital.insecurepay.fragments.ActivityHistoryFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
 import com.cigital.insecurepay.fragments.TransferFragment;
 
@@ -123,7 +124,10 @@ public class HomePage extends AppCompatActivity
             fragmentClass = TransferFragment.class;
             Log.i(this.getClass().getSimpleName(), "Transfer Fragment selected");
             setTitle(R.string.nav_transfer_funds);
-
+        }else if (id == R.id.nav_activity_history) {
+            fragmentClass = ActivityHistoryFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Activity History Selected");
+            setTitle(R.string.nav_activity_history);
         } else if (id == R.id.nav_interest_calc) {
 
         } else if (id == R.id.nav_support_chat) {

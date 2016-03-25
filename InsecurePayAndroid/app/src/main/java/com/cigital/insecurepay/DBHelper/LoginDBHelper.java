@@ -24,11 +24,6 @@ public class LoginDBHelper extends DBHelper {
         super(context);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS LoginTrials;");
-        db.execSQL("create table " + LOGIN_TRIALS + " (" + CUST_USERNAME + " text primary key, " + TRIALS + " int, " + CURR_TIME + " DATETIME , " + isLocked + " int )");
-    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {

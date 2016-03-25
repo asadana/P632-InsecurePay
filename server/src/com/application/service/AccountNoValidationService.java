@@ -5,24 +5,22 @@ import java.sql.SQLException;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.application.common.DaoFactory;
-import com.application.dao.LoginDao;
+import com.application.dao.AccountDao;
 
-@Path("/transferValidation")
-public class TransferValidationService extends BaseService {
+@Path("/accountNumberValidation")
+public class AccountNoValidationService extends BaseService {
 
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response validateCust(@QueryParam("username") String username) {
-		int custNo = -1;
+	public Response AccountNoValid(@QueryParam("accountNo") int accountNo) {
+
+		Boolean accountValid = false;
 		try {
-			custNo = DaoFactory.getInstance(LoginDao.class,
-					this.getConnection()).checkUsername(username);
+			accountValid = DaoFactory.getInstance(AccountDao.class,
+					this.getConnection()).accountNoValid(accountNo);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException
@@ -36,7 +34,8 @@ public class TransferValidationService extends BaseService {
 				logger.error(e);
 			}
 		}
-		return Response.status(Response.Status.OK).entity(custNo).build();
+		return Response.status(Response.Status.OK).entity(accountValid).build();
 
 	}
+
 }

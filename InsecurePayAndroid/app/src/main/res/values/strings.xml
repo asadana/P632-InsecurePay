@@ -39,7 +39,7 @@
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="default_address">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <!--<string name="default_address">http://149.161.139.39:8090/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
@@ -47,11 +47,14 @@
     <string name="account_details_path">accountService</string>
     <string name="transfer_funds_path">transferFunds</string>
     <string name="transfer_validation_path">transferValidation</string>
+    <string name="accountno_validation_path">accountNumberValidation</string>
+    <string name="activity_history_path">activityHistory</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>
     <string name="nav_account_manage">Account Management</string>
     <string name="nav_transfer_funds">Transfer Funds</string>
+    <string name="nav_activity_history">Activity History</string>
     <string name="nav_interest_calc">Interest Calculator</string>
     <string name="nav_support_chat">Support Chat</string>
     <string name="nav_logout">Logout</string>
@@ -111,5 +114,17 @@
     <string name="tvTransfer_Message">Message</string>
     <string name="btnTransfer_Transfer">TRANSFER</string>
     <string name="title_activity_transfer">TransferActivity</string>
+
+    <!--For Activity History Fragment-->
+    <string name="tvActivityHistory_AccountNo">Enter Account No</string>
+    <string name="btnSubmit">Submit</string>
+    <string name="account_no">accountNo</string>
+
+    <!--For Transaction List item-->
+    <string name="tvActivityHistory_Description">Description</string>
+    <string name="tvActivityHistory_Date">Date</string>
+    <string name="tvActivityHistory_afterAmount">After amount</string>
+    <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
+
 
 </resources>

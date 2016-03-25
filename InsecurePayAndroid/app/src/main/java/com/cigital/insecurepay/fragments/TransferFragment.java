@@ -91,6 +91,12 @@ public class TransferFragment extends Fragment {
                     etTransfer_CustUsername.requestFocus();
                     return;
                 }
+
+                if (commonVO.getUsername().equals(custUsername)) {
+                    etTransfer_CustUsername.setError("Enter different Username");
+                    etTransfer_CustUsername.requestFocus();
+                    return;
+                }
                 transferAmount = Float.parseFloat(amount);
                 transferFundsVO.setTransferAmount(transferAmount);
                 transferFundsVO.setTransferDetails(transferDetails);
