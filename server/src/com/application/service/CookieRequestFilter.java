@@ -18,6 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Provider;
 
 import com.application.common.Constants;
+import com.application.common.CookieWrapper;
 
 @Provider
 public class CookieRequestFilter implements ContainerRequestFilter {
@@ -38,17 +39,22 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 			} else {
 				Logging.logger.info("Request Cookies :" + cookies.toString());
 				Cookie cookieObj = cookies.get("CookieID");
-				Entry<NewCookie, Integer> cookieFound = Constants.cookieList
-						.findCookie(cookieObj);
-				NewCookie newCookieObj = null;
+				
+				CookieWrapper cookieWrapperObj = Constants.cookieList.findCookie(cookieObj);
+				
+				// TODO: Remove these variables with direct get calls
 				int custNo = 1;
-				if (cookieFound != null) {
-					newCookieObj = cookieFound.getKey();
-					custNo = cookieFound.getValue();
+				NewCookie newCookieObj = null;
+				
+				if (cookieWrapperObj != null) {
+					newCookieObj = cookieWrapperObj.getNewCookieObj();
+					custNo = cookieWrapperObj.getCustNo();
 				}
+				
 				Date dateObj = Calendar.getInstance().getTime();
 				// Check to see if the value of the cookie is correct
 				// and if the cookie is not yet expired
+				
 				if (newCookieObj == null
 						|| dateObj.compareTo(newCookieObj.getExpiry()) > 0) {
 					Logging.logger.warn("Invalid cookie used.");

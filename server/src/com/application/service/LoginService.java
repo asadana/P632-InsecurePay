@@ -2,16 +2,12 @@ package com.application.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
@@ -37,8 +33,7 @@ public class LoginService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response validateLogin(LoginBO loginBO) {
 
-		//int ageInSeconds = 60*60*24;
-		int ageInSeconds = 60 * 5;
+	
 		LoginValidationBO validate = null;
 		NewCookie newCookieObj = null;
 
@@ -49,19 +44,8 @@ public class LoginService extends BaseService {
 			if (validate.isValidUser()) {
 				Constants.counter++;
 
-				// Getting today's date
-				Calendar calendarObj = Calendar.getInstance();
-				// Getting tomorrow's date
-				calendarObj.add(Calendar.SECOND, ageInSeconds);
-				// calendarObj.add(Calendar.DAY_OF_YEAR, 1);
-				// Grabbing the date object
-				Date dateObj = calendarObj.getTime();
-
-				// Generating the cookie
-				newCookieObj = new NewCookie(new Cookie("CookieID",
-						loginBO.getUsername() + Constants.counter, "/", ""),
-						null, ageInSeconds, dateObj, false, false);
-				Constants.cookieList.addCookie(newCookieObj, validate.getCustNo());
+				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(),
+																validate.getCustNo());
 				logger.info("REMOVE ME: " + newCookieObj.toString());
 				logger.info("REMOVE ME: " + Constants.cookieList);
 

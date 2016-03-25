@@ -10,6 +10,12 @@ public class CookieWrapper {
 	private int custNo;
 	private Date lastAccessed;
 	
+	public CookieWrapper(NewCookie newCookieObj, int custNo) {
+		this.newCookieObj = newCookieObj;
+		this.custNo = custNo;
+		this.lastAccessed = null;
+	}
+	
 	public NewCookie getNewCookieObj() {
 		return newCookieObj;
 	}

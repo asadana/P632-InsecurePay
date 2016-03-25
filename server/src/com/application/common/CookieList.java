@@ -3,25 +3,68 @@
  */
 package com.application.common;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.NewCookie;
 
 public class CookieList {
 
-	private HashMap<NewCookie, Integer> cookieMap;
-
+	private ArrayList<CookieWrapper> cookieArrayList;
+	
+	//private int ageInSeconds = 60*60*24;
+	private int ageInSeconds = 60 * 5;
+	
 	public CookieList() {
-		cookieMap = new HashMap<NewCookie, Integer>();
+		cookieArrayList = new ArrayList<CookieWrapper>();
+	}
+	
+	public NewCookie allotCookie(String custUserName, int custNo) {
+		boolean availableCookie = false;
+		CookieWrapper cookieWrapperObj = null;
+		NewCookie newCookieObj = null;
+		
+		/*	
+		if (cookieArrayList != null) {
+			for(CookieWrapper iterateCookie : cookieArrayList) {
+				if(iterateCookie.getLastAccessed())
+			}
+	
+		}		
+		*/
+		
+		newCookieObj = createCookie(custUserName);
+		cookieWrapperObj = new CookieWrapper(newCookieObj, custNo);
+		cookieWrapperObj.setLastAccessed(Calendar.getInstance().getTime());
+		addCookie(cookieWrapperObj);
+		
+		return newCookieObj;
+	}
+	
+	
+	public NewCookie createCookie(String custUserName) {
+		// Getting today's date
+		Calendar calendarObj = Calendar.getInstance();
+		// Getting tomorrow's date
+		calendarObj.add(Calendar.SECOND, ageInSeconds);
+		// Grabbing the date object
+		Date dateObj = calendarObj.getTime();
+
+		// Generating the cookie
+		NewCookie newCookieObj = new NewCookie(new Cookie("CookieID",
+				custUserName + Constants.counter, "/", ""),
+				null, ageInSeconds, dateObj, false, false);
+		
+		return newCookieObj;
 	}
 
-	public void addCookie(NewCookie newCookieObj, int custNo) {
-		cookieMap.put(newCookieObj, new Integer(custNo));
+	public void addCookie(CookieWrapper cookieWrapperObj) {
+		cookieArrayList.add(cookieWrapperObj);
 	}
-
+/*
 	public boolean deleteCookie(Cookie cookieObj) {
 		Iterator<Entry<NewCookie, Integer>> iteratorObj = cookieMap.entrySet().iterator();
 		NewCookie newCookieObj;
@@ -36,34 +79,41 @@ public class CookieList {
 		return false;
 	}
 	
-	public Entry<NewCookie, Integer> findCookie(Cookie cookieObj) {
-		Iterator<Entry<NewCookie, Integer>> iteratorObj = cookieMap.entrySet().iterator();
-		NewCookie newCookieObj;
+	*/
+	
+	/* Function to find the matching cookie from the array
+	 * 
+	 * @param cookieObj : cookie received from the client
+	 * @return CookieWrapper
+	 */
+	public CookieWrapper findCookie(Cookie cookieObj) {
+		
+		Iterator<CookieWrapper> iteratorObj = cookieArrayList.iterator();
+		
 		while(iteratorObj.hasNext()) {
-			Entry<NewCookie, Integer> currentEntry = (Entry<NewCookie, Integer>) iteratorObj.next();
-			newCookieObj = currentEntry.getKey();
-			if(newCookieObj.getValue().equalsIgnoreCase(cookieObj.getValue())) {
-				return currentEntry;
+			CookieWrapper currentCookie = iteratorObj.next();
+			
+			// if condition checks if the value of cookie is the same
+			if(currentCookie.getNewCookieObj().getValue().equals(cookieObj.getValue())) {
+				return currentCookie;
 			}
 		}
 		return null;
 	}
 	
 	public boolean updateCustNo(Cookie cookieObj, int custNo) {
-		Iterator<Entry<NewCookie, Integer>> iteratorObj = cookieMap.entrySet().iterator();
-		NewCookie newCookieObj;
-		while(iteratorObj.hasNext()) {
-			Entry<NewCookie, Integer> currentEntry = (Entry<NewCookie, Integer>) iteratorObj.next();
-			newCookieObj = currentEntry.getKey();
-			if(newCookieObj.getValue().equalsIgnoreCase(cookieObj.getValue())) {
-				currentEntry.setValue(custNo);
-				return true;
-			}
+		
+		CookieWrapper cookieWrapperObj = findCookie(cookieObj);
+		
+		if(cookieWrapperObj != null) {
+			cookieWrapperObj.setCustNo(custNo);
+			return true;
+		} else {
+			return false;	
 		}
-		return false;
 	}
 
 	public String displayCookies() {
-		return cookieMap.toString();
+		return cookieArrayList.toString();
 	}
 }
