@@ -18,12 +18,17 @@ public class CookieList {
 	private ArrayList<CookieWrapper> cookieArrayList;
 
 	// Duration of cookie expiry
-	// private int ageInSeconds = 60*60*24;
-	private int ageInSeconds = 60 * 5;
+	//private int ageInSeconds = 24 * 60 * 60 * 1000;
+	private int ageInSeconds = 10 * 60 * 1000;
 
 	// Duration of time passed before re-assigning cookie
-	private int cookieReassign = 1 * 60 * 1000;
-
+	//private int cookieAccessReassign = 15 * 60 * 1000;
+	private int cookieAccessReassign = 1 * 60 * 1000;
+	
+	// Duration of minimum time left before re-assigning cookie
+	//private int cookieTimeLeftReassign = 12 * 60 * 60 * 1000;
+	private int cookieTimeLeftReassign = 5 * 60 * 1000;
+	
 	public CookieList() {
 		cookieArrayList = new ArrayList<CookieWrapper>();
 
@@ -32,12 +37,17 @@ public class CookieList {
 	public NewCookie allotCookie(String custUserName, int custNo) {
 		CookieWrapper cookieWrapperObj = null;
 		NewCookie newCookieObj = null;
-
+		
+		Calendar calendarObj = Calendar.getInstance();
+		calendarObj.add(Calendar.MILLISECOND, cookieTimeLeftReassign);
+		Date minTimeLeftDateObj = calendarObj.getTime();
+		
 		Date dateObj = Calendar.getInstance().getTime();
 
 		if (cookieArrayList != null) {
 			for (CookieWrapper iterateCookie : cookieArrayList) {
-				if (dateObj.getTime() - iterateCookie.getLastAccessed().getTime() >= cookieReassign) {
+				if (dateObj.getTime() - iterateCookie.getLastAccessed().getTime() >= cookieAccessReassign 
+						&& minTimeLeftDateObj.before(iterateCookie.getNewCookieObj().getExpiry())) {
 					iterateCookie.setCustNo(custNo);
 					Logging.logger.debug("Reassigning cookie : " + iterateCookie.getNewCookieObj().getValue()
 							+ " to CustNo: " + custNo);
@@ -58,7 +68,7 @@ public class CookieList {
 		// Getting today's date
 		Calendar calendarObj = Calendar.getInstance();
 		// Getting tomorrow's date
-		calendarObj.add(Calendar.SECOND, ageInSeconds);
+		calendarObj.add(Calendar.MILLISECOND, ageInSeconds);
 		// Grabbing the date object
 		Date dateObj = calendarObj.getTime();
 

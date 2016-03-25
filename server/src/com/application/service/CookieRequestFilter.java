@@ -42,7 +42,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 				CookieWrapper cookieWrapperObj = Constants.cookieList.findCookie(cookieObj);
 				
 				// TODO: Remove these variables with direct get calls
-				int custNo = 1;
+				int custNo = 0;
 				NewCookie newCookieObj = null;
 				
 				if (cookieWrapperObj != null) {
