@@ -84,7 +84,7 @@ public class CookieList {
 			// TODO: Throw this cookie back into assignable pool
 			if (dateObj.compareTo(currentCookie.getNewCookieObj().getExpiry()) > 0) {
 				Logging.logger.debug("Deleting cookie: " + currentCookie.getNewCookieObj().getValue());
-				cookieArrayList.remove(currentCookie);
+				iteratorObj.remove();
 			}
 		}
 	}
