@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -30,8 +27,11 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 			throws IOException {
 
 		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword"))) {
-			Logging.logger.info("REMOVE ME: StringConstants : "
-					+ Constants.cookieList.displayCookies());
+			
+			// display all the cookies
+			Logging.logger.debug("Displaying cookies: ");
+			Constants.cookieList.displayCookies();
+			
 			Map<String, Cookie> cookies = clientRequest.getCookies();
 			if (cookies.size() == 0) {
 				Logging.logger.warn("Cookies list null");

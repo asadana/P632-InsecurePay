@@ -46,8 +46,8 @@ public class LoginService extends BaseService {
 
 				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(),
 																validate.getCustNo());
-				logger.info("REMOVE ME: " + newCookieObj.toString());
-				logger.info("REMOVE ME: " + Constants.cookieList);
+				logger.debug("REMOVE ME: " + newCookieObj.toString());
+				logger.debug("REMOVE ME: " + Constants.cookieList);
 
 			}
 		} catch (InstantiationException | IllegalAccessException
