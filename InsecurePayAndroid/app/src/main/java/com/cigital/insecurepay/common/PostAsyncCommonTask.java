@@ -15,6 +15,11 @@ public abstract class PostAsyncCommonTask<T> extends AsyncCommonTask {
         this.classObj = classObj;
     }
 
+    public PostAsyncCommonTask(Context contextObj, String serverAddress, String path, Class<T> classObj) {
+        super(contextObj, serverAddress, path);
+        this.classObj = classObj;
+    }
+
     @Override
     protected ResponseWrapper doInBackground(Object... params) {
         super.doInBackground(params);

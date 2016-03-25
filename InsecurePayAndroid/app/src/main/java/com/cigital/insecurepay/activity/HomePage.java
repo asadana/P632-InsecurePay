@@ -1,6 +1,7 @@
 package com.cigital.insecurepay.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.AccountVO;
 import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.ActivityHistoryFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
@@ -33,6 +35,7 @@ public class HomePage extends AppCompatActivity
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private Fragment fragment = null;
     private Class fragmentClass = null;
+    private CommonVO commonVO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +127,7 @@ public class HomePage extends AppCompatActivity
             fragmentClass = TransferFragment.class;
             Log.i(this.getClass().getSimpleName(), "Transfer Fragment selected");
             setTitle(R.string.nav_transfer_funds);
-        }else if (id == R.id.nav_activity_history) {
+        } else if (id == R.id.nav_activity_history) {
             fragmentClass = ActivityHistoryFragment.class;
             Log.i(this.getClass().getSimpleName(), "Activity History Selected");
             setTitle(R.string.nav_activity_history);
@@ -159,9 +162,12 @@ public class HomePage extends AppCompatActivity
      * Call login activity
      */
     public void onLogOut() {
-        Intent intent = new Intent(HomePage.this, LoginActivity.class);
-        startActivity(intent);
+        CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
+        LogoutTask logout = new LogoutTask(this, commonVO.getServerAddress(), getString(R.string.logout_path));
+        logout.execute();
+
     }
+
 
     //Set Account Details in CommonVO
     @Override
@@ -169,5 +175,20 @@ public class HomePage extends AppCompatActivity
         CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
         commonVO.setAccountVO(accountVO);
         getIntent().putExtra(getString(R.string.common_VO), commonVO);
+    }
+
+    private class LogoutTask extends PostAsyncCommonTask<String> {
+
+        public LogoutTask(Context contextObj, String serverAddress, String path) {
+            super(contextObj, serverAddress, path, String.class);
+        }
+
+
+        @Override
+        protected void postSuccess(String resultObj) {
+            connectivityObj.deleteCookies();
+            Intent intent = new Intent(HomePage.this, LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }
