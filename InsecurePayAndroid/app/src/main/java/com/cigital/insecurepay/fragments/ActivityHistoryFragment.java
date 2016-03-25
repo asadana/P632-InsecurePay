@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.cigital.insecurepay.DBHelper.ActivityHistoryDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.VOs.TransactionVO;
@@ -36,6 +37,7 @@ public class ActivityHistoryFragment extends Fragment {
 
     private AccountNoValidationTask accountnovalidationtask;
     private ActivityHistoryFetchTask activityHistoryFetchTask;
+    private ActivityHistoryDBHelper activityHistoryDBHelper;
 
     public ActivityHistoryFragment() {
         // Required empty public constructor
@@ -122,7 +124,10 @@ public class ActivityHistoryFragment extends Fragment {
             }.getType());
             adapter = new TransactionAdapter(getContext(), R.layout.transaction_format, result);
             lvTransactionList.setAdapter(adapter);
-
+            activityHistoryDBHelper = new ActivityHistoryDBHelper(getContext());
+            for (TransactionVO transactionVO : result) {
+                activityHistoryDBHelper.addTransfer(transactionVO, accountNumber);
+            }
         }
     }
 }
