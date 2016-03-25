@@ -4,18 +4,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.application.common.Constants;
 import com.application.common.DaoFactory;
 import com.application.dao.CustomerDao;
 import com.application.service.BO.CustomerBO;
@@ -25,8 +22,8 @@ public class CustomerService extends BaseService {
 	
 		@GET
 		@Produces(MediaType.APPLICATION_JSON)
-		public Response getCustomerDetails(@QueryParam("custNo") int custNo,
-				@HeaderParam("CustNo") String cookieCustNo)
+		public Response getCustomerDetails(@QueryParam("custNo") int custNo, 
+											@HeaderParam("CustNo") String cookieCustNo)
 				throws SQLException, InstantiationException,
 				IllegalAccessException, NoSuchMethodException, SecurityException,
 				IllegalArgumentException, InvocationTargetException,
@@ -55,8 +52,10 @@ public class CustomerService extends BaseService {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateCustomerDetails(CustomerBO customergenBO) {
+	public Response updateCustomerDetails(CustomerBO customergenBO, 
+											@HeaderParam("CustNo") String cookieCustNo) {
 		Boolean booleanObj = false;
+		customergenBO.setCustNo(Integer.parseInt(cookieCustNo));
 		try {
 			booleanObj = DaoFactory.getInstance(CustomerDao.class,
 					this.getConnection()).updateCustomerDetails(customergenBO);

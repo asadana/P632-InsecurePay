@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,9 +21,11 @@ public class TransferFundsService extends BaseService {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response transfer(TransferFundsBO transferFundsBO) {
+	public Response transfer(TransferFundsBO transferFundsBO, 
+			@HeaderParam("CustNo") String cookieCustNo) {
 		Boolean fundsTransferred = false;
 		try {
+			transferFundsBO.getFromAccount().setCustNo(Integer.parseInt(cookieCustNo));
 			fundsTransferred = DaoFactory.getInstance(TransferFundsDao.class,
 					this.getConnection()).transfer(transferFundsBO);
 		} catch (InstantiationException | IllegalAccessException

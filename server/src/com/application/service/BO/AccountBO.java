@@ -1,7 +1,5 @@
 package com.application.service.BO;
 
-import java.sql.Date;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement

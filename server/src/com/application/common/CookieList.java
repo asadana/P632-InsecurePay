@@ -104,7 +104,7 @@ public class CookieList {
 	/*
 	 * Function to find the matching cookie from the array
 	 * 
-	 * @param cookieObj : cookie received from the client
+	 * @param Cookie : cookie received from the client
 	 * 
 	 * @return CookieWrapper
 	 */
@@ -123,6 +123,11 @@ public class CookieList {
 		return null;
 	}
 
+	/*
+	 * Function to update the corresponding CustNo for the incoming cookie
+	 * 
+	 * @param Cookie : cookie received from the client
+	 */
 	public boolean updateCustNo(Cookie cookieObj, int custNo) {
 
 		CookieWrapper cookieWrapperObj = findCookie(cookieObj);
@@ -135,6 +140,10 @@ public class CookieList {
 		}
 	}
 
+	/*
+	 * Function to display the arrayList of cookies stored along with 
+	 * CustNo and LastAccessed date
+	 */
 	public String displayCookies() {
 		if (cookieArrayList != null) {
 			ArrayList<String> cookieString = new ArrayList<String>();
