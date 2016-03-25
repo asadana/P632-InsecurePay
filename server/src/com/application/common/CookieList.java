@@ -17,8 +17,12 @@ public class CookieList {
 
 	private ArrayList<CookieWrapper> cookieArrayList;
 
+	// Duration of cookie expiry
 	// private int ageInSeconds = 60*60*24;
 	private int ageInSeconds = 60 * 5;
+
+	// Duration of time passed before re-assigning cookie
+	private int cookieReassign = 1 * 60 * 1000;
 
 	public CookieList() {
 		cookieArrayList = new ArrayList<CookieWrapper>();
@@ -26,16 +30,21 @@ public class CookieList {
 	}
 
 	public NewCookie allotCookie(String custUserName, int custNo) {
-		boolean availableCookie = false;
 		CookieWrapper cookieWrapperObj = null;
 		NewCookie newCookieObj = null;
 
-		/*
-		 * if (cookieArrayList != null) { for(CookieWrapper iterateCookie :
-		 * cookieArrayList) { if(iterateCookie.getLastAccessed()) }
-		 * 
-		 * }
-		 */
+		Date dateObj = Calendar.getInstance().getTime();
+
+		if (cookieArrayList != null) {
+			for (CookieWrapper iterateCookie : cookieArrayList) {
+				if (dateObj.getTime() - iterateCookie.getLastAccessed().getTime() >= cookieReassign) {
+					iterateCookie.setCustNo(custNo);
+					Logging.logger.debug("Reassigning cookie : " + iterateCookie.getNewCookieObj().getValue()
+							+ " to CustNo: " + custNo);
+					return iterateCookie.getNewCookieObj();
+				}
+			}
+		}
 
 		newCookieObj = createCookie(custUserName);
 		cookieWrapperObj = new CookieWrapper(newCookieObj, custNo);
@@ -115,19 +124,19 @@ public class CookieList {
 	}
 
 	public String displayCookies() {
-		if(cookieArrayList != null) {
+		if (cookieArrayList != null) {
 			ArrayList<String> cookieString = new ArrayList<String>();
 			Iterator<CookieWrapper> iteratorObj = cookieArrayList.iterator();
 
 			while (iteratorObj.hasNext()) {
 				CookieWrapper currentCookie = iteratorObj.next();
 				cookieString.add(currentCookie.getNewCookieObj().toString() + " --> CustNo: "
-				+ Integer.toString(currentCookie.getCustNo()) + " --> LastAccessed: "
-				+ currentCookie.getLastAccessed().toString());
+						+ Integer.toString(currentCookie.getCustNo()) + " --> LastAccessed: "
+						+ currentCookie.getLastAccessed().toString());
 			}
 			return cookieString.toString();
 		}
-		
+
 		return null;
 	}
 }
