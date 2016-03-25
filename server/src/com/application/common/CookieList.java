@@ -49,15 +49,17 @@ public class CookieList {
 				if (dateObj.getTime() - iterateCookie.getLastAccessed().getTime() >= cookieAccessReassign 
 						&& minTimeLeftDateObj.before(iterateCookie.getNewCookieObj().getExpiry())) {
 					iterateCookie.setCustNo(custNo);
+					iterateCookie.setLastAccessed(dateObj);
 					Logging.logger.debug("Reassigning cookie : " + iterateCookie.getNewCookieObj().getValue()
 							+ " to CustNo: " + custNo);
 					return iterateCookie.getNewCookieObj();
 				}
 			}
 		}
-
+		
 		newCookieObj = createCookie(custUserName);
 		cookieWrapperObj = new CookieWrapper(newCookieObj, custNo);
+		Logging.logger.debug("Creating new cookie: " + newCookieObj.getValue());
 		cookieWrapperObj.setLastAccessed(Calendar.getInstance().getTime());
 		addCookie(cookieWrapperObj);
 
