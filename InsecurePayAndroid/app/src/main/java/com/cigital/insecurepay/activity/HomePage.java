@@ -180,7 +180,7 @@ public class HomePage extends AppCompatActivity
     private class LogoutTask extends PostAsyncCommonTask<String> {
 
         public LogoutTask(Context contextObj, String serverAddress, String path) {
-            super(contextObj, serverAddress, path, String.class);
+            super(contextObj, serverAddress, path, null, String.class);
         }
 
 
