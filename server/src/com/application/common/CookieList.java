@@ -121,8 +121,8 @@ public class CookieList {
 
 			while (iteratorObj.hasNext()) {
 				CookieWrapper currentCookie = iteratorObj.next();
-				cookieString.add(currentCookie.getNewCookieObj() + " --> "
-				+ Integer.toString(currentCookie.getCustNo()) + " --> "
+				cookieString.add(currentCookie.getNewCookieObj().toString() + " --> CustNo: "
+				+ Integer.toString(currentCookie.getCustNo()) + " --> LastAccessed: "
 				+ currentCookie.getLastAccessed().toString());
 
 			}

@@ -29,8 +29,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword"))) {
 			
 			// display all the cookies
-			Logging.logger.debug("Displaying cookies: ");
-			Constants.cookieList.displayCookies();
+			Logging.logger.debug("Displaying cookies: " + Constants.cookieList.displayCookies());
 			
 			Map<String, Cookie> cookies = clientRequest.getCookies();
 			if (cookies.size() == 0) {
