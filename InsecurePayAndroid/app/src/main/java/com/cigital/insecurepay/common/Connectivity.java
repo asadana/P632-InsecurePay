@@ -208,7 +208,8 @@ public class Connectivity implements Serializable {
     }
 
     public void deleteCookies() {
-        mCookieManager.getCookieStore().removeAll();
+        Log.d("Inside delete cookie", "Cookies deleted");
+        mCookieStore.removeAll();
     }
 
     public String getSendToServer() {
