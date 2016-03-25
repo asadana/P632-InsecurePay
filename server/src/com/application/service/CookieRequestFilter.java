@@ -61,6 +61,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 				} else {
 					Logging.logger.info("REMOVE ME: Inside if : "
 							+ cookieObj.toString());
+					cookieWrapperObj.setLastAccessed(Calendar.getInstance().getTime());
 					clientRequest.getHeaders().add("CustNo", Integer.toString(custNo));
 				}
 			}
