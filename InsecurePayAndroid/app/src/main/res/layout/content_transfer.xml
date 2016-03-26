@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.cigital.insecurepay.activity.TransferActivity"
+    tools:showIn="@layout/activity_transfer">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:id="@+id/relativeLayout">
+
+        <TextView
+            android:id="@+id/tvTransfer_fromAccountNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransfer_fromAccountNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledfromAccountNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_fromAccountNo"
+            android:layout_marginStart="45dp"
+            android:layout_toEndOf="@+id/tvTransfer_fromCustNo"
+            android:text="@string/tvTransfer_fromAccountNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_fromCustNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvTransfer_fromAccountNo"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvTransfer_fromAccountNo"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransfer_fromCustNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledfromCustNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_fromCustNo"
+            android:layout_alignStart="@+id/tvTransfer_filledfromAccountNo"
+            android:layout_marginStart="0dp"
+            android:text="@string/tvTransfer_fromCustNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_toAccountNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvTransfer_fromCustNo"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvTransfer_fromCustNo"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransfer_toAccountNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledtoAccountNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_toAccountNo"
+            android:layout_alignStart="@+id/tvTransfer_filledfromCustNo"
+            android:layout_marginStart="0dp"
+            android:text="@string/tvTransfer_toAccountNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_toCustNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvTransfer_fromCustNo"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvTransfer_toAccountNo"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransfer_toCustNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledtoCustNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_toCustNo"
+            android:layout_alignStart="@+id/tvTransfer_filledfromCustNo"
+            android:layout_marginStart="0dp"
+            android:text="@string/tvTransfer_toCustNo"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_Amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvTransfer_fromCustNo"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvTransfer_toCustNo"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransferAmount"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_Amount"
+            android:layout_alignStart="@+id/tvTransfer_filledfromCustNo"
+            android:layout_marginStart="0dp"
+            android:text="@string/tvTransferAmount"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_Details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvTransfer_fromCustNo"
+            android:layout_below="@+id/tvTransfer_Amount"
+            android:layout_marginTop="19dp"
+            android:text="@string/tvTransferDetails"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvTransfer_filledDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tvTransfer_Details"
+            android:layout_alignStart="@+id/tvTransfer_filledAmount"
+            android:layout_marginStart="0dp"
+            android:text="@string/tvTransferDetails"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </RelativeLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnCancel"
+        android:id="@+id/btnCancel"
+        android:layout_marginTop="55dp"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btnConfirm"
+        android:id="@+id/btnConfirm"
+        android:layout_alignTop="@+id/btnCancel"
+        android:layout_alignEnd="@+id/relativeLayout"
+        android:layout_marginEnd="65dp" />
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+package com.cigital.insecurepay.VOs;
+
+
+public class LoginValidationVO {
+
+    private boolean usernameExists;
+    private boolean validUser;
+    private int custNo;
+
+    public LoginValidationVO() {}
+
+    public LoginValidationVO(boolean usernameExists, boolean validUser) {
+        super();
+        this.usernameExists = usernameExists;
+        this.validUser = validUser;
+    }
+
+    public boolean isUsernameExists() {
+        return usernameExists;
+    }
+
+    public void setUsernameExists(boolean usernameExists) {
+        this.usernameExists = usernameExists;
+    }
+
+    public boolean isValidUser() {
+        return validUser;
+    }
+
+    public void setValidUser(boolean validUser) {
+        this.validUser = validUser;
+    }
+
+    public int getCustNo() {
+        return custNo;
+    }
+
+    public void setCustNo(int custNo) {
+        this.custNo = custNo;
+    }
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_homepage"
+            android:checked="true"
+            android:title="@string/nav_homepage" />
+        <item
+            android:id="@+id/nav_account_manage"
+            android:title="@string/nav_account_manage" />
+        <item
+            android:id="@+id/nav_transfer_funds"
+            android:title="@string/nav_transfer_funds" />
+        <item
+            android:id="@+id/nav_activity_history"
+            android:title="@string/nav_activity_history" />
+        <item
+            android:id="@+id/nav_interest_calc"
+            android:title="@string/nav_interest_calc" />
+
+        <item
+            android:id="@+id/nav_support_chat"
+            android:title="@string/nav_support_chat" />
+    </group>
+
+            <item
+                android:id="@+id/nav_logout"
+                android:title="@string/nav_logout" />
+
+
+</menu>
