@@ -42,7 +42,7 @@ public class CustomerService extends BaseService {
 	
 				try {
 					close();
-				} catch (SQLException e) {
+				} catch (SQLException | NumberFormatException e) {
 					logger.error(e);
 				}
 			}
@@ -55,8 +55,10 @@ public class CustomerService extends BaseService {
 	public Response updateCustomerDetails(CustomerBO customergenBO, 
 											@HeaderParam("CustNo") String cookieCustNo) {
 		Boolean booleanObj = false;
-		customergenBO.setCustNo(Integer.parseInt(cookieCustNo));
+		
 		try {
+			customergenBO.setCustNo(Integer.parseInt(cookieCustNo));
+			
 			booleanObj = DaoFactory.getInstance(CustomerDao.class,
 					this.getConnection()).updateCustomerDetails(customergenBO);
 		} catch (InstantiationException | IllegalAccessException
@@ -68,7 +70,7 @@ public class CustomerService extends BaseService {
 
 			try {
 				close();
-			} catch (SQLException e) {
+			} catch (SQLException | NumberFormatException e) {
 				logger.error(e);
 			}
 		}

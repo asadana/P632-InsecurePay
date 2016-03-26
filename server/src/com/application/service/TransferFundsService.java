@@ -37,7 +37,7 @@ public class TransferFundsService extends BaseService {
 
 			try {
 				close();
-			} catch (SQLException e) {
+			} catch (SQLException | NumberFormatException e) {
 				logger.error(e);
 			}
 		}

@@ -48,6 +48,8 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 				if (cookieWrapperObj != null) {
 					newCookieObj = cookieWrapperObj.getNewCookieObj();
 					custNo = cookieWrapperObj.getCustNo();
+					Logging.logger.debug("REMOVE ME: Found cookie: " + 
+											newCookieObj.getValue() + "; CustNo: " + Integer.toString(custNo));
 				}
 				
 				Date dateObj = Calendar.getInstance().getTime();
