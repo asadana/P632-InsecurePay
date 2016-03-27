@@ -36,6 +36,8 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
+    <string name="tableLoginTrials">LoginTrials</string>
+    <string name="sharedPreferenceLogin">loginPrefs</string>
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
@@ -126,6 +128,5 @@
     <string name="tvActivityHistory_Date">Date</string>
     <string name="tvActivityHistory_afterAmount">After amount</string>
     <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
-
 
 </resources>

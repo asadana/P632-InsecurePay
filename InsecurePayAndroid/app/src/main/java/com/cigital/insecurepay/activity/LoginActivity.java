@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPreferences = getSharedPreferences(getString(R.string.sharedPreferenceLogin), MODE_PRIVATE);
         boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
         if (saveLogin) {
