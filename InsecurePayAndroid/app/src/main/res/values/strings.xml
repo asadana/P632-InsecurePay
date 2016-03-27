@@ -139,10 +139,15 @@
     <string name="tvIntCalc_CreditScore" >Credit Score</string>
     <string name="tvIntCalc_FillCreditScore"></string>
     <string name="btnIntCalc_Calc">Calculate</string>
+    <string name="Excellent">Excellent</string>
+    <string name="Good">Good</string>
+    <string name="Fair">Fair</string>
+    <string name="Bad">Bad</string>
+
     <string-array name="Date">
-        <item>Days</item>
-        <item>Months</item>
         <item>Years</item>
+        <item>Months</item>
+        <item>Days</item>
     </string-array>
 
 </resources>
