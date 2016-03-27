@@ -143,6 +143,8 @@
     <string name="Good">Good</string>
     <string name="Fair">Fair</string>
     <string name="Bad">Bad</string>
+    <string name="tvIntCalc_Interest"> Interest </string>
+    <string name="tvIntCalc_FillInterest" />
 
     <string-array name="Date">
         <item>Years</item>
