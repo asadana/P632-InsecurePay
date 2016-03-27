@@ -127,5 +127,22 @@
     <string name="tvActivityHistory_afterAmount">After amount</string>
     <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tvAccount_balance">Balance</string>
+    <string name="IntCalc_FillAccountNumber"></string>
+    <string name="tvIntCalc_PrincipalAmount">Principal</string>
+    <string name="etIntCalc_FillPrincipalAmount">Enter principal amount</string>
+    <string name="tvIntCalc_Period">Period</string>
+    <string name="etIntCalc_FillYear">Years</string>
+    <string name="tvIntCalc_Date">Enter Number</string>
+    <string name="tvIntCalc_CreditScore" >Credit Score</string>
+    <string name="tvIntCalc_FillCreditScore"></string>
+    <string name="btnIntCalc_Calc">Calculate</string>
+    <string-array name="Date">
+        <item>Days</item>
+        <item>Months</item>
+        <item>Years</item>
+    </string-array>
 
 </resources>
