@@ -6,6 +6,7 @@ package com.application.common;
 
 public class Queries {
 	public static final String GET_CUSTOMER_DETAILS = "select * from customer where cust_no = ?";
+	public static final String UPDATE_DEFAULT_PASSWORD = "update cust_credentials set password=? where cust_username = ?";
 	public static final String UPDATE_PASSWORD = "update cust_credentials set password=? where cust_username = ?";
 	public static final String USERNAME_EXISTS = "select * from cust_credentials where cust_username=?";
 	public static final String GET_ACCOUNT_TBL_WITH_ACCNO = "select * from account where account_no=?";
