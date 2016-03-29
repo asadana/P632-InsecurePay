@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.common.Constants;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,10 +15,11 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.core.IsNot.not;
 
 @RunWith(AndroidJUnit4.class)
 public class HomePageTest {
@@ -25,36 +27,26 @@ public class HomePageTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    public static final String correctPassword = "12345";
-    public static final String correctUsername = "voraj";
-    public static final String correctAccountNumber = "2000";
-    public static final String correctBalance = "106.12";
-
     @Test
-    public void checkHomePage() {
+    public void homePageTest() {
+
         onView(withId(R.id.username)).
-                perform(typeText(correctUsername), closeSoftKeyboard());
+                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(correctPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
+
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         onView(withId(R.id.tvHome_fillAccountNumber))
-                .check(matches(withText(correctAccountNumber)));
+                .check(matches(not(withText(""))));
 
         onView(withId(R.id.tvHome_fillBalance))
-                .check(matches(withText(correctBalance)));
+                .check(matches(not(withText(""))));
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
                 .perform(DrawerActions.open());
-
-        // Click on Account Management
-        onView(withText(R.string.nav_account_manage))
-                .perform(click());
-
-
     }
-
 }
