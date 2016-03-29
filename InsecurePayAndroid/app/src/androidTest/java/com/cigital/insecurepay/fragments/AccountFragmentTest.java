@@ -8,20 +8,26 @@ import android.widget.DatePicker;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
+import com.cigital.insecurepay.activity.LoginTest;
+import com.cigital.insecurepay.common.Constants;
 
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -33,28 +39,13 @@ public class AccountFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    public static final String correctPassword = "abc";
-    public static final String correctUsername = "foo";
-    public static final String newPassword = "abc";
-    public static final String changePasswordToast = "Password Changed to '" + newPassword + "'   ";
-    public static final String updateEmail = "foofan@gmail.com";
-    public static final String updatePhoneNo = "123456";
-    public static final String updateState = "New York";
-    public static final String updateCity = "New York City";
-    public static final String updateStreetAddress = "Manhattan";
-    public static final String updateZip = "1234";
-    public static final int updateYear = 1994;
-    public static final int updateMonth = 10;
-    public static final int updateDay = 15;
-    public static final String updateSuccessfulToast = "Update successful";
-
-
     @Test
     public void checkHomePage() {
+
         onView(withId(R.id.username)).
-                perform(typeText(correctUsername), closeSoftKeyboard());
+                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(correctPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
@@ -73,11 +64,11 @@ public class AccountFragmentTest {
 
         //Enter a new Password
         onView(withId(R.id.etChangePassword_newPassword))
-                .perform(typeText(newPassword), closeSoftKeyboard());
+                .perform(typeText(Constants.correctPassword), closeSoftKeyboard());
 
         //Confirm new Password
         onView(withId(R.id.etChangePassword_confirmPassword))
-                .perform(typeText(newPassword), closeSoftKeyboard());
+                .perform(typeText(Constants.defaultPassword), closeSoftKeyboard());
 
         onView(withId(android.R.id.button1)).perform(click());
 
@@ -92,24 +83,28 @@ public class AccountFragmentTest {
 
         //Check login again with new Password
         onView(withId(R.id.username)).
-                perform(typeText(correctUsername), closeSoftKeyboard());
+                perform(typeText(Constants.correctUsername), closeSoftKeyboard());
 
         onView(withId(R.id.password)).
-                perform(typeText(newPassword), closeSoftKeyboard());
+                perform(typeText(Constants.correctPassword), closeSoftKeyboard());
 
 
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
 
+        onView(withText(R.string.login_successful))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
     }
 
     @Test
     public void checkAccountUpdate() {
+
         onView(withId(R.id.username)).
-                perform(typeText(correctUsername), closeSoftKeyboard());
+                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(correctPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
@@ -122,31 +117,20 @@ public class AccountFragmentTest {
         onView(withText(R.string.nav_account_manage))
                 .perform(click());
 
-
-        //Enter details
-        onView(withId(R.id.etAccount_fillEmail))
-                .perform(clearText(), typeText(updateEmail));
-
-        onView(withId(R.id.etAccount_fillPhone))
-                .perform(clearText(), typeText(updatePhoneNo), closeSoftKeyboard());
-
-        onView(withId(R.id.etAccount_fillAddressStreet))
-                .perform(clearText(), typeText(updateStreetAddress), closeSoftKeyboard());
-
-        onView(withId(R.id.etAccount_fillAddressCity))
-                .perform(clearText(), typeText(updateCity), closeSoftKeyboard());
-
-        onView(withId(R.id.etAccount_fillAddressState))
-                .perform(clearText(), typeText(updateState), closeSoftKeyboard());
-
-        onView(withId(R.id.etAccount_fillAddressZip))
-                .perform(clearText(), typeText(updateZip), closeSoftKeyboard());
+        onView(withId(R.id.btnAccount_update)).check(matches(not(isEnabled())));
 
         onView(withId(R.id.tvAccount_fillUserDOB))
                 .perform(click());
 
+        Calendar calendarObj = Calendar.getInstance();
+        Date dateObj = calendarObj.getTime();
+
         //Set date
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(updateYear, updateMonth, updateDay));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(
+                        calendarObj.get(Calendar.YEAR),
+                        calendarObj.get(Calendar.MONTH),
+                        calendarObj.get(Calendar.DATE)));
         onView(withId(android.R.id.button1)).perform(click());
 
 
@@ -155,8 +139,8 @@ public class AccountFragmentTest {
                 .perform(click());
 
         //Check toast
-        onView(withText(updateSuccessfulToast))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+        onView(withText(LoginTest.activityObj.getString(R.string.account_update_successful)))
+                .inRoot(withDecorView(not(LoginTest.activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
 
 
@@ -175,31 +159,9 @@ public class AccountFragmentTest {
         onView(withText(R.string.nav_account_manage))
                 .perform(click());
 
-        //Check updated details
-        onView(withId(R.id.etAccount_fillEmail))
-                .check(matches(withText(updateEmail)));
-
-
-        onView(withId(R.id.etAccount_fillPhone))
-                .check(matches(withText(updatePhoneNo)));
-
-        onView(withId(R.id.etAccount_fillAddressStreet))
-                .check(matches(withText(updateStreetAddress)));
-
-
-        onView(withId(R.id.etAccount_fillAddressCity))
-                .check(matches(withText(updateCity)));
-
-        onView(withId(R.id.etAccount_fillAddressState))
-                .check(matches(withText(updateState)));
-
-        onView(withId(R.id.etAccount_fillAddressZip))
-                .check(matches(withText(updateZip)));
-
         onView(withId(R.id.tvAccount_fillUserDOB))
-                .check(matches(withText(updateYear + "-" + updateMonth + "-" + updateDay)));
-
-
+                .check(matches(withText(calendarObj.get(Calendar.YEAR) +
+                        "-" + calendarObj.get(Calendar.MONTH) +
+                        "-" + calendarObj.get(Calendar.DATE))));
     }
-
 }
