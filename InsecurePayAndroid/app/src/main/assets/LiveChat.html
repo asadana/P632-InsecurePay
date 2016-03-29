@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+<head>
+    <script type="text/javascript">
+
+function clearTextArea(submit) {
+document.submit(“textArea").value='';
+alert(“sent”);
+}
+
+function showAlert(){
+ alert(“Your message was sent!”);
+}
+
+</script>
+<body>
+
+<form>
+    Your Message:<br>
+  <textarea id=“textArea” style="width:400px; height:100px;" >
+
+  </textarea>
+    <br>
+    <input type="submit" name=“submit” value="Submit" onClick=“clearTextArea(); showAlert();”/>
+    <button type="file" name=“nut” value=“attach”/>
+    </button>
+
+</form>
+
+<p>If you click the "Submit" button, the form-data will be sent!</p>
+
+</body>
+</html>
+

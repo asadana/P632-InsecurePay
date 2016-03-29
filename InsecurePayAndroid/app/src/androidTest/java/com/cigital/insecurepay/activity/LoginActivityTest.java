@@ -37,7 +37,7 @@ import static org.hamcrest.CoreMatchers.not;
 public class LoginActivityTest {
 
     public static final String correctUsername = "foo";
-    public static final String correctPassword = "abc";
+    public static final String correctPassword = "abcde";
     public static final String wrongPassword = "abcdef";
     public static final String wrongUsername = "abc";
     public static final String wrongAccount = "1234234";
