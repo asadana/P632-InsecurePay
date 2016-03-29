@@ -158,7 +158,40 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </TableRow>
-    <!--Display interest-->
+    <!--Display Rate of Interest-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_RateOfInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:visibility="invisible"
+            android:text="@string/tvIntCalc_RateOfInterest" />
+
+        <TextView
+            android:id="@+id/tvIntCalc_FillRateOfInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_FillRateOfInterest"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+
+
+    <!--Display Interest-->
     <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -189,11 +222,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </TableRow>
-
-
-
-
-
 
     <!--Calculate Button-->
     <Button

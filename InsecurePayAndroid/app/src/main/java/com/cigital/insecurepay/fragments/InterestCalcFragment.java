@@ -43,7 +43,9 @@ public class InterestCalcFragment extends Fragment {
     private Button btnCalculate;
     private Spinner DateType;
     private TextView tvInterest;
+    private TextView tvRateOfInterest;
     private TextView tvFillInterest;
+    private TextView tvFillRateOfInterest;
     private CommonVO commonVO;
 
 
@@ -54,10 +56,12 @@ public class InterestCalcFragment extends Fragment {
     private static final int FAIR = 630;
     private static final int BAD = 300;
     //Base interest rate
-    private static final int INTERESTBASE = 10;
+    private static final int INTERESTBASE = 4;
     private static final int MONTHS = 12;
     private static final int DAYS = 365;
     private static final int ROUNDOFFVALUE = 2;
+    private static final double CREDITSCOREDIVISOR = 1000.0;
+    private static final double INTERESTDIVISOR = 100.0;
 
     private Integer creditScore;
     private Double interest;
@@ -79,7 +83,6 @@ public class InterestCalcFragment extends Fragment {
         //Credit score is init seperately
         tvDisplayCreditScore.setText((creditScore).toString());
         addListener();
-        //Log.d(this.getClass().getSimpleName(), "The interest is " + );
         return viewObj;
     }
 
@@ -150,7 +153,9 @@ public class InterestCalcFragment extends Fragment {
         tvCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_CreditScore);
         tvDisplayCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillCreditScore);
         tvInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_Interest);
+        tvRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_RateOfInterest);
         tvFillInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillInterest);
+        tvFillRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillRateOfInterest);
         btnCalculate = (Button) viewObj.findViewById(R.id.btnIntCalc_Calc);
         Spinner spinner = (Spinner) viewObj.findViewById(R.id.etIntCalc_Period);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
@@ -180,15 +185,15 @@ public class InterestCalcFragment extends Fragment {
         double amount = commonVO.getAccountVO().getAccountBalance();
         int creditScore = Integer.parseInt(tvDisplayCreditScore.getText().toString());
         //Adding (1-creditscore/1000) to the base interest rate
-        Double rateOfInterest = INTERESTBASE + (1 - (creditScore / 1000.0));
-
-        //Round off to 2 decimal places after point
-
+        Double rateOfInterest = INTERESTBASE + (1 - (creditScore / CREDITSCOREDIVISOR));
         rateOfInterest = roundOff(rateOfInterest);
-        interest = (rateOfInterest * principal * time) / 100.0;
+        tvRateOfInterest.setVisibility(View.VISIBLE);
+        tvFillRateOfInterest.setText(rateOfInterest.toString() + getString(R.string.tvIntCalc_Percent));
+        Double interest =( principal * rateOfInterest * time )/INTERESTDIVISOR;
         interest = roundOff(interest);
         tvInterest.setVisibility(View.VISIBLE);
         tvFillInterest.setText(interest.toString());
+
     }
 
     //Round off to 2 decimal places after point
