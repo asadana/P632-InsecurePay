@@ -40,7 +40,7 @@ public class AccountFragmentTest {
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void checkHomePage() {
+    public void checkChangePassword() {
 
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
@@ -68,7 +68,7 @@ public class AccountFragmentTest {
 
         //Confirm new Password
         onView(withId(R.id.etChangePassword_confirmPassword))
-                .perform(typeText(Constants.defaultPassword), closeSoftKeyboard());
+                .perform(typeText(Constants.correctPassword), closeSoftKeyboard());
 
         onView(withId(android.R.id.button1)).perform(click());
 
