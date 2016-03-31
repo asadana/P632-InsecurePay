@@ -8,13 +8,8 @@ public class Constants {
     public static final String correctAccountNo = "2008";
 
     // For LoginActivityTest
-
-    // TODO: switch these after #88 is resolved
-    //public static final String defaultPassword = "12345";
-    public static final String defaultPassword = "testmeplease";
-
+    public static final String defaultPassword = "12345";
     public static final String correctPassword = "testmeplease";
     public static final String correctUsername = "testUser";
-
 
 }
