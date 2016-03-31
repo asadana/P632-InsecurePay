@@ -12,4 +12,7 @@ public class Constants {
     public static final String correctPassword = "testmeplease";
     public static final String correctUsername = "testUser";
 
+    // For TransferFragmentTest
+    public static final String receiverUserName = "foo";
+    public static int transferAmount = 0;
 }

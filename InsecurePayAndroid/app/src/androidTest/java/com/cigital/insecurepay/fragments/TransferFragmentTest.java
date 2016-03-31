@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.activity.TransferActivity;
+import com.cigital.insecurepay.common.Constants;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -16,6 +17,8 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Calendar;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -34,23 +37,18 @@ public class TransferFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    public static final String senderPassword = "12345";
-    public static final String senderUsername = "voraj";
-    public static final String receiverUsername = "amish";
-    public static final String receiverPassword = "amish1502";
-    public static final float transferAmount = 4.23f;
-    public static final float negativeTransferAmount = -4.23f;
-    public static final String transferMessage = "Thank you so much!";
-    public static final String transferNotification = "Transaction successful";
-
 
     @Test
-    public void negativeFundsTransfer() {
+    public void fundsTransferTest() {
         init();
+
+        Calendar calendarObj = Calendar.getInstance();
+        Constants.transferAmount = calendarObj.get(Calendar.DATE);
+
         onView(withId(R.id.username)).
-                perform(typeText(senderUsername), closeSoftKeyboard());
+                perform(typeText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(senderPassword), closeSoftKeyboard());
+                perform(typeText(Constants.correctPassword), closeSoftKeyboard());
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
@@ -65,15 +63,15 @@ public class TransferFragmentTest {
 
         //Enter customer username
         onView(withId(R.id.etCust_username)).
-                perform(typeText(receiverUsername), closeSoftKeyboard());
+                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
 
         //Enter amount
         onView(withId(R.id.ettransferAmount)).
-                perform(typeText(String.valueOf(negativeTransferAmount)), closeSoftKeyboard());
+                perform(typeText(String.valueOf(Constants.transferAmount)), closeSoftKeyboard());
 
         //Enter message
         onView(withId(R.id.ettransferDetails)).
-                perform(typeText(transferMessage), closeSoftKeyboard());
+                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
 
 
         //Click on Transfer
@@ -95,15 +93,15 @@ public class TransferFragmentTest {
 
         //Enter customer username
         onView(withId(R.id.etCust_username)).
-                perform(typeText(receiverUsername), closeSoftKeyboard());
+                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
 
         //Enter amount
         onView(withId(R.id.ettransferAmount)).
-                perform(typeText(Float.toString(transferAmount)), closeSoftKeyboard());
+                perform(typeText(String.valueOf(Constants.transferAmount)), closeSoftKeyboard());
 
         //Enter message
         onView(withId(R.id.ettransferDetails)).
-                perform(typeText(transferMessage), closeSoftKeyboard());
+                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
         //Click on Transfer
         onView(withId(R.id.btn_transfer))
                 .perform(click());
@@ -113,9 +111,9 @@ public class TransferFragmentTest {
                 .perform(click());
 
         //Check Amount
-        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(receiverUsername)));
-        onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(transferAmount))));
-        //Check receiverUsername
+        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.correctUsername)));
+        onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
+
         release();
     }
 
