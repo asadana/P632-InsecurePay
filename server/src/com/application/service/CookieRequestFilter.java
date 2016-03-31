@@ -26,7 +26,7 @@ public class CookieRequestFilter implements ContainerRequestFilter {
 	public void filter(ContainerRequestContext clientRequest)
 			throws IOException {
 
-		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword"))) {
+		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword") || uriInfo.getPath().equals("upload"))) {
 			
 			// display all the cookies
 			Logging.logger.debug("Displaying cookies: " + Constants.cookieList.displayCookies());
