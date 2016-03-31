@@ -1,16 +1,10 @@
 package com.cigital.insecurepay.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.Constants;
@@ -22,20 +16,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.InstrumentationRegistry.getContext;
-import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.init;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.Intents.release;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
-import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -52,6 +38,7 @@ public class LoginActivityTest {
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+/*
 
     @Test
     public void loginUsernameExistsTest() {
@@ -63,6 +50,8 @@ public class LoginActivityTest {
         onView(withId(R.id.username)).check(matches(withError(
                 loginActivityActivityTestRule.getActivity().getString(R.string.error_username_does_not_exist))));
     }
+*/
+/*
 
     @Test
     public void accountLockedTest() throws InterruptedException {
@@ -108,18 +97,27 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
+*/
+/*
 
     @Test
     public void rememberMeTest() {
-/*
 
+        // Getting database and deleting it
+        activityObj = loginActivityActivityTestRule.getActivity();
+        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
+        activityObj.finish();
+        activityObj.startActivity(activityObj.getIntent());
+
+*/
+/*
         // Getting the shared preference and clearing it
         SharedPreferences loginPreferences = activityObj.getSharedPreferences(activityObj.getString(R.string.sharedPreferenceLogin),
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editorObj = loginPreferences.edit();
         editorObj.clear();
         editorObj.commit();
-*/
+*//*
 
         // check the checkbox
         onView(withId(R.id.saveLoginCheckBox))
@@ -135,6 +133,12 @@ public class LoginActivityTest {
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        onView(withText(R.string.action_logout))
+                .perform(click());
+
+
         // Getting the activity, closing it and restarting it
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
@@ -146,10 +150,18 @@ public class LoginActivityTest {
                 .check(matches(isChecked()))
                 .perform(click());
     }
+*/
 
 
     @Test
     public void loginFailTest() {
+
+        // Getting database and deleting it
+        activityObj = loginActivityActivityTestRule.getActivity();
+        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
+        activityObj.finish();
+        activityObj.startActivity(activityObj.getIntent());
+
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
@@ -157,6 +169,9 @@ public class LoginActivityTest {
         // First attempt
         onView(withId(R.id.btnSignIn))
                 .perform(click());
+
+        onView(withId(R.id.password))
+                .check(matches(inTextEdit(activityObj.getString(R.string.error_incorrect_password))));
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
