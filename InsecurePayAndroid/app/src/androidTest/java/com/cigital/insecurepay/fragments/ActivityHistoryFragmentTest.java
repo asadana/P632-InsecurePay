@@ -3,11 +3,15 @@ package com.cigital.insecurepay.fragments;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
+import android.widget.ListView;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
 import com.cigital.insecurepay.common.Constants;
 
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +21,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -49,10 +52,22 @@ public class ActivityHistoryFragmentTest {
         onView(withId(R.id.btnSubmit))
                 .perform(click());
 
-        //Check whether there is a list
         onView(withId(R.id.lvActivityHistory_transactionList))
-                .perform(click())
-                .check(matches(isDisplayed()));
+                .check(matches(new TypeSafeMatcher<View>() {
 
+                    @Override
+                    public void describeTo(Description description) {
+                    }
+
+                    @Override
+                    protected boolean matchesSafely(View view) {
+                        ListView listViewObj = (ListView) view;
+                        if (listViewObj.getChildCount() > 0) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }));
     }
 }
