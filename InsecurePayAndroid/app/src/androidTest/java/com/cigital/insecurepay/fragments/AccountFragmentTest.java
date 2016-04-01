@@ -178,8 +178,6 @@ public class AccountFragmentTest {
                     protected boolean matchesSafely(View view) {
                         TextView textViewObj = (TextView) view;
                         String displayed = textViewObj.getText().toString();
-                        System.out.println("Displayed date: " + displayed);
-                        System.out.println("Stored date: " + Constants.displayedDate);
                         return displayed.equals(Constants.displayedDate);
                     }
 
