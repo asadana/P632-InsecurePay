@@ -1,11 +1,7 @@
 package com.cigital.insecurepay.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +14,11 @@ import android.widget.TextView;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
-import com.cigital.insecurepay.VOs.TransferFundsVO;
-import com.google.gson.Gson;
-
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class InterestCalcFragment extends Fragment {
@@ -62,10 +55,25 @@ public class InterestCalcFragment extends Fragment {
     private static final int ROUNDOFFVALUE = 2;
     private static final double CREDITSCOREDIVISOR = 1000.0;
     private static final double INTERESTDIVISOR = 100.0;
+    //Credit Score Rank
+    private static final int RANK_ONE = 1;
+    private static final int RANK_TWO = 2;
+    private static final int RANK_THREE = 3;
+    private static final int RANK_FOUR = 4;
+    //Balance Range
+    private static final double RANGE_BASE = 0;
+    private static final double RANGE_LEVEL1 = 1000;
+    private static final double RANGE_LEVEL2 = 4000;
+    private static final double RANGE_LEVEL3 = 10000;
+
 
     private Integer creditScore;
     private Double interest;
     private HomeFragment.OnFragmentInteractionListener mListener;
+    private static final Pattern timePattern
+            = Pattern.compile("(?<![-.])\\b[1-9]+\\b(?!\\.[1-9])");
+    private static final Pattern principalPattern
+            = Pattern.compile("^\\d+$");
 
 
     public InterestCalcFragment() {
@@ -90,35 +98,35 @@ public class InterestCalcFragment extends Fragment {
         Log.i(this.getClass().getSimpleName(), "Generating credit Score ... ");
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         double account_bal = commonVO.getAccountVO().getAccountBalance();
-        int creditScoreRank = 1;
-        if (account_bal >= 0 && account_bal < 1000) {
-            creditScoreRank = 4;
-        } else if (account_bal >= 1001 && account_bal < 4000) {
-            creditScoreRank = 3;
-        } else if (account_bal >= 4001 && account_bal <= 10000) {
-            creditScoreRank = 2;
+        int creditScoreRank = RANK_ONE;
+        if (account_bal >= RANGE_BASE && account_bal <=RANGE_LEVEL1) {
+            creditScoreRank = RANK_FOUR;
+        } else if (account_bal > RANGE_LEVEL1 && account_bal <= RANGE_LEVEL2) {
+            creditScoreRank = RANK_THREE;
+        } else if (account_bal > RANGE_LEVEL2 && account_bal <= RANGE_LEVEL3) {
+            creditScoreRank = RANK_TWO;
         }
 
         Random r = new Random((long) account_bal);
         int creditScore = 0;
         switch (creditScoreRank) {
             //Excellent
-            case 1: {
+            case RANK_ONE: {
                 creditScore = r.nextInt(MAXSCORE - EXCELLENT) + EXCELLENT;
                 break;
             }
             //Good
-            case 2: {
+            case RANK_TWO: {
                 creditScore = r.nextInt(EXCELLENT - GOOD) + GOOD;
                 break;
             }
             //Fair
-            case 3: {
+            case RANK_THREE: {
                 creditScore = r.nextInt(GOOD - FAIR) + FAIR;
                 break;
             }
             //Bad
-            case 4: {
+            case RANK_FOUR: {
                 creditScore = r.nextInt(FAIR - BAD) + BAD;
                 break;
             }
@@ -133,8 +141,25 @@ public class InterestCalcFragment extends Fragment {
 
         btnCalculate.setOnClickListener(new View.OnClickListener() {
             @Override
+
             public void onClick(View v) {
-                calcInterest();
+                String inputTime = String.valueOf(etDate.getText());
+                String inputPrincipal = String.valueOf(etPrincipal.getText());
+                Matcher m1 = timePattern.matcher(inputTime);
+                Matcher m2 = principalPattern.matcher(inputPrincipal);
+                if (!m1.matches()) {
+                    etDate.setError("Enter Valid Date");
+                    etDate.requestFocus();
+                    return;
+                }
+                if (!m2.matches()) {
+                    etPrincipal.setError("Enter Valid Amount");
+                    etPrincipal.requestFocus();
+                    return;
+                }
+                double time = Double.parseDouble(inputTime);
+                double principal = Double.parseDouble(inputPrincipal);
+                calcInterest(time, principal);
             }
         });
     }
@@ -165,10 +190,10 @@ public class InterestCalcFragment extends Fragment {
 
     }
 
-    private void calcInterest() {
+    private void calcInterest(double time, double principal) {
         Log.i(this.getClass().getSimpleName(), "Calculating Interest...");
-        double principal = Double.parseDouble(etPrincipal.getText().toString());
-        double time = Double.parseDouble(etDate.getText().toString());
+
+
 
         String type = DateType.getSelectedItem().toString();
         //If month or days convert to year
