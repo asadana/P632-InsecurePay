@@ -106,6 +106,8 @@ public class TransferFragmentTest {
         //Check Amount
         onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.receiverUserName)));
         onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
+
+        Constants.logout();
     }
 
     //Matcher to match string in TextEdit

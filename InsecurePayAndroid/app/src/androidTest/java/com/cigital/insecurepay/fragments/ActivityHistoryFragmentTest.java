@@ -69,5 +69,7 @@ public class ActivityHistoryFragmentTest {
                         }
                     }
                 }));
+
+        Constants.logout();
     }
 }

@@ -1,7 +1,5 @@
 package com.cigital.insecurepay.activity;
 
-
-import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -45,8 +43,6 @@ public class HomePageTest {
         onView(withId(R.id.tvHome_fillBalance))
                 .check(matches(not(withText(""))));
 
-        // Open Drawer
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
+        Constants.logout();
     }
 }

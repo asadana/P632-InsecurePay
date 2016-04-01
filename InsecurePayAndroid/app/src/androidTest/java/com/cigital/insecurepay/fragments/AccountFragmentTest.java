@@ -101,6 +101,8 @@ public class AccountFragmentTest {
         onView(withText(R.string.login_successful))
                 .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
+
+        Constants.logout();
     }
 
     @Test
@@ -171,5 +173,7 @@ public class AccountFragmentTest {
                 .check(matches(withText(calendarObj.get(Calendar.YEAR) +
                         "-" + calendarObj.get(Calendar.MONTH) +
                         "-" + calendarObj.get(Calendar.DATE))));
+
+        Constants.logout();
     }
 }

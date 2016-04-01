@@ -18,7 +18,6 @@ import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.not;
 
 public class LoginTest {
@@ -46,14 +45,13 @@ public class LoginTest {
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
-        try {
-            sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+        Constants.sleepWait();
 
         onView(withText(R.string.login_successful))
                 .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
+
+        Constants.logout();
     }
 }
