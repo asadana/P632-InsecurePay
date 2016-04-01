@@ -4,6 +4,7 @@ import com.cigital.insecurepay.activity.ForgotPasswordTest;
 import com.cigital.insecurepay.activity.HomePageTest;
 import com.cigital.insecurepay.activity.LoginTest;
 import com.cigital.insecurepay.fragments.AccountFragment;
+import com.cigital.insecurepay.fragments.ActivityHistoryFragmentTest;
 import com.cigital.insecurepay.fragments.TransferFragmentTest;
 
 import org.junit.runner.RunWith;
@@ -16,7 +17,7 @@ import org.junit.runners.Suite;
         LoginTest.class,
         HomePageTest.class,
         AccountFragment.class,
-        TransferFragmentTest.class//,
-        //ActivityHistoryFragmentTest.class
+        TransferFragmentTest.class,
+        ActivityHistoryFragmentTest.class
 })
 public class TestSuite {}

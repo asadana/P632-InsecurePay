@@ -31,26 +31,10 @@ import static org.hamcrest.CoreMatchers.not;
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    private String wrongUsername = "abc";
-    private String wrongPassword = "notyourpassword";
-    private String wrongAccount = "1234234";
     private Activity activityObj;
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-/*
-
-    @Test
-    public void loginUsernameExistsTest() {
-        onView(withId(R.id.username)).
-                perform(replaceText(wrongUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-        // First attempt with wrong username
-        onView(withId(R.id.username)).check(matches(withError(
-                loginActivityActivityTestRule.getActivity().getString(R.string.error_username_does_not_exist))));
-    }
-*/
 /*
 
     @Test
@@ -109,15 +93,13 @@ public class LoginActivityTest {
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
 
-*/
-/*
         // Getting the shared preference and clearing it
         SharedPreferences loginPreferences = activityObj.getSharedPreferences(activityObj.getString(R.string.sharedPreferenceLogin),
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editorObj = loginPreferences.edit();
         editorObj.clear();
         editorObj.commit();
-*//*
+
 
         // check the checkbox
         onView(withId(R.id.saveLoginCheckBox))
@@ -150,8 +132,8 @@ public class LoginActivityTest {
                 .check(matches(isChecked()))
                 .perform(click());
     }
-*/
 
+*/
 
     @Test
     public void loginFailTest() {
@@ -165,13 +147,13 @@ public class LoginActivityTest {
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(replaceText(wrongPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.wrongUserName), closeSoftKeyboard());
         // First attempt
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
         onView(withId(R.id.password))
-                .check(matches(inTextEdit(activityObj.getString(R.string.error_incorrect_password))));
+                .check(matches(withError(activityObj.getString(R.string.error_incorrect_password))));
         onView(withText(R.string.login_failed))
                 .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
@@ -183,11 +165,11 @@ public class LoginActivityTest {
 
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
+                EditText editTextObj = (EditText) view;
+                String text = editTextObj.getText().toString();
 
-                String text = ((EditText) view).getText().toString();
+                System.out.println("Credentials: " + credentials);
+                System.out.println("EditText: " + text);
 
                 return credentials.equals(text);
             }
@@ -204,11 +186,13 @@ public class LoginActivityTest {
 
             @Override
             public boolean matchesSafely(View view) throws NullPointerException {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
-                EditText editText = (EditText) view;
-                return editText.getError().toString().equals(expected);
+
+                EditText editTextObj = (EditText) view;
+
+                System.out.println("Expected: " + expected);
+                System.out.println("EditText: " + editTextObj.getError().toString());
+
+                return editTextObj.getError().toString().equals(expected);
             }
 
             @Override
