@@ -41,11 +41,11 @@ public class AccountFragmentTest {
 
     @Test
     public void checkChangePassword() {
-
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
                 perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
+
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
@@ -64,11 +64,11 @@ public class AccountFragmentTest {
 
         //Enter a new Password
         onView(withId(R.id.etChangePassword_newPassword))
-                .perform(typeText(Constants.correctPassword), closeSoftKeyboard());
+                .perform(typeText(Constants.defaultPassword), closeSoftKeyboard());
 
         //Confirm new Password
         onView(withId(R.id.etChangePassword_confirmPassword))
-                .perform(typeText(Constants.correctPassword), closeSoftKeyboard());
+                .perform(typeText(Constants.defaultPassword), closeSoftKeyboard());
 
         onView(withId(android.R.id.button1)).perform(click());
 
@@ -86,7 +86,7 @@ public class AccountFragmentTest {
                 perform(typeText(Constants.correctUsername), closeSoftKeyboard());
 
         onView(withId(R.id.password)).
-                perform(typeText(Constants.correctPassword), closeSoftKeyboard());
+                perform(typeText(Constants.defaultPassword), closeSoftKeyboard());
 
 
         onView(withId(R.id.btnSignIn))

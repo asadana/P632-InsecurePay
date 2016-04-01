@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
-import com.cigital.insecurepay.activity.TransferActivity;
 import com.cigital.insecurepay.common.Constants;
 
 import org.hamcrest.Description;
@@ -23,12 +22,9 @@ import java.util.Calendar;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.Intents.init;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.Intents.release;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -40,15 +36,13 @@ public class TransferFragmentTest {
 
     @Test
     public void fundsTransferTest() {
-        init();
-
         Calendar calendarObj = Calendar.getInstance();
         Constants.transferAmount = calendarObj.get(Calendar.DATE);
 
         onView(withId(R.id.username)).
-                perform(typeText(Constants.correctUsername), closeSoftKeyboard());
+                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(typeText(Constants.correctPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))
                 .perform(click());
@@ -77,7 +71,6 @@ public class TransferFragmentTest {
         //Click on Transfer
         onView(withId(R.id.btn_transfer))
                 .perform(click());
-        intended(hasComponent(TransferActivity.class.getName()));
         onView(withText(R.string.btnConfirm))
                 .perform(click());
 
@@ -113,8 +106,6 @@ public class TransferFragmentTest {
         //Check Amount
         onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.receiverUserName)));
         onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
-
-        release();
     }
 
     //Matcher to match string in TextEdit

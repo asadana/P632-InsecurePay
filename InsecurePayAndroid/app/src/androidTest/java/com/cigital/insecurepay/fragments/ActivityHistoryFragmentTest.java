@@ -35,7 +35,7 @@ public class ActivityHistoryFragmentTest {
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(replaceText(Constants.correctPassword), closeSoftKeyboard());
+                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
 
         // First attempt with correct username and password
         onView(withId(R.id.btnSignIn))

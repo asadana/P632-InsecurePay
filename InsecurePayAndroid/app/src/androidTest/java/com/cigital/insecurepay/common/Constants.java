@@ -9,9 +9,8 @@ public class Constants {
 
     // For LoginActivityTest
     public static final String defaultPassword = "12345";
-    public static final String correctPassword = "testmeplease";
     public static final String correctUsername = "testUser";
-    public static final String wrongUserName = "testUserWrong";
+    public static final String wrongInput = "testUserWrong";
 
     // For TransferFragmentTest
     public static final String receiverUserName = "foo";
