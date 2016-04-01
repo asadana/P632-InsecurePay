@@ -149,7 +149,6 @@ public class AccountFragment extends Fragment {
             Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
         }
     };
-
     private TextWatcher twPhone = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -163,6 +162,21 @@ public class AccountFragment extends Fragment {
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
+        }
+    };
+    private TextWatcher twDOB = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            btnUpdateInfo.setEnabled(true);
+            Log.i(this.getClass().getSimpleName(), "Date of Birth value changed.");
         }
     };
 
@@ -225,6 +239,7 @@ public class AccountFragment extends Fragment {
         etAddressState.addTextChangedListener(twAddressState);
         etAddressZip.addTextChangedListener(twAddressZip);
         etPhone.addTextChangedListener(twPhone);
+        tvUserDOB.addTextChangedListener(twDOB);
 
         // TODO: Fix number formatting
         twPhone = new PhoneNumberFormattingTextWatcher();
