@@ -1,6 +1,8 @@
 package com.cigital.insecurepay.activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
@@ -16,12 +18,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
+import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -82,7 +87,6 @@ public class LoginActivityTest {
                 .check(matches(isDisplayed()));
     }
 */
-/*
 
     @Test
     public void rememberMeTest() {
@@ -120,7 +124,6 @@ public class LoginActivityTest {
         onView(withText(R.string.action_logout))
                 .perform(click());
 
-
         // Getting the activity, closing it and restarting it
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
@@ -131,9 +134,15 @@ public class LoginActivityTest {
         onView(withId(R.id.saveLoginCheckBox))
                 .check(matches(isChecked()))
                 .perform(click());
-    }
 
-*/
+        onView(withId(R.id.btnSignIn))
+                .perform(click());
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        onView(withText(R.string.action_logout))
+                .perform(click());
+    }
 
     @Test
     public void loginFailTest() {
