@@ -40,10 +40,9 @@ public class LoginActivityTest {
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-/*
 
     @Test
-    public void accountLockedTest() throws InterruptedException {
+    public void loginFailTest() {
 
         // Getting database and deleting it
         activityObj = loginActivityActivityTestRule.getActivity();
@@ -54,39 +53,17 @@ public class LoginActivityTest {
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
-                perform(replaceText(wrongPassword), closeSoftKeyboard());
-
+                perform(replaceText(Constants.wrongInput), closeSoftKeyboard());
         // First attempt
         onView(withId(R.id.btnSignIn))
                 .perform(click());
-        onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
 
-        // Second attempt
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-        SystemClock.sleep(Toast.LENGTH_SHORT);
+        onView(withId(R.id.password))
+                .check(matches(withError(activityObj.getString(R.string.error_incorrect_password))));
         onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-
-        // Third attempt
-        onView(withId(R.id.btnSignIn))
-                .perform(click());//.wait(Toast.LENGTH_SHORT);
-        SystemClock.sleep(Toast.LENGTH_SHORT);
-        onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-
-        onView(withId(R.id.btnSignIn))
-                .perform(click());//.wait(Toast.LENGTH_SHORT);
-        SystemClock.sleep(Toast.LENGTH_SHORT);
-        onView(withText(R.string.login_failed_account_locked))
-                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
-*/
 
     @Test
     public void rememberMeTest() {
@@ -142,30 +119,6 @@ public class LoginActivityTest {
 
         onView(withText(R.string.action_logout))
                 .perform(click());
-    }
-
-    @Test
-    public void loginFailTest() {
-
-        // Getting database and deleting it
-        activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
-        activityObj.finish();
-        activityObj.startActivity(activityObj.getIntent());
-
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.wrongUserName), closeSoftKeyboard());
-        // First attempt
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
-        onView(withId(R.id.password))
-                .check(matches(withError(activityObj.getString(R.string.error_incorrect_password))));
-        onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
     }
 
     // A matcher to match the credentials after coming back to the app
