@@ -2,6 +2,8 @@ package com.cigital.insecurepay.common;
 
 import com.cigital.insecurepay.R;
 
+import java.text.SimpleDateFormat;
+
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -21,10 +23,15 @@ public class Constants {
     public static final String correctUsername = "testUser";
     public static final String wrongInput = "testUserWrong";
 
+    // For AccountFragmentTest
+    public static SimpleDateFormat simpleDateFormatObj = new SimpleDateFormat("yyyy-MM-dd");
+    public static String displayedDate = "";
+
     // For TransferFragmentTest
     public static final String receiverUserName = "foo";
     public static int transferAmount = 0;
 
+    // Common logout for all tests
     public static void logout() {
         sleepWait();
 
@@ -33,6 +40,7 @@ public class Constants {
                 .perform(click());
     }
 
+    // Common sleep for all tests where needed
     public static void sleepWait() {
         try {
             sleep(1000);
