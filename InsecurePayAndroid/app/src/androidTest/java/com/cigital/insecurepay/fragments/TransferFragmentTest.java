@@ -67,7 +67,7 @@ public class TransferFragmentTest {
 
         //Enter amount
         onView(withId(R.id.ettransferAmount)).
-                perform(typeText(String.valueOf(Constants.transferAmount)), closeSoftKeyboard());
+                perform(typeText(String.valueOf(-Constants.transferAmount)), closeSoftKeyboard());
 
         //Enter message
         onView(withId(R.id.ettransferDetails)).
@@ -111,7 +111,7 @@ public class TransferFragmentTest {
                 .perform(click());
 
         //Check Amount
-        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.correctUsername)));
+        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.receiverUserName)));
         onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
 
         release();
@@ -120,13 +120,10 @@ public class TransferFragmentTest {
     //Matcher to match string in TextEdit
     public static Matcher<View> inTextEdit(final String input) {
         return new TypeSafeMatcher<View>() {
-
             @Override
             public boolean matchesSafely(View view) {
-                if (!(view instanceof EditText)) {
-                    return false;
-                }
-                String text = ((EditText) view).getText().toString();
+                EditText editTextObj = (EditText) view;
+                String text = editTextObj.getText().toString();
                 return input.equals(text);
             }
 
