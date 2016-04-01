@@ -44,7 +44,7 @@ public class AccountFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-    //@Test
+    @Test
     public void checkChangePassword() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
