@@ -1,5 +1,6 @@
 package com.cigital.insecurepay.fragments;
 
+import android.app.Activity;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
@@ -8,7 +9,6 @@ import android.widget.DatePicker;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.activity.LoginActivity;
-import com.cigital.insecurepay.activity.LoginTest;
 import com.cigital.insecurepay.common.Constants;
 
 import org.hamcrest.Matchers;
@@ -36,11 +36,16 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class AccountFragmentTest {
 
+    private Activity activityObj;
+
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void checkChangePassword() {
+
+        activityObj = loginActivityActivityTestRule.getActivity();
+
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
@@ -94,12 +99,14 @@ public class AccountFragmentTest {
 
 
         onView(withText(R.string.login_successful))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
     @Test
     public void checkAccountUpdate() {
+
+        activityObj = loginActivityActivityTestRule.getActivity();
 
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
@@ -139,8 +146,9 @@ public class AccountFragmentTest {
                 .perform(click());
 
         //Check toast
-        onView(withText(LoginTest.activityObj.getString(R.string.account_update_successful)))
-                .inRoot(withDecorView(not(LoginTest.activityObj.getWindow().getDecorView())))
+        onView(withText(activityObj.getString(R.string.account_update_successful)))
+                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
 
 
