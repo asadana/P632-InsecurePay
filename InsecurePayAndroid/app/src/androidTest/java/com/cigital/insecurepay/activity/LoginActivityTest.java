@@ -30,6 +30,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static java.lang.Thread.sleep;
 import static org.hamcrest.CoreMatchers.not;
 
 
@@ -107,6 +108,12 @@ public class LoginActivityTest {
 
         onView(withId(R.id.username)).check(matches(inTextEdit(Constants.correctUsername)));
         onView(withId(R.id.password)).check(matches(inTextEdit(Constants.defaultPassword)));
+
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         onView(withId(R.id.saveLoginCheckBox))
                 .check(matches(isChecked()))
