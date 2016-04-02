@@ -12,6 +12,9 @@ function showAlert(){
  alert(“Your message was sent!”);
 }
 
+function showAndroidDialog(dialogMsg) {
+        Android.showDialog(dialogMsg);
+    }
 </script>
 <body>
 
@@ -21,7 +24,7 @@ function showAlert(){
 
   </textarea>
     <br>
-    <input type="submit" name=“submit” value="Submit" onClick=“clearTextArea(); showAlert();”/>
+    <input type="submit" name=“submit” value="Submit" onClick=“showAndroidDialog('thank')”/>
     File to upload: <input type="file" name="uploadfile">
     </button>
 

@@ -1,6 +1,9 @@
 package com.cigital.insecurepay.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +19,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
 
@@ -23,6 +27,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static android.content.DialogInterface.*;
 
 public class ChatFragment extends Fragment {
 
@@ -34,17 +40,23 @@ public class ChatFragment extends Fragment {
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
+    WebAppInterface webAppInterface;
 
     public ChatFragment() {
     }
 
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
 
         // Get reference of WebView from layout/activity_main.xml
         mWebView = (WebView) rootView.findViewById(R.id.chat_webview);
+        //Enable Javascript
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        //Inject WebAppInterface methods into Web page by having Interface name 'Android'
+        mWebView.addJavascriptInterface(webAppInterface, "Android");
 
         setUpWebViewDefaults(mWebView);
 
@@ -174,5 +186,57 @@ public class ChatFragment extends Fragment {
         mFilePathCallback.onReceiveValue(results);
         mFilePathCallback = null;
         return;
+    }
+
+    public class WebAppInterface {
+        Context mContext;
+
+        /**
+         * Instantiate the interface and set the context
+         */
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+       // public WebAppInterface(ChatFragment chatFragment) {
+
+        //}
+
+        /**
+         * Show Toast Message
+         *
+         * @param toast
+         */
+        public void showToast(String toast) {
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+        }
+
+        /**
+         * Show Dialog
+         *
+         * @param dialogMsg
+         */
+        public void showDialog(String dialogMsg) {
+            AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+
+            // Setting Dialog Title
+            alertDialog.setTitle("JS triggered Dialog");
+
+            // Setting Dialog Message
+            alertDialog.setMessage(dialogMsg);
+
+            // Setting alert dialog icon
+            //alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
+
+            // Setting OK Button
+            alertDialog.setButton("OK", new OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(mContext, "Dialog dismissed!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            // Showing Alert Message
+            alertDialog.show();
+        }
     }
 }
