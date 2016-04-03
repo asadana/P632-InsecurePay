@@ -21,11 +21,9 @@ public class UploadFileService extends BaseService {
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadFile(
-			@FormDataParam("file") InputStream uploadedInputStream,
-			@FormDataParam("file") FormDataContentDisposition fileDetail) {
+			@FormDataParam("file") InputStream uploadedInputStream) {
 
-		String uploadedFileLocation = "/Users/janakbhalla/Desktop/files/"
-				+ fileDetail.getFileName();
+		String uploadedFileLocation = "/Users/janakbhalla/Desktop/files/abc.jpeg";
 
 		// save it
 		writeToFile(uploadedInputStream, uploadedFileLocation);
