@@ -72,7 +72,7 @@ public class Connectivity implements Serializable {
                 Log.d(this.getClass().getSimpleName(), "post: Getting InputStream");
                 if (is != null) {
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            readIt(is));
+                            readIt(is), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
                 }
             } catch (IOException e) {
@@ -80,7 +80,7 @@ public class Connectivity implements Serializable {
                 if (is != null) {
                     // Dumping stacktrace into message
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            errorToString(e));
+                            errorToString(e), httpURLConnectionObj.getResponseMessage());
 
                     Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
                 }
@@ -89,7 +89,7 @@ public class Connectivity implements Serializable {
 
             if (is == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
-                        "Unable to connect to the server");
+                        "Unable to connect to the server", "HTTP not found");
                 Log.e(this.getClass().getSimpleName(), "post: InputStream is null");
             }
 
@@ -106,10 +106,12 @@ public class Connectivity implements Serializable {
             }
         } catch (MalformedURLException e) {
             Log.e(this.getClass().getSimpleName(), "post: ", e);
-            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e));
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e),
+                    "Bad Request");
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "post: ", e);
-            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e));
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e),
+                    "Bad Request");
         } finally {
 
             try {
@@ -147,9 +149,10 @@ public class Connectivity implements Serializable {
             try {
                 is = httpURLConnectionObj.getInputStream();
                 Log.d(this.getClass().getSimpleName(), "get: Getting InputStream");
+                Log.d(this.getClass().getSimpleName(), "get: " + httpURLConnectionObj.getResponseMessage());
                 if (is != null) {
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            readIt(is));
+                            readIt(is), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
                 }
             } catch (IOException e) {
@@ -157,7 +160,7 @@ public class Connectivity implements Serializable {
                 if (is != null) {
                     // Dumping stacktrace into message
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            errorToString(e));
+                            errorToString(e), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
                 }
                 Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
@@ -165,7 +168,7 @@ public class Connectivity implements Serializable {
 
             if (is == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
-                        "Unable to connect to the server");
+                        "Unable to connect to the server", "HTTP not found");
                 Log.e(this.getClass().getSimpleName(), "get: InputStream is null");
             }
 

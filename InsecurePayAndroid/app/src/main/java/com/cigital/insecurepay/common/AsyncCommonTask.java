@@ -97,7 +97,6 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
 
         AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
-        alertDialog.setTitle("Alert");
 
         // Deleting cookies to keep the app clean on error
         connectivityObj.deleteCookies();
@@ -111,11 +110,12 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
                 });
 
         if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            alertDialog.setMessage("Session Expired\n\n" + responseWrapperObj.getResponseString());
+            alertDialog.setTitle("Alert: Session Expired");
         } else {
-            alertDialog.setMessage(responseWrapperObj.getResponseString());
+            alertDialog.setTitle("Alert: " + responseWrapperObj.getResponseMessage());
         }
 
+        alertDialog.setMessage(responseWrapperObj.getResponseString());
         alertDialog.show();
         TextView textViewObj = (TextView) alertDialog.findViewById(android.R.id.message);
         textViewObj.setTextSize(10);
