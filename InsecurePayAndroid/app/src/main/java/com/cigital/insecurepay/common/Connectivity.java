@@ -130,15 +130,19 @@ public class Connectivity implements Serializable {
 
             try {
                 is = httpURLConnectionObj.getInputStream();
+                Log.d(this.getClass().getSimpleName(), "get: Getting InputStream");
             } catch (IOException e) {
                 is = httpURLConnectionObj.getErrorStream();
+                Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
             }
             if (is != null) {
                 responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
                         readIt(is));
+                Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
             } else {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
                         "Unable to connect to the server");
+                Log.e(this.getClass().getSimpleName(), "get: InputStream is null");
             }
 
         } catch (IOException e) {
