@@ -110,7 +110,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
                 });
 
         if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            alertDialog.setMessage("Session Expired");
+            alertDialog.setMessage("Session Expired\n\n" + responseWrapperObj.getResponseString());
         } else {
             alertDialog.setMessage(responseWrapperObj.getResponseString());
         }
