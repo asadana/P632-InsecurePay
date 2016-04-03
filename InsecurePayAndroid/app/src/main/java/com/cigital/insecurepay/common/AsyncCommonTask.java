@@ -94,19 +94,27 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
     protected void postFailure(ResponseWrapper responseWrapperObj) {
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
+
+        AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
+        alertDialog.setTitle("Alert");
+
+        // Deleting cookies to keep the app clean on error
+        connectivityObj.deleteCookies();
+
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(contextObj, LoginActivity.class);
+                        contextObj.startActivity(intent);
+                    }
+                });
+
         if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-            connectivityObj.deleteCookies();
-            AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
-            alertDialog.setTitle("Alert");
             alertDialog.setMessage("Session Expired");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(contextObj, LoginActivity.class);
-                            contextObj.startActivity(intent);
-                        }
-                    });
-            alertDialog.show();
+        } else {
+            alertDialog.setMessage(responseWrapperObj.getResponseString());
         }
+
+        alertDialog.show();
     }
 }
