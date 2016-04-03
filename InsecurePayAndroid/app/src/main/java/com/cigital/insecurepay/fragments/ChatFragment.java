@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -45,6 +46,7 @@ public class ChatFragment extends Fragment {
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
+    WebAppInterface webAppInterface;
 
     public ChatFragment() {
     }
@@ -61,8 +63,7 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(webAppInterface, "Android");
-
+        mWebView.addJavascriptInterface(new WebAppInterface(this),"Android");
         setUpWebViewDefaults(mWebView);
 
         // Check whether we're recreating a previously destroyed instance
@@ -278,7 +279,17 @@ public class ChatFragment extends Fragment {
         public void showToast(String toast) {
             Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
         }
+       // public WebAppInterface(ChatFragment chatFragment) {
 
+        //}
+
+
+        /**
+         * Show Dialog
+         *
+         * @param dialogMsg
+         */
+        @JavascriptInterface
         public void showDialog(String dialogMsg) {
             AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
 
