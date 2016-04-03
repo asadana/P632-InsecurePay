@@ -35,11 +35,13 @@ import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.PostAsyncCommonTask;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -437,7 +439,6 @@ public class AccountFragment extends Fragment {
             super(contextObj, serverAddress, path, customerVO, CustomerVO.class);
         }
 
-
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
@@ -455,6 +456,18 @@ public class AccountFragment extends Fragment {
                     Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
                     break;
             }
+        }
+
+        @Override
+        protected void postFailure(ResponseWrapper responseWrapperObj) {
+            ArrayList<String> arrayListObj = new ArrayList<String>();
+            arrayListObj.add("Customer Name: " + customerVOObj.getCustName());
+            arrayListObj.add("Customer Number: " + customerVOObj.getCustNo());
+            arrayListObj.add("Customer Account Number: " + Integer.toString(commonVO.getAccountVO().getAccNo()));
+            arrayListObj.add("Customer SSN: " + customerVOObj.getDecodedSsn());
+            String currentString = responseWrapperObj.getResponseString();
+            responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);
+            super.postFailure(responseWrapperObj);
         }
 
     }
