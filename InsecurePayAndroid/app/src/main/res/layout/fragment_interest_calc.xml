@@ -1,0 +1,239 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:weightSum="1"
+    tools:context=".fragments.ActivityHistoryFragment">
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!--Display balance-->
+        <TextView
+            android:id="@+id/tvIntCalc_AccountBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:text="@string/tvAccount_balance"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvIntCalc_FillAccountBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:text="@string/IntCalc_FillAccountNumber"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </TableRow>
+    <!--Enter Principal Amount-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_PrincipalAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_PrincipalAmount"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <EditText
+            android:id="@+id/etIntCalc_FillPrincipalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:inputType="numberDecimal|numberSigned"
+            android:hint="@string/etIntCalc_FillPrincipalAmount"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </TableRow>
+    <!--Select type-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_Period"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_Period"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <Spinner
+            android:id="@+id/etIntCalc_Period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+
+    <!--Enter date-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_Date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_Period"
+            android:visibility="invisible" />
+
+        <EditText
+            android:id="@+id/etIntCalc_Date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:inputType="number|numberSigned"
+            android:padding="5dp"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </TableRow>
+<!--Displays credit score-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_CreditScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_CreditScore" />
+
+        <TextView
+            android:id="@+id/tvIntCalc_FillCreditScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_FillCreditScore"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+    <!--Display Rate of Interest-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_RateOfInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:visibility="invisible"
+            android:text="@string/tvIntCalc_RateOfInterest" />
+
+        <TextView
+            android:id="@+id/tvIntCalc_FillRateOfInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_FillRateOfInterest"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+
+
+    <!--Display Interest-->
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvIntCalc_Interest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="19dp"
+            android:padding="5dp"
+            android:visibility="invisible"
+            android:text="@string/tvIntCalc_Interest" />
+
+        <TextView
+            android:id="@+id/tvIntCalc_FillInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="50dp"
+            android:padding="5dp"
+            android:text="@string/tvIntCalc_FillInterest"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </TableRow>
+
+    <!--Calculate Button-->
+    <Button
+        android:id="@+id/btnIntCalc_Calc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignStart="@+id/tvAccount_addressZip"
+        android:layout_below="@+id/etAccount_fillAddressZip"
+        android:layout_gravity="bottom"
+        android:enabled="true"
+        android:text="@string/btnIntCalc_Calc" />
+
+
+</TableLayout>
