@@ -38,15 +38,13 @@ import static android.content.DialogInterface.OnClickListener;
 
 public class ChatFragment extends Fragment {
 
-    private static final String TAG = ChatFragment.class.getSimpleName();
-
     public static final int INPUT_FILE_REQUEST_CODE = 1;
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
-
+    private static final String TAG = ChatFragment.class.getSimpleName();
+    WebAppInterface webAppInterface;
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
-    WebAppInterface webAppInterface;
 
     public ChatFragment() {
     }
@@ -108,21 +106,19 @@ public class ChatFragment extends Fragment {
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "img_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES);
         File imageFile = File.createTempFile(
                 imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
+                ".jpeg",         /* suffix */
                 storageDir      /* directory */
         );
-        Log.d("inside  createImageFile", "");
         return imageFile;
     }
 
     private void setUpWebViewDefaults(WebView webView) {
         WebSettings settings = webView.getSettings();
-        Log.d("inside  setUpWebView", "");
         // Enable Javascript
         settings.setJavaScriptEnabled(true);
 
@@ -175,7 +171,10 @@ public class ChatFragment extends Fragment {
         }
 
         protected String doInBackground(String... urls) {
-            String fileName = "abc.jpeg";
+            //String fileName = "abc.jpeg";
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String fileName = "img_" + timeStamp  + ".jpeg";
+            Log.d("upload file name",fileName);
             String serverResponseMessage = null;
             HttpURLConnection conn = null;
             DataOutputStream dos = null;
@@ -237,7 +236,6 @@ public class ChatFragment extends Fragment {
 
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseMessage);
-
                 dos.flush();
                 dos.close();
 
@@ -259,6 +257,14 @@ public class ChatFragment extends Fragment {
             return serverResponseMessage;
         }
 
+
+        protected void onPostExecute(final String serverResponseMessage) {
+
+            if (serverResponseMessage.equals("OK")) {
+                Toast.makeText(getContext(), "File Upload successful", Toast.LENGTH_SHORT).show();
+            }
+
+        }
 
     }
 
