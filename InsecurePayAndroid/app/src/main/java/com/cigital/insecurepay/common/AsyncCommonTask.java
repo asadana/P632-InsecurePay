@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
@@ -116,5 +117,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         }
 
         alertDialog.show();
+        TextView textViewObj = (TextView) alertDialog.findViewById(android.R.id.message);
+        textViewObj.setTextSize(10);
     }
 }
