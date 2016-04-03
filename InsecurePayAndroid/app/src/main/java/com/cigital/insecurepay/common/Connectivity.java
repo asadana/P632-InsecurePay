@@ -20,6 +20,7 @@ import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -78,10 +79,8 @@ public class Connectivity implements Serializable {
                 is = httpURLConnectionObj.getErrorStream();
                 if (is != null) {
                     // Dumping stacktrace into message
-                    StringWriter stringWriterObj = new StringWriter();
-                    e.printStackTrace(new PrintWriter(stringWriterObj));
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            stringWriterObj.toString());
+                            errorToString(e));
 
                     Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
                 }
@@ -105,8 +104,12 @@ public class Connectivity implements Serializable {
                 }
 
             }
+        } catch (MalformedURLException e) {
+            Log.e(this.getClass().getSimpleName(), "post: ", e);
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e));
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Post error", e);
+            Log.e(this.getClass().getSimpleName(), "post: ", e);
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e));
         } finally {
 
             try {
@@ -153,10 +156,8 @@ public class Connectivity implements Serializable {
                 is = httpURLConnectionObj.getErrorStream();
                 if (is != null) {
                     // Dumping stacktrace into message
-                    StringWriter stringWriterObj = new StringWriter();
-                    e.printStackTrace(new PrintWriter(stringWriterObj));
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            stringWriterObj.toString());
+                            errorToString(e));
                     Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
                 }
                 Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
@@ -247,10 +248,15 @@ public class Connectivity implements Serializable {
 
     }
 
+    public String errorToString(Exception e) {
+        StringWriter stringWriterObj = new StringWriter();
+        e.printStackTrace(new PrintWriter(stringWriterObj));
+        return stringWriterObj.toString();
+    }
+
     public void setConnectionParameters(String path) {
         this.path = path;
     }
-
 
     public ResponseWrapper getResponseWrapperObj() {
         return responseWrapperObj;
