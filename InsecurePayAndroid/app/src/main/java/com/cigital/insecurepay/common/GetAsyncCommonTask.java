@@ -23,7 +23,7 @@ public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
         if (checkConnection()) {
             return connectivityObj.get(contentValuesObj);
         } else {
-            return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
+            return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null, null);
         }
     }
 
