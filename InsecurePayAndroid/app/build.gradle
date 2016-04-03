@@ -25,7 +25,7 @@ android {
 
         xmlReport false
         htmlReport true
-        htmlOutput file("$project.buildDir/reports/lint/lint-result-" + getDate() + ".html")
+        htmlOutput file("$project.projectDir/reports/lint/lint-result-" + getDate() + ".html")
     }
 
 
