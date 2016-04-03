@@ -13,7 +13,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
@@ -67,15 +69,26 @@ public class Connectivity implements Serializable {
             try {
                 is = httpURLConnectionObj.getInputStream();
                 Log.d(this.getClass().getSimpleName(), "post: Getting InputStream");
+                if (is != null) {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            readIt(is));
+                    Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
+                }
             } catch (IOException e) {
                 is = httpURLConnectionObj.getErrorStream();
+                if (is != null) {
+                    // Dumping stacktrace into message
+                    StringWriter stringWriterObj = new StringWriter();
+                    e.printStackTrace(new PrintWriter(stringWriterObj));
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            stringWriterObj.toString());
+
+                    Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
+                }
                 Log.d(this.getClass().getSimpleName(), "post: Getting ErrorStream");
             }
-            if (is != null) {
-                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                        readIt(is));
-                Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
-            } else {
+
+            if (is == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
                         "Unable to connect to the server");
                 Log.e(this.getClass().getSimpleName(), "post: InputStream is null");
@@ -131,15 +144,25 @@ public class Connectivity implements Serializable {
             try {
                 is = httpURLConnectionObj.getInputStream();
                 Log.d(this.getClass().getSimpleName(), "get: Getting InputStream");
+                if (is != null) {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            readIt(is));
+                    Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
+                }
             } catch (IOException e) {
                 is = httpURLConnectionObj.getErrorStream();
+                if (is != null) {
+                    // Dumping stacktrace into message
+                    StringWriter stringWriterObj = new StringWriter();
+                    e.printStackTrace(new PrintWriter(stringWriterObj));
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            stringWriterObj.toString());
+                    Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
+                }
                 Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
             }
-            if (is != null) {
-                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                        readIt(is));
-                Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
-            } else {
+
+            if (is == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
                         "Unable to connect to the server");
                 Log.e(this.getClass().getSimpleName(), "get: InputStream is null");
