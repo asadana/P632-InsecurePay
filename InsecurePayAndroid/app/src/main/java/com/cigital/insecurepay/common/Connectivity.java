@@ -59,14 +59,29 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
             if (mCookieStore.getCookies().size() > 0) {
                 //To join cookies in the request
-                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-                Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+                httpURLConnectionObj.setRequestProperty("Cookie",
+                        TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d(this.getClass().getSimpleName(), "post: " + mCookieStore.getCookies().toString());
             }
             writeIt();
-            is = httpURLConnectionObj.getInputStream();
-            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+            try {
+                is = httpURLConnectionObj.getInputStream();
+                Log.d(this.getClass().getSimpleName(), "post: Getting InputStream");
+            } catch (IOException e) {
+                is = httpURLConnectionObj.getErrorStream();
+                Log.d(this.getClass().getSimpleName(), "post: Getting ErrorStream");
+            }
+            if (is != null) {
+                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                        readIt(is));
+                Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
+            } else {
+                responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
+                        "Unable to connect to the server");
+                Log.e(this.getClass().getSimpleName(), "post: InputStream is null");
+            }
 
-            if (mCookieStore.getCookies().size() <= 0) {
+            if (mCookieStore.getCookies().size() <= 0 && is != null) {
                 Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
                 List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
                 if (cookieHeaderList != null) {
@@ -113,9 +128,19 @@ public class Connectivity implements Serializable {
                 Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
             }
 
-            is = httpURLConnectionObj.getInputStream();
-            httpURLConnectionObj.connect();
-            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+            try {
+                is = httpURLConnectionObj.getInputStream();
+            } catch (IOException e) {
+                is = httpURLConnectionObj.getErrorStream();
+            }
+            if (is != null) {
+                responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                        readIt(is));
+            } else {
+                responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
+                        "Unable to connect to the server");
+            }
+
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "Get error", e);
         } finally {
@@ -179,8 +204,9 @@ public class Connectivity implements Serializable {
             outWriter = new OutputStreamWriter(out, "UTF-8");
             outWriter.write(sendToServer);
             outWriter.flush();
+            Log.d(this.getClass().getSimpleName(), "Sent");
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
+            Log.e(this.getClass().getSimpleName(), "Error sending data to server", e);
         } finally {
             try {
                 if (outWriter != null) {
@@ -190,7 +216,7 @@ public class Connectivity implements Serializable {
                 Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
             }
         }
-        Log.d(this.getClass().getSimpleName(), "Sent");
+
 
     }
 
