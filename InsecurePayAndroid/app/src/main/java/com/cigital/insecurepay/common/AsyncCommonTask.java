@@ -60,22 +60,8 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         super.onPostExecute(responseWrapperObj);
 
         // Checking if the response is in 2xx range
-        if (responseWrapperObj == null) {
-            connectivityObj.deleteCookies();
-            AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
-            alertDialog.setTitle("Alert");
-            alertDialog.setMessage("Session Expired");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(contextObj, LoginActivity.class);
-                            contextObj.startActivity(intent);
-                        }
-                    });
-            alertDialog.show();
-        } else if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
+        if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
-
             postSuccess(responseWrapperObj.getResponseString());
         } else {
             postFailure(responseWrapperObj);
@@ -108,5 +94,19 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
     protected void postFailure(ResponseWrapper responseWrapperObj) {
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
+        if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            connectivityObj.deleteCookies();
+            AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
+            alertDialog.setTitle("Alert");
+            alertDialog.setMessage("Session Expired");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(contextObj, LoginActivity.class);
+                            contextObj.startActivity(intent);
+                        }
+                    });
+            alertDialog.show();
+        }
     }
 }
