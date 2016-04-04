@@ -3,6 +3,7 @@ package com.cigital.insecurepay.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,12 +11,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -42,7 +45,7 @@ public class ChatFragment extends Fragment {
     public static final int INPUT_FILE_REQUEST_CODE = 1;
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
     private static final String TAG = ChatFragment.class.getSimpleName();
-    WebAppInterface webAppInterface;
+    //WebAppInterface webAppInterface;
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
     private String mCameraPhotoPath;
@@ -63,7 +66,7 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(new WebAppInterface(this),"Android");
+        mWebView.addJavascriptInterface(new WebAppInterface(getContext()),"Android");
         setUpWebViewDefaults(mWebView);
 
         // Check whether we're recreating a previously destroyed instance
@@ -94,6 +97,16 @@ public class ChatFragment extends Fragment {
                 Log.d(this.getClass().getSimpleName(), "after startActivity");
                 return true;
             }
+
+            /*@Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+
+                new AlertDialog.Builder(ChatFragment.this)
+                        .setMessage(message)
+                        .setPositiveButton("OK",null)
+                        .create().show();
+                return true;
+            }*/
         });
 
         // Load the local index.html file
@@ -270,18 +283,21 @@ public class ChatFragment extends Fragment {
     }
 
     public class WebAppInterface {
+
         Context mContext;
 
+        /** Instantiate the interface and set the context */
         WebAppInterface(Context c) {
             mContext = c;
         }
 
+       /* @JavascriptInterface
         public void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChatFragment.this, toast, Toast.LENGTH_SHORT).show();
         }
        // public WebAppInterface(ChatFragment chatFragment) {
 
-        //}
+        //}*/
 
 
         /**
@@ -291,26 +307,11 @@ public class ChatFragment extends Fragment {
          */
         @JavascriptInterface
         public void showDialog(String dialogMsg) {
-            AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+            new AlertDialog.Builder(mContext)
+                    .setMessage(dialogMsg)
+                    .setPositiveButton("OK", null)
+                    .create().show();
 
-            // Setting Dialog Title
-            alertDialog.setTitle("JS triggered Dialog");
-
-            // Setting Dialog Message
-            alertDialog.setMessage(dialogMsg);
-
-            // Setting alert dialog icon
-            //alertDialog.setIcon((status) ? R.drawable.success : R.drawable.fail);
-
-            // Setting OK Button
-            alertDialog.setButton("OK", new OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(mContext, "Dialog dismissed!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            // Showing Alert Message
-            alertDialog.show();
         }
     }
 }

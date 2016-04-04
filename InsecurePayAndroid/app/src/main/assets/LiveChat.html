@@ -1,37 +1,24 @@
-<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!DOCTYPE html>
 <html>
-<head>
-    <script type="text/javascript">
+<button>
 
+<p>Please enter your message:</p>
+<textarea id="text" style="width:400px; height:100px;" >
+
+
+</textarea>
+
+<button type="submit" value="submit" onclick="myFunction('Thank you for your message')">Submit</button>
+<br>File to upload: <input type="file" name="uploadfile"></button>
+<script>
+function myFunction(dialogMsg) {
+
+    Android.showDialog(dialogMsg);
+}
 function clearTextArea(submit) {
-document.submit(“textArea").value='';
-alert(“sent”);
-}
 
-function showAlert(){
- alert(“Your message was sent!”);
-}
-
-function showDialog(dialogMsg) {
-        Android.showDialog(dialogMsg);
-    }
+ }
 </script>
-<body>
-
-<form>
-    Your Message:<br>
-  <textarea id=“textArea” style="width:400px; height:100px;" >
-
-  </textarea>
-    <br>
-    <input type="submit" name=“submit” value="Submit" onClick=“showDialog('thank')”/>
-    File to upload: <input type="file" name="uploadfile">
-    </button>
-
-</form>
-
-<p>If you click the "Submit" button, the form-data will be sent!</p>
 
 </body>
 </html>
-
