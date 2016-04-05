@@ -39,6 +39,7 @@ import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -457,6 +458,9 @@ public class AccountFragment extends Fragment {
             arrayListObj.add("Customer SSN: " + customerVOObj.getDecodedSsn());
             String currentString = responseWrapperObj.getResponseString();
             responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);
+            if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+                shouldLogout = false;
+            }
             super.postFailure(responseWrapperObj);
         }
     }

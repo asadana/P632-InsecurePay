@@ -26,6 +26,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
     private ProgressDialog progressDialogObj;
     private Context contextObj;
     private String path;
+    protected boolean shouldLogout;
 
 
     public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
@@ -33,6 +34,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         this.path = path;
         this.connectivityObj = new Connectivity(serverAddress);
         gsonObj = new Gson();
+        shouldLogout = true;
     }
 
     @Override
@@ -98,21 +100,24 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
         AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
 
-        // Deleting cookies to keep the app clean on error
-        connectivityObj.deleteCookies();
-
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(contextObj, LoginActivity.class);
-                        contextObj.startActivity(intent);
-                    }
-                });
-
         if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
             alertDialog.setTitle("Alert: Session Expired");
         } else {
             alertDialog.setTitle("Alert: " + responseWrapperObj.getResponseMessage());
+        }
+
+        // Check if shouldLogout is true
+        if (shouldLogout) {
+            // Deleting cookies to keep the app clean on error
+            connectivityObj.deleteCookies();
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(contextObj, LoginActivity.class);
+                            contextObj.startActivity(intent);
+                        }
+                    });
         }
 
         alertDialog.setMessage(responseWrapperObj.getResponseString());
