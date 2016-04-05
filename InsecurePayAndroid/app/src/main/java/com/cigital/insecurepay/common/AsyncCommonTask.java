@@ -118,6 +118,6 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         alertDialog.setMessage(responseWrapperObj.getResponseString());
         alertDialog.show();
         TextView textViewObj = (TextView) alertDialog.findViewById(android.R.id.message);
-        textViewObj.setTextSize(10);
+        textViewObj.setTextSize(13);
     }
 }
