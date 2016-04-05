@@ -442,24 +442,14 @@ public class AccountFragment extends Fragment {
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
-
-            Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + resultObj);
-            switch (resultObj) {
-                case "true":
-                    Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
-                    btnUpdateInfo.setEnabled(false);
-                    break;
-                case "false":
-                    Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
-                    break;
-            }
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Updated account information successfully.");
+            Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
+            btnUpdateInfo.setEnabled(false);
         }
 
         @Override
         protected void postFailure(ResponseWrapper responseWrapperObj) {
+            Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
             ArrayList<String> arrayListObj = new ArrayList<String>();
             arrayListObj.add("Customer Name: " + customerVOObj.getCustName());
             arrayListObj.add("Customer Number: " + customerVOObj.getCustNo());
@@ -469,7 +459,6 @@ public class AccountFragment extends Fragment {
             responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);
             super.postFailure(responseWrapperObj);
         }
-
     }
 
     // Inner class for DialogFragment
