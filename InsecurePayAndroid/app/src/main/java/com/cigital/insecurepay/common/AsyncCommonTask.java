@@ -98,7 +98,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
     protected void postFailure(ResponseWrapper responseWrapperObj) {
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
 
-        AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
 
         if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
             alertDialog.setTitle("Alert: Session Expired");
@@ -114,8 +114,17 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
                             Intent intent = new Intent(contextObj, LoginActivity.class);
                             contextObj.startActivity(intent);
+                        }
+                    });
+        } else {
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialog.dismiss();
                         }
                     });
         }
