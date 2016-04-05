@@ -91,10 +91,12 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         return false;
     }
 
+    // Function called when any non-error code is received from the server
     protected void postSuccess(String resultObj) {
         Log.i(this.getClass().getSimpleName(), "postSuccess: Successfully retrieved information");
     }
 
+    // Function called when any error code is received from the server
     protected void postFailure(ResponseWrapper responseWrapperObj) {
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
 
@@ -116,6 +118,9 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
                         public void onClick(DialogInterface dialog, int which) {
                             alertDialog.dismiss();
                             Intent intent = new Intent(contextObj, LoginActivity.class);
+                            // Clear back stack
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            // Start a new activity
                             contextObj.startActivity(intent);
                         }
                     });
@@ -131,6 +136,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
 
         alertDialog.setMessage(responseWrapperObj.getResponseString());
         alertDialog.show();
+        // Custom text size for the message in alert dialog
         TextView textViewObj = (TextView) alertDialog.findViewById(android.R.id.message);
         textViewObj.setTextSize(13);
     }
