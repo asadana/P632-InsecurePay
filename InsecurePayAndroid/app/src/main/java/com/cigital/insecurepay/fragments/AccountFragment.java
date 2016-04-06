@@ -253,20 +253,6 @@ public class AccountFragment extends Fragment {
         // TODO: Fix number formatting
         twPhone = new PhoneNumberFormattingTextWatcher();
 
-        // Check for zip code length as 5
-        etAddressZip.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    if (etAddressZip.getText().toString().trim().length() < 5) {
-                        etAddressZip.setError("Let there be 5");
-                    } else {
-                        etAddressZip.setError(null);
-                    }
-                }
-            }
-        });
-
         btnUpdateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
