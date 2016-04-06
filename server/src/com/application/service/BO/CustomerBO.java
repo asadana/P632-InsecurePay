@@ -12,7 +12,7 @@ public class CustomerBO {
 	private String city;
 	private String state;
 	private int zipcode;
-	private int phoneNo;
+	private long phoneNo;
 	private Date birthDate;
 	private String ssn;
 	private String email;
@@ -21,7 +21,7 @@ public class CustomerBO {
 	public CustomerBO(){
 		
 	}
-	public CustomerBO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
+	public CustomerBO(int custNo, String custName, String street, String city, String state, int zipcode, long phoneNo,
 			Date birthDate, String ssn, String email) {
 		super();
 		this.custNo = custNo;
@@ -71,10 +71,10 @@ public class CustomerBO {
 	public void setZipcode(int zipcode) {
 		this.zipcode = zipcode;
 	}
-	public int getPhoneNo() {
+	public long getPhoneNo() {
 		return phoneNo;
 	}
-	public void setPhoneNo(int phoneNo) {
+	public void setPhoneNo(long phoneNo) {
 		this.phoneNo = phoneNo;
 	}
 	public Date getBirthDate() {

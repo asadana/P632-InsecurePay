@@ -293,7 +293,7 @@ public class AccountFragment extends Fragment {
             customerVOObj.setState(etAddressState.getText().toString());
             customerVOObj.setBirthDate(tvUserDOB.getText().toString());
             customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
-            customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString().replaceAll("\\D+", "")));
+            customerVOObj.setPhoneNo(Long.valueOf(etPhone.getText().toString().replaceAll("\\D+", "")));
 
             jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
 
@@ -439,7 +439,7 @@ public class AccountFragment extends Fragment {
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
             etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
             etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
-            etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+            etPhone.setText(Long.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
             btnUpdateInfo.setEnabled(false);
         }
 
