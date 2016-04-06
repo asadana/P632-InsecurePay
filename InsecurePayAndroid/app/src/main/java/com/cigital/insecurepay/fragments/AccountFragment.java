@@ -177,6 +177,7 @@ public class AccountFragment extends Fragment {
             } else {
                 etPhone.setError(null);
             }
+            btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
         }
     };
