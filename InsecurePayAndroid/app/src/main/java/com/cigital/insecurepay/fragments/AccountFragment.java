@@ -291,10 +291,9 @@ public class AccountFragment extends Fragment {
             customerVOObj.setStreet(etAddressStreet.getText().toString());
             customerVOObj.setCity(etAddressCity.getText().toString());
             customerVOObj.setState(etAddressState.getText().toString());
-
             customerVOObj.setBirthDate(tvUserDOB.getText().toString());
             customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
-            customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
+            customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString().replaceAll("\\D+", "")));
 
             jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
 
