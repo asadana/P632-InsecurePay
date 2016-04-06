@@ -16,3 +16,16 @@ Some of the vulnerabilities that can be found in the application are:
 >B continues
 >- C
 > - D
+
+Changelog
+-------------------
+
+*v0.3-beta*
+>- Added Interest Calculator
+>- Added Detailed Error Page
+>- Activity History Improvements
+>- Improved Exception Handling
+>- Phone Number Fromatting (US)
+>- Zip Code limitation
+
+*v0.2-beta*
