@@ -163,6 +163,7 @@
                 android:maxLines="1"
                 android:text="@string/etAccount_phone_hint"
                 android:inputType="phone"
+                android:digits="0123456789 ()-"
                 android:minLines="1"
                 android:maxLength="14" />
         </TableRow>
