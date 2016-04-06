@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
 
         rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-        loginPreferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        loginPreferences = getSharedPreferences(getString(R.string.sharedPreferenceLogin), MODE_PRIVATE);
         boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
         //if the flag was true then get username and password and display
         if (saveLogin) {
@@ -269,7 +269,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             getString(R.string.login_path), loginVOObj);
                     userLoginTask.execute();
                 } else {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_SHORT).show();
                 }
 
             } catch (Exception e) {

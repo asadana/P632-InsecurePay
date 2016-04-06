@@ -49,6 +49,8 @@ public class BaseDao {
 				ps.setDate(i, (Date) param);
 			} else if(param instanceof Float){
 				ps.setFloat(i, ((Float)param).floatValue());
+			} else if (param instanceof Long) {
+				ps.setLong(i, ((Long) param).longValue());
 			}
 			i++;
 		}

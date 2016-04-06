@@ -35,11 +35,14 @@ import com.cigital.insecurepay.VOs.CustomerVO;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.JsonFileHandler;
 import com.cigital.insecurepay.common.PostAsyncCommonTask;
+import com.cigital.insecurepay.common.ResponseWrapper;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -141,16 +144,44 @@ public class AccountFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+
         }
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (etAddressZip.getText().toString().trim().length() < 5) {
+                etAddressZip.setError(getString(R.string.accountZipError));
+            } else {
+                etAddressZip.setError(null);
+            }
             btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
         }
     };
+    private PhoneNumberFormattingTextWatcher twPhone = new PhoneNumberFormattingTextWatcher("US") {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            super.beforeTextChanged(s, start, count, after);
+        }
 
-    private TextWatcher twPhone = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            super.afterTextChanged(s);
+            if (etPhone.getText().toString().trim().length() < 14) {
+                etPhone.setError(getString(R.string.accountPhoneError));
+            } else {
+                etPhone.setError(null);
+            }
+            btnUpdateInfo.setEnabled(true);
+            Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
+        }
+    };
+    private TextWatcher twDOB = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -162,7 +193,7 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
+            Log.i(this.getClass().getSimpleName(), "Date of Birth value changed.");
         }
     };
 
@@ -225,9 +256,7 @@ public class AccountFragment extends Fragment {
         etAddressState.addTextChangedListener(twAddressState);
         etAddressZip.addTextChangedListener(twAddressZip);
         etPhone.addTextChangedListener(twPhone);
-
-        // TODO: Fix number formatting
-        twPhone = new PhoneNumberFormattingTextWatcher();
+        tvUserDOB.addTextChangedListener(twDOB);
 
         btnUpdateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,29 +282,31 @@ public class AccountFragment extends Fragment {
 
     // Handles tasks to be done when Update button is clicked
     private void onClickUpdateInformation() {
-        Log.i(this.getClass().getSimpleName(), "Updating customer information.");
+        if (etAddressZip.getError() != null || etPhone.getError() != null) {
+            Toast.makeText(getContext(), getString(R.string.accountFixBeforeUpdate), Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i(this.getClass().getSimpleName(), "Updating customer information.");
 
-        customerVOObj.setEmail(etEmail.getText().toString());
-        customerVOObj.setStreet(etAddressStreet.getText().toString());
-        customerVOObj.setCity(etAddressCity.getText().toString());
-        customerVOObj.setState(etAddressState.getText().toString());
-        Log.i(this.getClass().getSimpleName(), tvUserDOB.getText().toString());
+            customerVOObj.setEmail(etEmail.getText().toString());
+            customerVOObj.setStreet(etAddressStreet.getText().toString());
+            customerVOObj.setCity(etAddressCity.getText().toString());
+            customerVOObj.setState(etAddressState.getText().toString());
+            customerVOObj.setBirthDate(tvUserDOB.getText().toString());
+            customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
+            customerVOObj.setPhoneNo(Long.valueOf(etPhone.getText().toString().replaceAll("\\D+", "")));
 
-        customerVOObj.setBirthDate(tvUserDOB.getText().toString());
-        customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
-        customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
+            jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
 
-        jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
+            try {
+                customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+            }
 
-        try {
-            customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-        } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+            UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+                    getString(R.string.cust_details_path), customerVOObj);
+            updateCustomerDetailsTask.execute();
         }
-
-        UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
-                getString(R.string.cust_details_path), customerVOObj);
-        updateCustomerDetailsTask.execute();
     }
 
     // Handles tasks to be done when Change Password is clicked
@@ -408,7 +439,7 @@ public class AccountFragment extends Fragment {
             etAddressCity.setText(customerVOObj.getCity(), TextView.BufferType.EDITABLE);
             etAddressState.setText(customerVOObj.getState(), TextView.BufferType.EDITABLE);
             etAddressZip.setText(Integer.toString(customerVOObj.getZipcode()), TextView.BufferType.EDITABLE);
-            etPhone.setText(Integer.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
+            etPhone.setText(Long.toString(customerVOObj.getPhoneNo()), TextView.BufferType.EDITABLE);
             btnUpdateInfo.setEnabled(false);
         }
 
@@ -422,26 +453,29 @@ public class AccountFragment extends Fragment {
             super(contextObj, serverAddress, path, customerVO, CustomerVO.class);
         }
 
-
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
-
-            Log.d(this.getClass().getSimpleName(), "postSuccess: Server response in update: " + resultObj);
-            switch (resultObj) {
-                case "true":
-                    Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
-                    btnUpdateInfo.setEnabled(false);
-                    break;
-                case "false":
-                    Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response from the server on update credentials");
-                    break;
-            }
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Updated account information successfully.");
+            Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
+            btnUpdateInfo.setEnabled(false);
         }
 
+        @Override
+        protected void postFailure(ResponseWrapper responseWrapperObj) {
+            Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
+            ArrayList<String> arrayListObj = new ArrayList<String>();
+            arrayListObj.add("Customer Name: " + customerVOObj.getCustName());
+            arrayListObj.add("Customer Number: " + customerVOObj.getCustNo());
+            arrayListObj.add("Customer Account Number: " + Integer.toString(commonVO.getAccountVO().getAccNo()));
+            arrayListObj.add("Customer SSN: " + customerVOObj.getDecodedSsn());
+            String currentString = responseWrapperObj.getResponseString();
+            responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);
+            if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+                shouldLogout = false;
+            }
+            super.postFailure(responseWrapperObj);
+        }
     }
 
     // Inner class for DialogFragment

@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
@@ -25,6 +26,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
     private ProgressDialog progressDialogObj;
     private Context contextObj;
     private String path;
+    protected boolean shouldLogout;
 
 
     public AsyncCommonTask(Context contextObj, String serverAddress, String path) {
@@ -32,6 +34,7 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         this.path = path;
         this.connectivityObj = new Connectivity(serverAddress);
         gsonObj = new Gson();
+        shouldLogout = true;
     }
 
     @Override
@@ -60,22 +63,8 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         super.onPostExecute(responseWrapperObj);
 
         // Checking if the response is in 2xx range
-        if (responseWrapperObj == null) {
-            connectivityObj.deleteCookies();
-            AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
-            alertDialog.setTitle("Alert");
-            alertDialog.setMessage("Session Expired");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(contextObj, LoginActivity.class);
-                            contextObj.startActivity(intent);
-                        }
-                    });
-            alertDialog.show();
-        } else if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
+        if (responseWrapperObj.getResponseCode() >= HttpURLConnection.HTTP_OK
                 && responseWrapperObj.getResponseCode() < HttpURLConnection.HTTP_MULT_CHOICE) {
-
             postSuccess(responseWrapperObj.getResponseString());
         } else {
             postFailure(responseWrapperObj);
@@ -102,11 +91,53 @@ public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWr
         return false;
     }
 
+    // Function called when any non-error code is received from the server
     protected void postSuccess(String resultObj) {
         Log.i(this.getClass().getSimpleName(), "postSuccess: Successfully retrieved information");
     }
 
+    // Function called when any error code is received from the server
     protected void postFailure(ResponseWrapper responseWrapperObj) {
         Log.i(this.getClass().getSimpleName(), "postFailure: Failed to retrieve account information");
+
+        final AlertDialog alertDialog = new AlertDialog.Builder(contextObj).create();
+
+        if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            alertDialog.setTitle("Alert: Session Expired");
+        } else {
+            alertDialog.setTitle("Alert: " + responseWrapperObj.getResponseMessage());
+        }
+
+        // Check if shouldLogout is true
+        if (shouldLogout) {
+            // Deleting cookies to keep the app clean on error
+            connectivityObj.deleteCookies();
+
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            alertDialog.dismiss();
+                            Intent intent = new Intent(contextObj, LoginActivity.class);
+                            // Clear back stack
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            // Start a new activity
+                            contextObj.startActivity(intent);
+                        }
+                    });
+        } else {
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            alertDialog.dismiss();
+                        }
+                    });
+        }
+
+        alertDialog.setMessage(responseWrapperObj.getResponseString());
+        alertDialog.show();
+        // Custom text size for the message in alert dialog
+        TextView textViewObj = (TextView) alertDialog.findViewById(android.R.id.message);
+        textViewObj.setTextSize(13);
     }
 }

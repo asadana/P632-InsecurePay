@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.application.common.Constants;
 import com.application.common.Queries;
+import com.application.service.Logging;
 import com.application.service.BO.ForgotPasswordBO;
 import com.application.service.BO.LoginValidationBO;
 
@@ -58,6 +59,12 @@ public class ForgotPasswordDao extends BaseDao {
 				params = new ArrayList<Object>();
 				params.add(Constants.defaultPassword);
 				params.add(l.getUsername());
+				int count = updateSql(Queries.UPDATE_DEFAULT_PASSWORD, params);
+				if(count != 0) {
+					Logging.logger.debug("Password reset successful");
+				} else {
+					Logging.logger.debug("Password reset failed");
+				}
 			} else
 				validUser = false;
 

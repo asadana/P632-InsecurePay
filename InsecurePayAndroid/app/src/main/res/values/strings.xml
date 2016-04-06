@@ -36,6 +36,8 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
+    <string name="tableLoginTrials">LoginTrials</string>
+    <string name="sharedPreferenceLogin">loginPrefs</string>
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
@@ -81,7 +83,10 @@
     <string name="account_update_failed">Update failed</string>
     <string name="btnAccount_update">Update</string>
     <string name="btnAccount_change_password">Change Password</string>
-    <string name="etAccount_phone_hint">0000000000</string>
+    <string name="etAccount_phone_hint">0123456789</string>
+    <string name="accountZipError">Minimum length of zip should be 5</string>
+    <string name="accountPhoneError">Minimum length of phone number should be 10</string>
+    <string name="accountFixBeforeUpdate">Please resolve the errors first</string>
 
     <!--For Transfer Funds Activity-->
     <string name="tvTransfer_fromAccountNo">Your Account No</string>
@@ -127,5 +132,32 @@
     <string name="tvActivityHistory_afterAmount">After amount</string>
     <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tvAccount_balance">Balance</string>
+    <string name="IntCalc_FillAccountNumber"></string>
+    <string name="tvIntCalc_PrincipalAmount">Principal</string>
+    <string name="etIntCalc_FillPrincipalAmount">Enter principal amount</string>
+    <string name="tvIntCalc_Period">Period</string>
+    <string name="etIntCalc_FillYear">Years</string>
+    <string name="tvIntCalc_Date">Enter Number</string>
+    <string name="tvIntCalc_CreditScore" >Credit Score</string>
+    <string name="tvIntCalc_FillCreditScore"></string>
+    <string name="btnIntCalc_Calc">Calculate</string>
+    <string name="Excellent">Excellent</string>
+    <string name="Good">Good</string>
+    <string name="Fair">Fair</string>
+    <string name="Bad">Bad</string>
+    <string name="tvIntCalc_Interest">Interest </string>
+    <string name="tvIntCalc_FillInterest"/>
+    <string name="tvIntCalc_RateOfInterest">Rate Of Interest </string>
+    <string name="tvIntCalc_FillRateOfInterest"/>
+    <string name="tvIntCalc_Percent">"%"</string>
+
+    <string-array name="Date">
+        <item>Years</item>
+        <item>Months</item>
+        <item>Days</item>
+    </string-array>
 
 </resources>

@@ -22,7 +22,7 @@ public abstract class PostAsyncCommonTask<T> extends AsyncCommonTask {
             connectivityObj.setSendToServer(gsonObj.toJson(objToBeSent, classObj));
             return connectivityObj.post();
         } else {
-            return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
+            return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null, null);
         }
     }
 }

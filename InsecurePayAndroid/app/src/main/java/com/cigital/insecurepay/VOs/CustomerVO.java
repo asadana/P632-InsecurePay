@@ -9,7 +9,7 @@ public class CustomerVO {
     private String city;
     private String state;
     private int zipcode;
-    private int phoneNo;
+    private long phoneNo;
     private String birthDate;
     private String ssn;
     private String email;
@@ -20,7 +20,7 @@ public class CustomerVO {
 
     }
 
-    public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, int phoneNo,
+    public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, long phoneNo,
                       String birthDate, String ssn, String email, String custUsername) {
         super();
         this.custNo = custNo;
@@ -84,11 +84,11 @@ public class CustomerVO {
         this.zipcode = zipcode;
     }
 
-    public int getPhoneNo() {
+    public long getPhoneNo() {
         return phoneNo;
     }
 
-    public void setPhoneNo(int phoneNo) {
+    public void setPhoneNo(long phoneNo) {
         this.phoneNo = phoneNo;
     }
 

@@ -25,8 +25,10 @@ android {
 
         xmlReport false
         htmlReport true
-        htmlOutput file("$project.buildDir/reports/lint/lint-result.html")
+        htmlOutput file("$project.projectDir/../reports/lint/lint-result-" + getDate() + ".html")
     }
+
+
 
     buildTypes {
         debug {
@@ -38,6 +40,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMddHHmmss')
+    return formattedDate
 }
 
 dependencies {

@@ -32,7 +32,7 @@ public class CustomerDao extends BaseDao {
 			customer.setCity(rs.getString("city"));
 			customer.setState(rs.getString("state"));
 			customer.setZipcode(rs.getInt("zipcode"));
-			customer.setPhoneNo(rs.getInt("phone_no"));
+			customer.setPhoneNo(rs.getLong("phone_no"));
 			customer.setBirthDate(rs.getDate("Birth_date"));
 			customer.setSsn(rs.getString("ssn"));
 			customer.setEmail(rs.getString("email"));
@@ -60,7 +60,6 @@ public class CustomerDao extends BaseDao {
 			return true;
 		}
 		return false;
-
 	}
 
 }

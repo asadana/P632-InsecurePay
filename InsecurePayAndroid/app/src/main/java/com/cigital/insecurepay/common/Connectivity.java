@@ -13,11 +13,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -59,14 +62,38 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
             if (mCookieStore.getCookies().size() > 0) {
                 //To join cookies in the request
-                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-                Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+                httpURLConnectionObj.setRequestProperty("Cookie",
+                        TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d(this.getClass().getSimpleName(), "post: " + mCookieStore.getCookies().toString());
             }
             writeIt();
-            is = httpURLConnectionObj.getInputStream();
-            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+            try {
+                is = httpURLConnectionObj.getInputStream();
+                Log.d(this.getClass().getSimpleName(), "post: Getting InputStream");
+                if (is != null) {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            readIt(is), httpURLConnectionObj.getResponseMessage());
+                    Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
+                }
+            } catch (IOException e) {
+                is = httpURLConnectionObj.getErrorStream();
+                if (is != null) {
+                    // Dumping stacktrace into message
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            errorToString(e), httpURLConnectionObj.getResponseMessage());
 
-            if (mCookieStore.getCookies().size() <= 0) {
+                    Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
+                }
+                Log.d(this.getClass().getSimpleName(), "post: Getting ErrorStream");
+            }
+
+            if (is == null) {
+                responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
+                        "Unable to connect to the server", "HTTP not found");
+                Log.e(this.getClass().getSimpleName(), "post: InputStream is null");
+            }
+
+            if (mCookieStore.getCookies().size() <= 0 && is != null) {
                 Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
                 List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
                 if (cookieHeaderList != null) {
@@ -77,8 +104,14 @@ public class Connectivity implements Serializable {
                 }
 
             }
+        } catch (MalformedURLException e) {
+            Log.e(this.getClass().getSimpleName(), "post: ", e);
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e),
+                    "Bad Request");
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Post error", e);
+            Log.e(this.getClass().getSimpleName(), "post: ", e);
+            return new ResponseWrapper(HttpURLConnection.HTTP_BAD_REQUEST, errorToString(e),
+                    "Bad Request");
         } finally {
 
             try {
@@ -113,9 +146,32 @@ public class Connectivity implements Serializable {
                 Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
             }
 
-            is = httpURLConnectionObj.getInputStream();
-            httpURLConnectionObj.connect();
-            responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
+            try {
+                is = httpURLConnectionObj.getInputStream();
+                Log.d(this.getClass().getSimpleName(), "get: Getting InputStream");
+                Log.d(this.getClass().getSimpleName(), "get: " + httpURLConnectionObj.getResponseMessage());
+                if (is != null) {
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            readIt(is), httpURLConnectionObj.getResponseMessage());
+                    Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
+                }
+            } catch (IOException e) {
+                is = httpURLConnectionObj.getErrorStream();
+                if (is != null) {
+                    // Dumping stacktrace into message
+                    responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
+                            errorToString(e), httpURLConnectionObj.getResponseMessage());
+                    Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
+                }
+                Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
+            }
+
+            if (is == null) {
+                responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
+                        "Unable to connect to the server", "HTTP not found");
+                Log.e(this.getClass().getSimpleName(), "get: InputStream is null");
+            }
+
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "Get error", e);
         } finally {
@@ -179,8 +235,9 @@ public class Connectivity implements Serializable {
             outWriter = new OutputStreamWriter(out, "UTF-8");
             outWriter.write(sendToServer);
             outWriter.flush();
+            Log.d(this.getClass().getSimpleName(), "Sent");
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
+            Log.e(this.getClass().getSimpleName(), "Error sending data to server", e);
         } finally {
             try {
                 if (outWriter != null) {
@@ -190,14 +247,19 @@ public class Connectivity implements Serializable {
                 Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
             }
         }
-        Log.d(this.getClass().getSimpleName(), "Sent");
 
+
+    }
+
+    public String errorToString(Exception e) {
+        StringWriter stringWriterObj = new StringWriter();
+        e.printStackTrace(new PrintWriter(stringWriterObj));
+        return stringWriterObj.toString();
     }
 
     public void setConnectionParameters(String path) {
         this.path = path;
     }
-
 
     public ResponseWrapper getResponseWrapperObj() {
         return responseWrapperObj;
@@ -208,8 +270,8 @@ public class Connectivity implements Serializable {
     }
 
     public void deleteCookies() {
-        Log.d("Inside delete cookie", "Cookies deleted");
         mCookieStore.removeAll();
+        Log.d(this.getClass().getSimpleName(), "deleteCookies: Cookies deleted");
     }
 
     public String getSendToServer() {

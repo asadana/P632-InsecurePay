@@ -74,7 +74,10 @@ public class CustomerService extends BaseService {
 				logger.error(e);
 			}
 		}
-		return Response.status(Response.Status.OK).entity(booleanObj).build();
+		if(booleanObj) {
+			return Response.status(Response.Status.OK).build();
+		} else {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 	}
-
 }
