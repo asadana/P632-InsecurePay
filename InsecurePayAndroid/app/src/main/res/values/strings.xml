@@ -84,6 +84,8 @@
     <string name="btnAccount_update">Update</string>
     <string name="btnAccount_change_password">Change Password</string>
     <string name="etAccount_phone_hint">0000000000</string>
+    <string name="accountZipError">Minimum length of zip should be 5</string>
+    <string name="accountFixBeforeUpdate">Please resolve the errors first</string>
 
     <!--For Transfer Funds Activity-->
     <string name="tvTransfer_fromAccountNo">Your Account No</string>

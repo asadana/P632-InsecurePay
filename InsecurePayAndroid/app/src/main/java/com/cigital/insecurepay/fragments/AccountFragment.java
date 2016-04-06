@@ -144,10 +144,16 @@ public class AccountFragment extends Fragment {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+
         }
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (etAddressZip.getText().toString().trim().length() < 5) {
+                etAddressZip.setError(getString(R.string.accountZipError));
+            } else {
+                etAddressZip.setError(null);
+            }
             btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
         }
@@ -247,6 +253,20 @@ public class AccountFragment extends Fragment {
         // TODO: Fix number formatting
         twPhone = new PhoneNumberFormattingTextWatcher();
 
+        // Check for zip code length as 5
+        etAddressZip.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    if (etAddressZip.getText().toString().trim().length() < 5) {
+                        etAddressZip.setError("Let there be 5");
+                    } else {
+                        etAddressZip.setError(null);
+                    }
+                }
+            }
+        });
+
         btnUpdateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -271,29 +291,32 @@ public class AccountFragment extends Fragment {
 
     // Handles tasks to be done when Update button is clicked
     private void onClickUpdateInformation() {
-        Log.i(this.getClass().getSimpleName(), "Updating customer information.");
+        if (etAddressZip.getError() != null || etPhone.getError() != null) {
+            Toast.makeText(getContext(), getString(R.string.accountFixBeforeUpdate), Toast.LENGTH_SHORT).show();
+        } else {
+            Log.i(this.getClass().getSimpleName(), "Updating customer information.");
 
-        customerVOObj.setEmail(etEmail.getText().toString());
-        customerVOObj.setStreet(etAddressStreet.getText().toString());
-        customerVOObj.setCity(etAddressCity.getText().toString());
-        customerVOObj.setState(etAddressState.getText().toString());
-        Log.i(this.getClass().getSimpleName(), tvUserDOB.getText().toString());
+            customerVOObj.setEmail(etEmail.getText().toString());
+            customerVOObj.setStreet(etAddressStreet.getText().toString());
+            customerVOObj.setCity(etAddressCity.getText().toString());
+            customerVOObj.setState(etAddressState.getText().toString());
 
-        customerVOObj.setBirthDate(tvUserDOB.getText().toString());
-        customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
-        customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
+            customerVOObj.setBirthDate(tvUserDOB.getText().toString());
+            customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
+            customerVOObj.setPhoneNo(Integer.parseInt(etPhone.getText().toString()));
 
-        jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
+            jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
 
-        try {
-            customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-        } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+            try {
+                customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+            }
+
+            UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+                    getString(R.string.cust_details_path), customerVOObj);
+            updateCustomerDetailsTask.execute();
         }
-
-        UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
-                getString(R.string.cust_details_path), customerVOObj);
-        updateCustomerDetailsTask.execute();
     }
 
     // Handles tasks to be done when Change Password is clicked
