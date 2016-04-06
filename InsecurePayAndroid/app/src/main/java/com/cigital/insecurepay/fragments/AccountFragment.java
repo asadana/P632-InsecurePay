@@ -158,23 +158,25 @@ public class AccountFragment extends Fragment {
             Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
         }
     };
-    private TextWatcher twPhone = new TextWatcher() {
+    private PhoneNumberFormattingTextWatcher twPhone = new PhoneNumberFormattingTextWatcher("US") {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            super.beforeTextChanged(s, start, count, after);
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            super.onTextChanged(s, start, before, count);
         }
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (etPhone.getText().toString().trim().length() < 10) {
+            super.afterTextChanged(s);
+            if (etPhone.getText().toString().trim().length() < 14) {
                 etPhone.setError(getString(R.string.accountPhoneError));
             } else {
                 etPhone.setError(null);
             }
-            btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
         }
     };
@@ -254,9 +256,6 @@ public class AccountFragment extends Fragment {
         etAddressZip.addTextChangedListener(twAddressZip);
         etPhone.addTextChangedListener(twPhone);
         tvUserDOB.addTextChangedListener(twDOB);
-
-        // TODO: Fix number formatting
-        twPhone = new PhoneNumberFormattingTextWatcher();
 
         btnUpdateInfo.setOnClickListener(new View.OnClickListener() {
             @Override
