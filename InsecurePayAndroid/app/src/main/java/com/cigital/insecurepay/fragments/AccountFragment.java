@@ -169,6 +169,11 @@ public class AccountFragment extends Fragment {
 
         @Override
         public void afterTextChanged(Editable s) {
+            if (etPhone.getText().toString().trim().length() < 10) {
+                etPhone.setError(getString(R.string.accountPhoneError));
+            } else {
+                etPhone.setError(null);
+            }
             btnUpdateInfo.setEnabled(true);
             Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
         }
