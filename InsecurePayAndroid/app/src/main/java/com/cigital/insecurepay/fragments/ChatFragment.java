@@ -4,20 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Message;
+import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
-import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -29,15 +27,10 @@ import com.cigital.insecurepay.R;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static android.content.DialogInterface.OnClickListener;
 
 public class ChatFragment extends Fragment {
 
@@ -47,8 +40,9 @@ public class ChatFragment extends Fragment {
     //WebAppInterface webAppInterface;
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
-    private String mCameraPhotoPath;
+    String fileName;
     WebAppInterface webAppInterface;
+    String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
 
     public ChatFragment() {
     }
@@ -86,11 +80,13 @@ public class ChatFragment extends Fragment {
 
                 Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("image/*");
+                contentSelectionIntent.setType("*/*");
 
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                 chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
                 chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
+                chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
+
                 Log.d(this.getClass().getSimpleName(), "before startActivity");
                 startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
                 Log.d(this.getClass().getSimpleName(), "after startActivity");
@@ -116,19 +112,6 @@ public class ChatFragment extends Fragment {
         return rootView;
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "img_" + timeStamp + "_";
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File imageFile = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpeg",         /* suffix */
-                storageDir      /* directory */
-        );
-        return imageFile;
-    }
 
     private void setUpWebViewDefaults(WebView webView) {
         WebSettings settings = webView.getSettings();
@@ -140,29 +123,48 @@ public class ChatFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient());
     }
 
+    public void getFileName(Uri fileuri) {
+        String uriString = fileuri.toString();
+        File myFile = new File(uriString);
+        String path = myFile.getAbsolutePath();
+
+        //get name of the selected file
+        if (uriString.startsWith("content://")) {
+            Cursor cursor = null;
+            try {
+                cursor = getActivity().getContentResolver().query(fileuri, null, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        } else if (uriString.startsWith("file://")) {
+            fileName = myFile.getName();
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(this.getClass().getSimpleName(), "inside  onActivity");
+
         if (requestCode != INPUT_FILE_REQUEST_CODE || mFilePathCallback == null) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
 
-        Log.d(this.getClass().getSimpleName(), "inside  onActivity2");
         Uri[] results = null;
 
         // Check that the response is a good one
         if (resultCode == Activity.RESULT_OK) {
-            if (data == null) {
-                // If there is not data, then we may have taken a photo
-                if (mCameraPhotoPath != null) {
-                    results = new Uri[]{Uri.parse(mCameraPhotoPath)};
-                }
-            } else {
+            if (data != null) {
+
                 String dataString = data.getDataString();
                 if (dataString != null) {
                     results = new Uri[]{Uri.parse(dataString)};
                 }
+
+                Uri uri = data.getData();
+                getFileName(uri);
             }
         }
 
@@ -170,7 +172,6 @@ public class ChatFragment extends Fragment {
         task.execute();
 
         mFilePathCallback.onReceiveValue(results);
-        Log.d(this.getClass().getSimpleName(), "after  onReceiveValue");
         mFilePathCallback = null;
         return;
     }
@@ -184,10 +185,8 @@ public class ChatFragment extends Fragment {
         }
 
         protected String doInBackground(String... urls) {
-            //String fileName = "abc.jpeg";
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileName = "img_" + timeStamp  + ".jpeg";
-            Log.d("upload file name",fileName);
+
+            Log.d("source uri", sourceFileUri.toString());
             String serverResponseMessage = null;
             HttpURLConnection conn = null;
             DataOutputStream dos = null;
@@ -215,11 +214,8 @@ public class ChatFragment extends Fragment {
 
                 // After this line it returns null exception
                 dos = new DataOutputStream(conn.getOutputStream());
-
                 dos.writeBytes(twoHyphens + boundary + lineEnd);
-
                 dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
-
                 dos.writeBytes(lineEnd);
 
                 // create a buffer of  maximum size
@@ -230,11 +226,6 @@ public class ChatFragment extends Fragment {
 
                 // read file and write it into form...
                 bytesRead = inputStream.read(buffer, 0, bufferSize);
-               /* if(bytesRead<max)
-                {
-                    Toast.makeText(getContext(), "File size too big", Toast.LENGTH_SHORT).show();
-
-                }*/
 
                 while (bytesRead > 0) {
 
@@ -280,7 +271,7 @@ public class ChatFragment extends Fragment {
         protected void onPostExecute(final String serverResponseMessage) {
 
             if (serverResponseMessage.equals("OK")) {
-                Toast.makeText(getContext(), "File Upload successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.chat_upload_successful), Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -297,21 +288,6 @@ public class ChatFragment extends Fragment {
         }
 
 
-
-       /* @JavascriptInterface
-        public void showToast(String toast) {
-            Toast.makeText(ChatFragment.this, toast, Toast.LENGTH_SHORT).show();
-        }
-       // public WebAppInterface(ChatFragment chatFragment) {
-
-        //}*/
-
-
-        /**
-         * Show Dialog
-         *
-         * @param dialogMsg
-         */
         @JavascriptInterface
         public void showDialog(String dialogMsg) {
             new AlertDialog.Builder(mContext)
