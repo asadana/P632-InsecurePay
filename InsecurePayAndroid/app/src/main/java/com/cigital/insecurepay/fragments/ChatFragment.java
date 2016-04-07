@@ -24,6 +24,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.CommonVO;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -43,8 +44,11 @@ public class ChatFragment extends Fragment {
     String fileName;
     WebAppInterface webAppInterface;
     String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
+    private CommonVO commonVO;
+    private int custNo;
 
     public ChatFragment() {
+
     }
 
     @SuppressLint("JavascriptInterface")
@@ -62,6 +66,8 @@ public class ChatFragment extends Fragment {
         mWebView.addJavascriptInterface(new WebAppInterface(getContext()),"Android");
         setUpWebViewDefaults(mWebView);
 
+        commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
+        custNo = commonVO.getCustNo();
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore the previous URL and history stack
@@ -76,7 +82,6 @@ public class ChatFragment extends Fragment {
                     mFilePathCallback.onReceiveValue(null);
                 }
                 mFilePathCallback = filePathCallback;
-                Log.d(this.getClass().getSimpleName(), "before takepicture internt");
 
                 Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -87,21 +92,10 @@ public class ChatFragment extends Fragment {
                 chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
                 chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
 
-                Log.d(this.getClass().getSimpleName(), "before startActivity");
                 startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
-                Log.d(this.getClass().getSimpleName(), "after startActivity");
                 return true;
             }
 
-            /*@Override
-            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-
-                new AlertDialog.Builder(ChatFragment.this)
-                        .setMessage(message)
-                        .setPositiveButton("OK",null)
-                        .create().show();
-                return true;
-            }*/
         });
 
         // Load the local index.html file
@@ -134,13 +128,13 @@ public class ChatFragment extends Fragment {
             try {
                 cursor = getActivity().getContentResolver().query(fileuri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    fileName = "CustNo_" + String.valueOf(custNo) + '_' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
             } finally {
                 cursor.close();
             }
         } else if (uriString.startsWith("file://")) {
-            fileName = myFile.getName();
+            fileName = "CustNo_" + String.valueOf(custNo) + '_' + myFile.getName();
         }
     }
 
