@@ -196,6 +196,7 @@ public class ChatFragment extends Fragment {
             String boundary = "*****";
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
+            int max = 5*1024*1024;
             int maxBufferSize = 1024 * 1024;
             try {
                 InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
@@ -229,6 +230,11 @@ public class ChatFragment extends Fragment {
 
                 // read file and write it into form...
                 bytesRead = inputStream.read(buffer, 0, bufferSize);
+               /* if(bytesRead<max)
+                {
+                    Toast.makeText(getContext(), "File size too big", Toast.LENGTH_SHORT).show();
+
+                }*/
 
                 while (bytesRead > 0) {
 
@@ -289,6 +295,8 @@ public class ChatFragment extends Fragment {
         WebAppInterface(Context c) {
             mContext = c;
         }
+
+
 
        /* @JavascriptInterface
         public void showToast(String toast) {
