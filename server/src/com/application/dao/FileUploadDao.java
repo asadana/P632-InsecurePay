@@ -56,18 +56,23 @@ public class FileUploadDao extends BaseDao {
 	private boolean writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
 		try {
+			
 			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
+			Logging.logger.debug("writeToFile: File created.");
 			int read = 0;
 			byte[] bytes = new byte[1024];
 
 			out = new FileOutputStream(new File(uploadedFileLocation));
+			Logging.logger.debug("writeToFile: File writing started.");
 			while ((read = uploadedInputStream.read(bytes)) != -1) {
 				out.write(bytes, 0, read);
 			}
 			out.flush();
 			out.close();
+			Logging.logger.debug("writeToFile: File writing completed.");
 			return true;
 		} catch (IOException e) {
+			Logging.logger.debug("writeToFile: Unable to write to a file");
 			Logging.logger.error(e);
 			return false;
 		}
