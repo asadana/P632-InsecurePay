@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/common_action_bar_splitter" />
+    <!--Background color of the screen-->
+    <item android:drawable="@color/common_google_signin_btn_text_dark_default" />
 
+    <!--Adding the launcher icon in center of the screen-->
     <item>
         <bitmap
             android:gravity="center"
