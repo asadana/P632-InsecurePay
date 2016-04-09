@@ -46,7 +46,9 @@ public class ChatFragment extends Fragment {
     private WebView mWebView;
     private ValueCallback<Uri[]> mFilePathCallback;
     private CommonVO commonVO;
-    private int custNo;
+
+    // File Size Limit 5 MB = 5 * 1024 * 1024
+    private int maxFileSize = 5 * 1024 * 1024;
 
     public ChatFragment() {
 
@@ -64,11 +66,11 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(new WebAppInterface(getContext()),"Android");
+        mWebView.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
         setUpWebViewDefaults(mWebView);
 
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
-        custNo = commonVO.getCustNo();
+
         // Check whether we're recreating a previously destroyed instance
         if (savedInstanceState != null) {
             // Restore the previous URL and history stack
@@ -90,7 +92,7 @@ public class ChatFragment extends Fragment {
 
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                 chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "Image Chooser");
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
                 chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
 
                 startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
@@ -118,8 +120,8 @@ public class ChatFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient());
     }
 
-    public void getFileName(Uri fileuri) {
-        String uriString = fileuri.toString();
+    public void getFileName(Uri fileUri) {
+        String uriString = fileUri.toString();
         File myFile = new File(uriString);
         String path = myFile.getAbsolutePath();
 
@@ -127,15 +129,21 @@ public class ChatFragment extends Fragment {
         if (uriString.startsWith("content://")) {
             Cursor cursor = null;
             try {
-                cursor = getActivity().getContentResolver().query(fileuri, null, null, null, null);
+                cursor = getActivity().getContentResolver().query(fileUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    fileName = "CustNo_" + String.valueOf(custNo) + '_' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
+                            '-' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    fileName = fileName.replaceAll("\\s", "");
                 }
             } finally {
-                cursor.close();
+                if (cursor != null) {
+                    cursor.close();
+                }
             }
         } else if (uriString.startsWith("file://")) {
-            fileName = "CustNo_" + String.valueOf(custNo) + '_' + myFile.getName();
+            fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
+                    '-' + myFile.getName();
+            fileName = fileName.replaceAll("\\s", "");
         }
     }
 
@@ -164,8 +172,6 @@ public class ChatFragment extends Fragment {
         }
 
         int bytesAvailable;
-        // Size 5 MB = 5 * 1024 * 1024
-        int max = 5 * 1024 * 1024;
         try {
             InputStream inputStream = null;
             if (results != null) {
@@ -176,13 +182,13 @@ public class ChatFragment extends Fragment {
                 bytesAvailable = inputStream.available();
                 Log.d(TAG, "onActivityResult: Size of the file: " + bytesAvailable);
 
-                if (bytesAvailable <= max) {
+                if (bytesAvailable <= maxFileSize) {
                     UploadFileTask task = null;
                     task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
                             getString(R.string.chatFileUploadPath), results[0]);
                     task.execute();
                 } else {
-                    int allowedSize = max / (1024 * 1024);
+                    int allowedSize = maxFileSize / (1024 * 1024);
                     float currentFileSize = bytesAvailable / (1024 * 1024);
                     Log.d(TAG, "onActivityResult: Allowed file size: " + String.valueOf(allowedSize));
                     Toast.makeText(getContext(), "File size cannot be bigger than " +
@@ -303,11 +309,13 @@ public class ChatFragment extends Fragment {
         }
     }
 
-    public class WebAppInterface {
+    class WebAppInterface {
 
         Context mContext;
 
-        /** Instantiate the interface and set the context */
+        /**
+         * Instantiate the interface and set the context
+         */
         WebAppInterface(Context c) {
             mContext = c;
         }
