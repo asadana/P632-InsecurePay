@@ -25,9 +25,10 @@ public class FileUploadService extends BaseService {
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-		String resultObj = null;
+		Boolean booleanResultObj = false;
+		
 		try {
-			resultObj = DaoFactory.getInstance(FileUploadDao.class, 
+			booleanResultObj = DaoFactory.getInstance(FileUploadDao.class, 
 					this.getConnection()).saveUploadedFile(uploadedInputStream,
 							fileDetail.getFileName());
 		} catch (ClassNotFoundException | InstantiationException 
@@ -36,9 +37,19 @@ public class FileUploadService extends BaseService {
 				| InvocationTargetException | SQLException e) {
 			logger.error(e);
 			Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} finally {
+			try {
+				close();
+			} catch (SQLException e) {
+				logger.error(e);
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			}
 		}
-
-		return Response.status(Response.Status.ACCEPTED).entity(resultObj).build();
+		if (booleanResultObj) {
+			return Response.status(Response.Status.ACCEPTED).entity(booleanResultObj).build();	
+		} else {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		}
 	}
 
 	
