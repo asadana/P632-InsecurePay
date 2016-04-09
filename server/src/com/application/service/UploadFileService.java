@@ -24,7 +24,7 @@ public class UploadFileService extends BaseService {
 			@FormDataParam("file") InputStream uploadedInputStream,
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
-		String uploadedFileLocation = "/Users/janakbhalla/Desktop/files/" + fileDetail.getFileName();
+		String uploadedFileLocation = "/usr/share/tomcat8/temp/uploadedFiles/" + fileDetail.getFileName();
 
 		// save it
 		writeToFile(uploadedInputStream, uploadedFileLocation);
