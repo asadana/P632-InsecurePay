@@ -202,7 +202,6 @@ public class Connectivity implements Serializable {
         this.path = path;
     }
 
-
     public ResponseWrapper getResponseWrapperObj() {
         return responseWrapperObj;
     }
@@ -240,4 +239,11 @@ public class Connectivity implements Serializable {
         this.context = context;
     }
 
+    public HttpURLConnection getHttpURLConnectionObj() {
+        return httpURLConnectionObj;
+    }
+
+    public void setHttpURLConnectionObj(HttpURLConnection httpURLConnectionObj) {
+        this.httpURLConnectionObj = httpURLConnectionObj;
+    }
 }
