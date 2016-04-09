@@ -275,8 +275,9 @@ public class ChatFragment extends Fragment {
             /*if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
             }*/
+            Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_LONG).show();
             super.postFailure(responseWrapperObj);
-            Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_SHORT).show();
+
         }
     }
 
