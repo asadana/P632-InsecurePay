@@ -40,7 +40,7 @@ public class FileUploadDao extends BaseDao {
 			}
 		}
 		
-		uploadedFileLocation = Constants.fileUploadDir + fileName;
+		uploadedFileLocation = Constants.fileUploadDir + "/" + fileName;
 		
 		boolean booleanObj = writeToFile(uploadedInputStream, uploadedFileLocation); 
 		if (booleanObj) {
