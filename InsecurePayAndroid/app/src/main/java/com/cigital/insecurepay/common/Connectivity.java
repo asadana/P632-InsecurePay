@@ -57,11 +57,7 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setChunkedStreamingMode(0);
             httpURLConnectionObj.setRequestMethod("POST");
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
-            if (mCookieStore.getCookies().size() > 0) {
-                //To join cookies in the request
-                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-                Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
-            }
+            addCookiesToRequest();
             writeIt();
             is = httpURLConnectionObj.getInputStream();
             responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(), readIt(is));
@@ -91,6 +87,14 @@ public class Connectivity implements Serializable {
             }
         }
         return responseWrapperObj;
+    }
+
+    private void addCookiesToRequest() {
+        if (mCookieStore.getCookies().size() > 0) {
+            //To join cookies in the request
+            httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+            Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+        }
     }
 
     public ResponseWrapper get(ContentValues contentValues) {
