@@ -17,7 +17,7 @@ import com.application.common.DaoFactory;
 import com.application.dao.FileUploadDao;
 
 @Path("/chatFileUpload")
-public class UploadFileService extends BaseService {
+public class FileUploadService extends BaseService {
 
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
