@@ -132,26 +132,25 @@
     <string name="tvActivityHistory_afterAmount">After amount</string>
     <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tvAccount_balance">Balance</string>
-    <string name="IntCalc_FillAccountNumber"></string>
+    <string name="IntCalc_FillAccountNumber" />
     <string name="tvIntCalc_PrincipalAmount">Principal</string>
     <string name="etIntCalc_FillPrincipalAmount">Enter principal amount</string>
     <string name="tvIntCalc_Period">Period</string>
     <string name="etIntCalc_FillYear">Years</string>
     <string name="tvIntCalc_Date">Enter Number</string>
-    <string name="tvIntCalc_CreditScore" >Credit Score</string>
-    <string name="tvIntCalc_FillCreditScore"></string>
+    <string name="tvIntCalc_CreditScore">Credit Score</string>
+    <string name="tvIntCalc_FillCreditScore" />
     <string name="btnIntCalc_Calc">Calculate</string>
     <string name="Excellent">Excellent</string>
     <string name="Good">Good</string>
     <string name="Fair">Fair</string>
     <string name="Bad">Bad</string>
     <string name="tvIntCalc_Interest">Interest </string>
-    <string name="tvIntCalc_FillInterest"/>
+    <string name="tvIntCalc_FillInterest" />
     <string name="tvIntCalc_RateOfInterest">Rate Of Interest </string>
-    <string name="tvIntCalc_FillRateOfInterest"/>
+    <string name="tvIntCalc_FillRateOfInterest" />
     <string name="tvIntCalc_Percent">"%"</string>
 
     <string-array name="Date">
@@ -159,5 +158,4 @@
         <item>Months</item>
         <item>Days</item>
     </string-array>
-
 </resources>
