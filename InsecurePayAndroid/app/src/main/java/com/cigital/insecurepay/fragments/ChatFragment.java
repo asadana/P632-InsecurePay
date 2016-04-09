@@ -47,8 +47,11 @@ public class ChatFragment extends Fragment {
     private ValueCallback<Uri[]> mFilePathCallback;
     private CommonVO commonVO;
 
+    // 1 MB = 1024 * 1024 bytes
+    private int megaByteSize = 1024 * 1024;
+
     // File Size Limit 5 MB = 5 * 1024 * 1024
-    private int maxFileSize = 5 * 1024 * 1024;
+    private int maxFileSize = 5 * megaByteSize;
 
     public ChatFragment() {
 
@@ -188,12 +191,20 @@ public class ChatFragment extends Fragment {
                             getString(R.string.chatFileUploadPath), results[0]);
                     task.execute();
                 } else {
-                    int allowedSize = maxFileSize / (1024 * 1024);
-                    float currentFileSize = bytesAvailable / (1024 * 1024);
-                    Log.d(TAG, "onActivityResult: Allowed file size: " + String.valueOf(allowedSize));
+                    int allowedSize = maxFileSize / megaByteSize;
+                    int allowedSizeRemainder = maxFileSize % megaByteSize;
+                    int currentFileSize = bytesAvailable / megaByteSize;
+                    int currentFileSizeRemainder = bytesAvailable % megaByteSize;
+
+                    Log.d(TAG, "onActivityResult: Allowed file size: " +
+                            String.valueOf(allowedSize) + "." +
+                            String.valueOf(allowedSizeRemainder));
                     Toast.makeText(getContext(), "File size cannot be bigger than " +
-                            String.valueOf(allowedSize) + "MB.\nCurrent file size: " +
-                            String.valueOf(currentFileSize) + "MB.", Toast.LENGTH_LONG).show();
+                                    String.valueOf(allowedSize) + "." +
+                                    String.valueOf(allowedSizeRemainder) + "MB.\nCurrent file size: " +
+                                    String.valueOf(currentFileSize) + "." +
+                                    String.valueOf(currentFileSizeRemainder) + "MB.",
+                            Toast.LENGTH_LONG).show();
                 }
             }
 
