@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.support.v4.app.Fragment;
@@ -25,12 +24,14 @@ import android.widget.Toast;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.common.AsyncCommonTask;
+import com.cigital.insecurepay.common.ResponseWrapper;
 
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ChatFragment extends Fragment {
@@ -38,12 +39,12 @@ public class ChatFragment extends Fragment {
     public static final int INPUT_FILE_REQUEST_CODE = 1;
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
     private static final String TAG = ChatFragment.class.getSimpleName();
-    //WebAppInterface webAppInterface;
-    private WebView mWebView;
-    private ValueCallback<Uri[]> mFilePathCallback;
     String fileName;
     WebAppInterface webAppInterface;
     String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
+    //WebAppInterface webAppInterface;
+    private WebView mWebView;
+    private ValueCallback<Uri[]> mFilePathCallback;
     private CommonVO commonVO;
     private int custNo;
 
@@ -162,38 +163,48 @@ public class ChatFragment extends Fragment {
             }
         }
 
-        UploadFileTask task = new UploadFileTask(results[0]);
-        task.execute();
+
+        if (results != null) {
+            UploadFileTask task = null;
+            task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
+                    getString(R.string.chatFileUploadPath), results[0]);
+            task.execute();
+        }
+
 
         mFilePathCallback.onReceiveValue(results);
         mFilePathCallback = null;
-        return;
     }
 
-    class UploadFileTask extends AsyncTask<String, Void, String> {
+    class UploadFileTask extends AsyncCommonTask {
 
-        Uri sourceFileUri;
+        private Uri sourceFileUri;
+        private String serverAddress;
+        private String path;
 
-        UploadFileTask(Uri sourceFileUri) {
+        public UploadFileTask(Context contextObj, String serverAddress,
+                              String path, Uri sourceFileUri) {
+            super(contextObj, serverAddress, path);
             this.sourceFileUri = sourceFileUri;
+            this.serverAddress = serverAddress;
+            this.path = path;
         }
 
-        protected String doInBackground(String... urls) {
-
-            Log.d("source uri", sourceFileUri.toString());
-            String serverResponseMessage = null;
-            HttpURLConnection conn = null;
+        @Override
+        protected ResponseWrapper doInBackground(Object... params) {
+            super.doInBackground(params);
+            HttpURLConnection conn = connectivityObj.getHttpURLConnectionObj();
             DataOutputStream dos = null;
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary = "*****";
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
-            int max = 5*1024*1024;
+            int max = 5 * 1024 * 1024;
             int maxBufferSize = 1024 * 1024;
             try {
                 InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
-                URL url = new URL(getString(R.string.default_address) + "/rest/upload");
+                URL url = new URL(serverAddress + path);
 
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true); // Allow Inputs
@@ -205,71 +216,68 @@ public class ChatFragment extends Fragment {
                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
                 conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
                 conn.setRequestProperty("uploaded_file", fileName);
+                connectivityObj.setHttpURLConnectionObj(conn);
+                connectivityObj.addCookiesToRequest();
 
-                // After this line it returns null exception
-                dos = new DataOutputStream(conn.getOutputStream());
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
-                dos.writeBytes(lineEnd);
+                if (checkConnection()) {
+                    // After this line it returns null exception
+                    dos = new DataOutputStream(conn.getOutputStream());
+                    dos.writeBytes(twoHyphens + boundary + lineEnd);
+                    dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
+                    dos.writeBytes(lineEnd);
 
-                // create a buffer of  maximum size
-                bytesAvailable = inputStream.available();
-
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // read file and write it into form...
-                bytesRead = inputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-
-                    dos.write(buffer, 0, bufferSize);
+                    // create a buffer of  maximum size
                     bytesAvailable = inputStream.available();
+
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    buffer = new byte[bufferSize];
+
+                    // read file and write it into form...
                     bytesRead = inputStream.read(buffer, 0, bufferSize);
 
+                    while (bytesRead > 0) {
+
+                        dos.write(buffer, 0, bufferSize);
+                        bytesAvailable = inputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = inputStream.read(buffer, 0, bufferSize);
+                    }
+
+                    // send multipart form data necesssary after file data...
+                    dos.writeBytes(lineEnd);
+                    dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+
+                    ResponseWrapper responseWrapperObj = new ResponseWrapper(conn.getResponseCode(),
+                            connectivityObj.readIt(conn.getInputStream()));
+                    return responseWrapperObj;
+
+                } else {
+                    return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
                 }
-
-                // send multipart form data necesssary after file data...
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // Responses from the server (code and message)
-                int serverResponseCode = conn.getResponseCode();
-                serverResponseMessage = conn.getResponseMessage();
-
-                Log.i("uploadFile", "HTTP Response is : "
-                        + serverResponseMessage + ": " + serverResponseMessage);
-                dos.flush();
-                dos.close();
-
-            } catch (
-                    MalformedURLException ex
-                    )
-
-            {
-                Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
-            } catch (
-                    Exception e
-                    )
-
-            {
-                e.printStackTrace();
-                Log.e(this.getClass().getSimpleName(), "Exception : "
-                        + e.getMessage(), e);
+            } catch (IOException e) {
+                Log.e(TAG, "doInBackground: ", e);
+                return new ResponseWrapper(HttpURLConnection.HTTP_INTERNAL_ERROR, null);
             }
-            return serverResponseMessage;
         }
 
-
-        protected void onPostExecute(final String serverResponseMessage) {
-
-            if (serverResponseMessage.equals("OK")) {
-                Toast.makeText(getContext(), getString(R.string.chat_upload_successful), Toast.LENGTH_SHORT).show();
-            }
+        @Override
+        protected void postSuccess(String resultObj) {
+            super.postSuccess(resultObj);
+            Log.d(TAG, "postSuccess: Server response: " + resultObj);
+            Toast.makeText(getContext(), getString(R.string.chatUploadSuccess), Toast.LENGTH_SHORT).show();
 
         }
 
+        @Override
+        protected void postFailure(ResponseWrapper responseWrapperObj) {
+            // TODO: Uncomment this after merging into develop
+            /*if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+                shouldLogout = false;
+            }*/
+            super.postFailure(responseWrapperObj);
+            Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public class WebAppInterface {

@@ -89,7 +89,7 @@ public class Connectivity implements Serializable {
         return responseWrapperObj;
     }
 
-    private void addCookiesToRequest() {
+    public void addCookiesToRequest() {
         if (mCookieStore.getCookies().size() > 0) {
             //To join cookies in the request
             httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
@@ -149,7 +149,7 @@ public class Connectivity implements Serializable {
     }
 
     //To read the response from server
-    private String readIt(InputStream stream) {
+    public String readIt(InputStream stream) {
         Log.d(this.getClass().getSimpleName(), "Reading response");
         StringBuilder sb = new StringBuilder();
         String line;
