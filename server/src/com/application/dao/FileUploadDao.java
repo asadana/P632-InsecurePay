@@ -19,18 +19,41 @@ public class FileUploadDao extends BaseDao {
 		uploadedFileLocation = null;
 	}
 
-	public String saveUploadedFile(InputStream uploadedInputStream, String fileName) {
+	public boolean saveUploadedFile(InputStream uploadedInputStream, String fileName) {
+		File folderFileObj = new File(Constants.fileUploadDir);
+
+		Logging.logger.debug("saveUploadedFile: Folder path: " + Constants.fileUploadDir);
+		Logging.logger.debug("saveUploadedFile: Folder exists?: " + folderFileObj.exists());
+		Logging.logger.debug("saveUploadedFile: Folder is a directory?: " + folderFileObj.isDirectory());
+		
+		if (!(folderFileObj.exists() && folderFileObj.isDirectory())) {
+			Logging.logger.debug("saveUploadedFile: folder not found");
+			if (folderFileObj.mkdir()) {
+				Logging.logger.debug("saveUploadedFile: Creating folder");
+				if (!(folderFileObj.exists() && folderFileObj.isDirectory())) {
+					Logging.logger.debug("saveUploadedFile: Unable to create a folder");
+					return false;
+				}
+			} else {
+				Logging.logger.debug("writeToFile: Unable to create a folder");
+				return false;
+			}
+		}
+		
 		uploadedFileLocation = Constants.fileUploadDir + fileName;
 		
-		// save it
-		writeToFile(uploadedInputStream, uploadedFileLocation);
-
-		String output = "File uploaded to : " + uploadedFileLocation;
-		return output;
+		boolean booleanObj = writeToFile(uploadedInputStream, uploadedFileLocation); 
+		if (booleanObj) {
+			Logging.logger.debug("storeUploadedFile: writeToFile returned true");
+			return booleanObj;
+		} else {
+			Logging.logger.debug("storeUploadedFile: writeToFile returned false");
+			return booleanObj;
+		}
 	}
 
 	// save uploaded file to new location
-	private void writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
+	private boolean writeToFile(InputStream uploadedInputStream, String uploadedFileLocation) {
 
 		try {
 			OutputStream out = new FileOutputStream(new File(uploadedFileLocation));
@@ -43,8 +66,10 @@ public class FileUploadDao extends BaseDao {
 			}
 			out.flush();
 			out.close();
+			return true;
 		} catch (IOException e) {
 			Logging.logger.error(e);
+			return false;
 		}
 
 	}
