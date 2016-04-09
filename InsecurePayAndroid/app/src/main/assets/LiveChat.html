@@ -8,7 +8,7 @@
 
 </textarea>
 <br>
-File to upload: <input type="file" name="uploadfile" onchange="checkFileSize(this)" ></button>
+    File to upload: <input type="file" name="uploadfile"></button>
 <button type="reset" value="reset" onclick="myFunction('Thank you for your message')">Submit</button>
 
 <script>
@@ -16,15 +16,6 @@ function myFunction(dialogMsg) {
     document.getElementById("text").value = "";
     Android.showDialog(dialogMsg);
 }
-function checkFileSize(inputFile) {
-var max = 5 * 1024 * 1024; // 5MB
-
-    if (inputFile.files && inputFile.files[0].size > max) {
-        alert("File too large.");
-        inputFile.value = null; // Clear the field.
-    }
-}
-
 
 </script>
 

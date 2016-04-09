@@ -163,14 +163,37 @@ public class ChatFragment extends Fragment {
             }
         }
 
+        int bytesAvailable;
+        // Size 5 MB = 5 * 1024 * 1024
+        int max = 5 * 1024 * 1024;
+        try {
+            InputStream inputStream = null;
+            if (results != null) {
+                inputStream = getContext().getContentResolver().openInputStream(results[0]);
+            }
+            if (inputStream != null) {
+                // create a buffer of  maximum size
+                bytesAvailable = inputStream.available();
+                Log.d(TAG, "onActivityResult: Size of the file: " + bytesAvailable);
 
-        if (results != null) {
-            UploadFileTask task = null;
-            task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
-                    getString(R.string.chatFileUploadPath), results[0]);
-            task.execute();
+                if (bytesAvailable <= max) {
+                    UploadFileTask task = null;
+                    task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
+                            getString(R.string.chatFileUploadPath), results[0]);
+                    task.execute();
+                } else {
+                    int allowedSize = max / (1024 * 1024);
+                    float currentFileSize = bytesAvailable / (1024 * 1024);
+                    Log.d(TAG, "onActivityResult: Allowed file size: " + String.valueOf(allowedSize));
+                    Toast.makeText(getContext(), "File size cannot be bigger than " +
+                            String.valueOf(allowedSize) + "MB.\nCurrent file size: " +
+                            String.valueOf(currentFileSize) + "MB.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, "onActivityResult: ", e);
         }
-
 
         mFilePathCallback.onReceiveValue(results);
         mFilePathCallback = null;
@@ -193,14 +216,13 @@ public class ChatFragment extends Fragment {
         @Override
         protected ResponseWrapper doInBackground(Object... params) {
             super.doInBackground(params);
-            HttpURLConnection conn = connectivityObj.getHttpURLConnectionObj();
+            HttpURLConnection conn = null;
             DataOutputStream dos = null;
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary = "*****";
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
-            int max = 5 * 1024 * 1024;
             int maxBufferSize = 1024 * 1024;
             try {
                 InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
