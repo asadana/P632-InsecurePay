@@ -11,5 +11,5 @@ public class Constants {
 	public static CookieList cookieList = new CookieList();
 	public static int counter = 100;
 	public final static int counterInitial = 100;
-	public final static int counterLimit  = 100000;
+	public final static int counterLimit  = 1000000;
 }
