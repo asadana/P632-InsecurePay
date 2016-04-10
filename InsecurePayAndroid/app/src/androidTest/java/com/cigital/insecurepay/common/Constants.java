@@ -29,6 +29,12 @@ public class Constants {
     public static String displayedText = "";
     public static int transferAmount = 0;
 
+    // For InterestCalc
+    public static final String period = "3";
+    public static final Double balance = 100232.0;
+    public static final String principal = "100";
+
+
     // Common logout for all tests
     public static void logout() {
         sleepWait();
