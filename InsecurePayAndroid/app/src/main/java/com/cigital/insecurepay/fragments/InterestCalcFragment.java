@@ -71,9 +71,10 @@ public class InterestCalcFragment extends Fragment {
     private Double interest;
     private HomeFragment.OnFragmentInteractionListener mListener;
     private static final Pattern timePattern
-            = Pattern.compile("(?<![-.])\\b[1-9]+\\b(?!\\.[1-9])");
+            = Pattern.compile("^[1-9][0-9]*$");
+
     private static final Pattern principalPattern
-            = Pattern.compile("^\\d+$");
+            = Pattern.compile("^(?:0|[1-9][0-9]*)\\.[0-9]+$");
 
 
     public InterestCalcFragment() {
@@ -173,7 +174,7 @@ public class InterestCalcFragment extends Fragment {
         etPrincipal = (EditText) viewObj.findViewById(R.id.etIntCalc_FillPrincipalAmount);
         etPrincipal.setText(String.valueOf(commonVO.getAccountVO().getAccountBalance()));
         etDate = (EditText) viewObj.findViewById(R.id.etIntCalc_Date);
-        DateType = (Spinner) viewObj.findViewById(R.id.etIntCalc_Period);
+
         tvPeriod = (TextView) viewObj.findViewById(R.id.tvIntCalc_Period);
         tvCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_CreditScore);
         tvDisplayCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillCreditScore);
