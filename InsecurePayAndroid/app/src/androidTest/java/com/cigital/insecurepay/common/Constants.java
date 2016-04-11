@@ -30,9 +30,8 @@ public class Constants {
     public static int transferAmount = 0;
 
     // For InterestCalc
-    public static final String period = "3";
-    public static final Double balance = 100232.0;
-    public static final String principal = "100";
+    public static int period = 0;
+    public static double principal = 0;
 
 
     // Common logout for all tests

@@ -14,6 +14,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -32,15 +34,18 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class InterestCalcFragmentTest {
 
-    private Activity activityObj;
-
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    private Activity activityObj;
 
     @Test
     public void calcInterest() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
+
+        Calendar calendarObj = Calendar.getInstance();
+        Constants.principal = calendarObj.get(Calendar.DATE);
+        Constants.period  = calendarObj.get(Calendar.HOUR_OF_DAY);
 
         onView(withId(R.id.username)).
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
@@ -59,17 +64,15 @@ public class InterestCalcFragmentTest {
         onView(withText(R.string.nav_interest_calc))
                 .perform(click());
 
-        //Check whether principal is equal to balance
-        onView(withId(R.id.etIntCalc_FillPrincipalAmount)).check( matches(withText(Constants.balance.toString())));
 
         //Enter some principal amount
         onView(withId(R.id.etIntCalc_FillPrincipalAmount)).
-                perform(replaceText(Constants.principal), closeSoftKeyboard());
+                perform(replaceText(String.valueOf(Constants.principal)), closeSoftKeyboard());
 
 
         //Enter some period for days/months/year
         onView(withId(R.id.etIntCalc_Date)).
-                perform(typeText(Constants.period), closeSoftKeyboard());
+                perform(typeText(String.valueOf(Constants.period)), closeSoftKeyboard());
 
         //Hit Calculate
         onView(withId(R.id.btnIntCalc_Calc))
