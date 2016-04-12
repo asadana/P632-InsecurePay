@@ -10,6 +10,7 @@ public class Constants {
 	public final static String defaultPassword = "12345";
 	public static CookieList cookieList = new CookieList();
 	public static int counter = 100;
+	public final static String fileUploadDir = "/usr/share/tomcat8/temp/uploadedFiles";
 	public final static int counterInitial = 100;
 	public final static int counterLimit  = 1000000;
 }

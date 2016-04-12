@@ -60,12 +60,7 @@ public class Connectivity implements Serializable {
             httpURLConnectionObj.setChunkedStreamingMode(0);
             httpURLConnectionObj.setRequestMethod("POST");
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
-            if (mCookieStore.getCookies().size() > 0) {
-                //To join cookies in the request
-                httpURLConnectionObj.setRequestProperty("Cookie",
-                        TextUtils.join(";", mCookieStore.getCookies()));
-                Log.d(this.getClass().getSimpleName(), "post: " + mCookieStore.getCookies().toString());
-            }
+            addCookiesToRequest();
             writeIt();
             try {
                 is = httpURLConnectionObj.getInputStream();
@@ -124,6 +119,14 @@ public class Connectivity implements Serializable {
             }
         }
         return responseWrapperObj;
+    }
+
+    public void addCookiesToRequest() {
+        if (mCookieStore.getCookies().size() > 0) {
+            //To join cookies in the request
+            httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
+            Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+        }
     }
 
     public ResponseWrapper get(ContentValues contentValues) {
@@ -201,7 +204,7 @@ public class Connectivity implements Serializable {
     }
 
     //To read the response from server
-    private String readIt(InputStream stream) {
+    public String readIt(InputStream stream) {
         Log.d(this.getClass().getSimpleName(), "Reading response");
         StringBuilder sb = new StringBuilder();
         String line;
@@ -298,4 +301,11 @@ public class Connectivity implements Serializable {
         this.context = context;
     }
 
+    public HttpURLConnection getHttpURLConnectionObj() {
+        return httpURLConnectionObj;
+    }
+
+    public void setHttpURLConnectionObj(HttpURLConnection httpURLConnectionObj) {
+        this.httpURLConnectionObj = httpURLConnectionObj;
+    }
 }
