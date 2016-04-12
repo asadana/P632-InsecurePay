@@ -19,6 +19,12 @@ Some of the vulnerabilities that can be found in the application are:
 
 Changelog
 -------------------
+*v0.4-beta*
+>- Added Support Chat messages
+>- Added Support Chat file upload
+>- Added splash screen to welcome user
+>- Improvements in Interest Calculator
+
 
 *v0.3-beta*
 >- Added Interest Calculator
@@ -27,5 +33,6 @@ Changelog
 >- Improved Exception Handling
 >- Phone Number Fromatting (US)
 >- Zip Code limitation
+
 
 *v0.2-beta*

@@ -129,9 +129,6 @@ public class LoginActivityTest {
                 EditText editTextObj = (EditText) view;
                 String text = editTextObj.getText().toString();
 
-                System.out.println("Credentials: " + credentials);
-                System.out.println("EditText: " + text);
-
                 return credentials.equals(text);
             }
 
@@ -149,10 +146,6 @@ public class LoginActivityTest {
             public boolean matchesSafely(View view) throws NullPointerException {
 
                 EditText editTextObj = (EditText) view;
-
-                System.out.println("Expected: " + expected);
-                System.out.println("EditText: " + editTextObj.getError().toString());
-
                 return editTextObj.getError().toString().equals(expected);
             }
 

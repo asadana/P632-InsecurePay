@@ -41,7 +41,7 @@
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
-    <!--<string name="default_address">http://10.0.0.3:8090/InsecurePayServiceServer</string>-->
+    <!--<string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
@@ -51,6 +51,7 @@
     <string name="transfer_validation_path">transferValidation</string>
     <string name="accountno_validation_path">accountNumberValidation</string>
     <string name="activity_history_path">activityHistory</string>
+    <string name="chatFileUploadPath">chatFileUpload</string>
     <string name="logout_path">logout</string>
 
     <!--For Navigation Drawer Toolbar titles-->
@@ -126,32 +127,35 @@
     <string name="btnSubmit">Submit</string>
     <string name="account_no">accountNo</string>
 
+    <!--For Chat Fragment-->
+    <string name="chatUploadSuccess">File upload successful</string>
+    <string name="chatUploadFailure">File upload failed</string>
+
     <!--For Transaction List item-->
     <string name="tvActivityHistory_Description">Description</string>
     <string name="tvActivityHistory_Date">Date</string>
     <string name="tvActivityHistory_afterAmount">After amount</string>
     <string name="tvActivityHistory_TransactionAmount">Transaction Amount</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tvAccount_balance">Balance</string>
-    <string name="IntCalc_FillAccountNumber"></string>
+    <string name="IntCalc_FillAccountNumber" />
     <string name="tvIntCalc_PrincipalAmount">Principal</string>
     <string name="etIntCalc_FillPrincipalAmount">Enter principal amount</string>
     <string name="tvIntCalc_Period">Period</string>
     <string name="etIntCalc_FillYear">Years</string>
     <string name="tvIntCalc_Date">Enter Number</string>
-    <string name="tvIntCalc_CreditScore" >Credit Score</string>
-    <string name="tvIntCalc_FillCreditScore"></string>
+    <string name="tvIntCalc_CreditScore">Credit Score</string>
+    <string name="tvIntCalc_FillCreditScore" />
     <string name="btnIntCalc_Calc">Calculate</string>
     <string name="Excellent">Excellent</string>
     <string name="Good">Good</string>
     <string name="Fair">Fair</string>
     <string name="Bad">Bad</string>
     <string name="tvIntCalc_Interest">Interest </string>
-    <string name="tvIntCalc_FillInterest"/>
+    <string name="tvIntCalc_FillInterest" />
     <string name="tvIntCalc_RateOfInterest">Rate Of Interest </string>
-    <string name="tvIntCalc_FillRateOfInterest"/>
+    <string name="tvIntCalc_FillRateOfInterest" />
     <string name="tvIntCalc_Percent">"%"</string>
 
     <string-array name="Date">
@@ -159,5 +163,4 @@
         <item>Months</item>
         <item>Days</item>
     </string-array>
-
 </resources>

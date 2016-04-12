@@ -24,6 +24,7 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.fragments.AccountFragment;
 import com.cigital.insecurepay.fragments.ActivityHistoryFragment;
+import com.cigital.insecurepay.fragments.ChatFragment;
 import com.cigital.insecurepay.fragments.HomeFragment;
 import com.cigital.insecurepay.fragments.InterestCalcFragment;
 import com.cigital.insecurepay.fragments.TransferFragment;
@@ -137,7 +138,9 @@ public class HomePage extends AppCompatActivity
             Log.i(this.getClass().getSimpleName(), "Interest Calculator Selected");
             setTitle(R.string.nav_interest_calc);
         } else if (id == R.id.nav_support_chat) {
-
+            fragmentClass = ChatFragment.class;
+            Log.i(this.getClass().getSimpleName(), "Chat Selected");
+            setTitle(R.string.nav_support_chat);
         } else if (id == R.id.nav_logout) {
             onLogOut();
             return true;

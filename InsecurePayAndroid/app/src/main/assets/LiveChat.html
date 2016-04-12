@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<button>
+
+<p>Please enter your message:</p>
+<textarea id="text" style="width:250px; height:100px;" >
+
+
+</textarea>
+<br>
+    File to upload: <input type="file" name="uploadfile"></button>
+<button type="reset" value="reset" onclick="myFunction('Thank you for your message')">Submit</button>
+
+<script>
+function myFunction(dialogMsg) {
+    document.getElementById("text").value = "";
+    Android.showDialog(dialogMsg);
+}
+
+</script>
+
+</body>
+</html>

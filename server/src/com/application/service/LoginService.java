@@ -42,7 +42,12 @@ public class LoginService extends BaseService {
 			validate = DaoFactory.getInstance(LoginDao.class,
 					this.getConnection()).validateUser(loginBO);
 			if (validate.isValidUser()) {
-				Constants.counter++;
+				if (Constants.counter >= Constants.counterInitial && 
+						Constants.counter < Constants.counterLimit) {
+					Constants.counter++;
+				} else {
+					Constants.counter = Constants.counterInitial;	
+				}
 
 				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(),
 																validate.getCustNo());

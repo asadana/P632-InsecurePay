@@ -12,24 +12,27 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.lang.Thread.sleep;
 
 public class Constants {
-
     // For ForgotPasswordTest
     public static final String correctSSN = "132137";
     public static final String wrongSSN = "1234234";
     public static final String correctAccountNo = "2008";
 
+
     // For LoginActivityTest
     public static final String defaultPassword = "12345";
     public static final String correctUsername = "testUser";
     public static final String wrongInput = "testUserWrong";
-
-    // For AccountFragmentTest
-    public static SimpleDateFormat simpleDateFormatObj = new SimpleDateFormat("yyyy-MM-dd");
-    public static String displayedDate = "";
-
     // For TransferFragmentTest
     public static final String receiverUserName = "foo";
+    // For AccountFragmentTest
+    public static SimpleDateFormat simpleDateFormatObj = new SimpleDateFormat("kkSSS");
+    public static String displayedText = "";
     public static int transferAmount = 0;
+
+    // For InterestCalc
+    public static int period = 0;
+    public static double principal = 0;
+
 
     // Common logout for all tests
     public static void logout() {
