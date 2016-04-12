@@ -12,11 +12,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static java.lang.Thread.sleep;
 
 public class Constants {
-
     // For ForgotPasswordTest
     public static final String correctSSN = "132137";
     public static final String wrongSSN = "1234234";
     public static final String correctAccountNo = "2008";
+
 
     // For LoginActivityTest
     public static final String defaultPassword = "12345";

@@ -44,7 +44,7 @@ public class InterestCalcFragmentTest {
         activityObj = loginActivityActivityTestRule.getActivity();
 
         Calendar calendarObj = Calendar.getInstance();
-        Constants.principal = calendarObj.get(Calendar.DATE);
+        Constants.principal = calendarObj.get(Calendar.MILLISECOND)*calendarObj.get(Calendar.MILLISECOND);
         Constants.period  = calendarObj.get(Calendar.HOUR_OF_DAY);
 
         onView(withId(R.id.username)).

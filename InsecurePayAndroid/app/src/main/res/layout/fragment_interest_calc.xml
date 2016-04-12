@@ -64,8 +64,10 @@
 
             android:layout_gravity="bottom"
             android:layout_marginStart="50dp"
-            android:inputType="numberDecimal|numberSigned"
+            android:digits="0123456789"
             android:hint="@string/etIntCalc_FillPrincipalAmount"
+            android:inputType="numberDecimal|numberSigned"
+            android:maxLength="15"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </TableRow>
     <!--Select type-->
@@ -124,7 +126,9 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="bottom"
             android:layout_marginStart="50dp"
+            android:digits="0123456789"
             android:inputType="number|numberSigned"
+            android:maxLength="3"
             android:padding="5dp"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </TableRow>
@@ -173,8 +177,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:padding="5dp"
-            android:visibility="invisible"
-            android:text="@string/tvIntCalc_RateOfInterest" />
+            android:text="@string/tvIntCalc_RateOfInterest"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tvIntCalc_FillRateOfInterest"
@@ -206,8 +210,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="19dp"
             android:padding="5dp"
-            android:visibility="invisible"
-            android:text="@string/tvIntCalc_Interest" />
+            android:text="@string/tvIntCalc_Interest"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tvIntCalc_FillInterest"
