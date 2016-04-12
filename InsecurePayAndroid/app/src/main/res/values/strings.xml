@@ -40,8 +40,8 @@
     <string name="sharedPreferenceLogin">loginPrefs</string>
 
     <!--Following strings are for Connectivity-->
-    <!--<string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>-->
-    <string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>
+    <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
+    <!--<string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>-->
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>

@@ -288,15 +288,17 @@ public class ChatFragment extends Fragment {
 
 
                     ResponseWrapper responseWrapperObj = new ResponseWrapper(conn.getResponseCode(),
-                            connectivityObj.readIt(conn.getInputStream()));
+                            connectivityObj.readIt(conn.getInputStream()), conn.getResponseMessage());
                     return responseWrapperObj;
 
                 } else {
-                    return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null);
+                    return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null,
+                            "HTTP Client Timeout");
                 }
             } catch (IOException e) {
                 Log.e(TAG, "doInBackground: ", e);
-                return new ResponseWrapper(HttpURLConnection.HTTP_INTERNAL_ERROR, null);
+                return new ResponseWrapper(HttpURLConnection.HTTP_INTERNAL_ERROR, null,
+                        "HTTP Internal Error");
             }
         }
 
@@ -310,10 +312,9 @@ public class ChatFragment extends Fragment {
 
         @Override
         protected void postFailure(ResponseWrapper responseWrapperObj) {
-            // TODO: Uncomment this after merging into develop
-            /*if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+            if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
-            }*/
+            }
             Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_LONG).show();
             super.postFailure(responseWrapperObj);
 
