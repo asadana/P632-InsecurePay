@@ -73,7 +73,12 @@ public class InterestCalcFragmentTest {
         //Enter some period for days/months/year
         onView(withId(R.id.etIntCalc_Date)).
                 perform(typeText(String.valueOf(Constants.period)), closeSoftKeyboard());
+        //Check that ROI and Interest are empty
+        onView(withId(R.id.tvIntCalc_FillRateOfInterest))
+                .check(matches((withText(""))));
 
+        onView(withId(R.id.tvIntCalc_FillInterest))
+                .check(matches((withText(""))));
         //Hit Calculate
         onView(withId(R.id.btnIntCalc_Calc))
                 .perform(click());
