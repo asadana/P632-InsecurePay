@@ -2,7 +2,7 @@ create database insecurepaydatabase;
 create user insecurepay;
 GRANT ALL PRIVILEGES ON DATABASE insecurepaydatabase TO insecurepay;
 
-
+-- Creation of 
 CREATE TABLE customer
 (
   cust_no integer NOT NULL,
@@ -96,23 +96,29 @@ WITH (
 );
 ALTER TABLE public.transfer_funds OWNER TO insecurepay;
 
+--Inserting queries into respective tables
+
 INSERT INTO customer VALUES (1, 'Cigital1', 'abc', 'Bloomington', 'Indiana', 47403, 9876545678, 'cigital1@cigital.com', '1980-01-10', 'WFtaWFta');
 INSERT INTO customer VALUES (2, 'Cigital2', 'XYZ', 'Bloomington', 'Indiana', 47403, 9876545645, 'cigital2@cigital.com', '1980-01-10', 'WVpbWVpb');
 INSERT INTO customer VALUES (3, 'Cigital3', 'E 5th street', 'Bloomington', 'Indiana', 47408, 54321679, 'cigital3@cigital.com', '2001-01-03', 'U1BRU1BR');
 INSERT INTO customer VALUES (4, 'Test', 'No where', 'Imaginary City', 'Funky State', 9133, 6666666666, 'test@iu.edu', '2016-03-08', 'UFFRUFFU');
-INSERT INTO customer VALUES (5, 'Foo Class', 'Manhattan', 'New York City', 'New York', 1234, 123456, 'foofan@gmail.com', '1994-10-15', 'UFBQVVdV');
+INSERT INTO customer VALUES (5, 'Cigital Class', 'Manhattan', 'New York City', 'New York', 1234, 123456, 'cigital@gmail.com', '1994-10-15', 'UFBQVVdV');
 
 INSERT INTO cust_credentials VALUES ('cigital1', 'cigital1', 1);
 INSERT INTO cust_credentials VALUES ('cigital2', 'cigital2', 2);
 INSERT INTO cust_credentials VALUES ('cigital3', 'cigital3', 3);
 INSERT INTO cust_credentials VALUES ('testUser', '12345', 4);
-INSERT INTO cust_credentials VALUES ('foo', 'abcde', 5);
+INSERT INTO cust_credentials VALUES ('cigital', 'cigital', 5);
 
 INSERT INTO account VALUES (2001, 1, 2000.50);
 INSERT INTO account VALUES (2002, 2, 1700.96);
 INSERT INTO account VALUES (2003, 3, 3400.03);
 INSERT INTO account VALUES (2004, 4, 450.89);
 INSERT INTO account VALUES (2005, 5, 1234.59);
+
+INSERT INTO transfer_funds VALUES (5, 2001, 1, 2002, 2, -4.23, 1076.14, 1080.37, 1705.19, 1700.96, 'Thank you so much!', '2016-03-29 10:42:06.325524-04');
+INSERT INTO transfer_funds VALUES (6, 2003, 3, 2005, 5, 5.00, 1850.50, 1845.50, 2535.32, 2540.32, 'test', '2016-03-14 22:34:46.902308-04');
+INSERT INTO transfer_funds VALUES (7, 2004, 4, 2005, 5, 25.00, 3000.00, 2975.00, 2540.32, 2565.32, 'test', '2016-03-14 23:36:06.933278-04');
 
 
 
