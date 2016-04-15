@@ -112,15 +112,19 @@ public class TransferActivity extends AppCompatActivity {
                     intentNew.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     PendingIntent pIntent = PendingIntent.getActivity(TransferActivity.this.getApplicationContext(), (int) System.currentTimeMillis(), intentNew, 0);
 
+                    String transferMessage = "Amount Transferred from Acc No "
+                            + tvFromAccountNo.getText() + " to Acc No "
+                            + tvToAccountNo.getText();
+
                     // build notification 
                     // the addAction re-use the same intent to keep the example short
                     Notification n = new Notification.Builder(getApplicationContext())
-                            .setContentTitle("Transfer successful")
-                            .setContentText("Amount Transferred from Acc No " + tvFromAccountNo.getText() + " to Acc No " + tvToAccountNo.getText())
-                            .setSmallIcon(R.drawable.ic_transfer_funds)
+                            .setContentTitle(getString(R.string.transfer_successful))
+                            .setContentText(transferMessage)
+                            .setSmallIcon(R.drawable.ic_stat_transfer)
+                            .setStyle(new Notification.BigTextStyle().bigText(transferMessage))
                             .setContentIntent(pIntent)
                             .setAutoCancel(true).build();
-
 
                     NotificationManager notificationManager =
                             (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
