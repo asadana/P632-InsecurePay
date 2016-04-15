@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 /**
- * SplashScreenActivity is an empty activity class with no layout file.
+ * SplashScreenActivity is an activity class with no layout file.
  * This class is used to display a splash screen to the user
  * before passing the control to LoginActivity.
  */
@@ -17,8 +17,8 @@ public class SplashScreenActivity extends AppCompatActivity {
      * It puts the activity UI thread to sleep for 1500 milliseconds while the
      * splash screen is displayed. Then passes the control to LoginActivity class.
      *
-     * @param savedInstanceState object that may be used to pass data to while
-     *                           creating this Activity.
+     * @param savedInstanceState Object that may be used to pass data to this activity while
+     *                           creating it.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
