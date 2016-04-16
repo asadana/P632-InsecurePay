@@ -1,10 +1,17 @@
 #!/bin/bash
 chown -R postgres "$PGDATA"
 
+# Check if the PGDATA path provided is null/empty
 if [ -z "$(ls -A "$PGDATA")" ]; then
+
+	# Initializing the database cluster in $PGDATA
     gosu postgres initdb
+
+    # Setting the database cluster to listen to all addresses.
     sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" "$PGDATA"/postgresql.conf
 
+    # Checking if the password value is set,
+    # then set the pass variable.
     if [ "$POSTGRES_PASSWORD" ]; then
       pass="PASSWORD '$POSTGRES_PASSWORD'"
       authMethod=md5
@@ -17,48 +24,50 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     fi
     echo
 	
+	# If the username provided is not postgres then
+	# use create command
     if [ "$POSTGRES_USERNAME" != 'postgres' ]; then
       op=CREATE
     else
       op=ALTER
     fi
 
+    # Creating/Altering the user with superuser access and provided password
     userSql="$op USER $POSTGRES_USERNAME WITH SUPERUSER $pass;"
-    echo "==== Creating user $op"
     echo $userSql | gosu postgres postgres --single -jE
     echo
 
 
+	# If the database is not the default postgres, then 
+	# create the provide database with the new user we created 
     if [ "$POSTGRES_DATABASE" != 'postgres' ]; then
       createSql="CREATE DATABASE $POSTGRES_DATABASE OWNER $POSTGRES_USERNAME;"
-      echo "==== Creating db $POSTGRES_DATABASE"
       echo $createSql | gosu postgres postgres --single -jE
       echo
     fi
 
-    # internal start of server in order to allow set-up using psql-client
-    # does not listen on TCP/IP and waits until start finishes
+    # Starting a temporary server for setup
     gosu postgres pg_ctl -D "$PGDATA" \
         -o "-c listen_addresses=''" \
         -w start
 
     echo
-    
-	echo "============"
-	pwd
-	echo "==== value of input variable $SQL_FILE"
 	
+	# If the file exists then execute it over the db created
 	if [[ -a $SQL_FILE ]]; then
-		gosu postgres psql --username "$POSTGRES_USERNAME" --dbname "$POSTGRES_DATABASE" -f $SQL_FILE 
+		gosu postgres psql \
+		--username "$POSTGRES_USERNAME" \
+		--dbname "$POSTGRES_DATABASE" \
+		-f $SQL_FILE 
     fi
 
-	echo "=============="
-	gosu postgres psql --list
-	
+    gosu postgres psql --list
+
+   	# Stopping the temporary server
     gosu postgres pg_ctl -D "$PGDATA" -m fast -w stop
 
+    # Adding host and authMethod entry to pg_hba
     { echo; echo "host all all 0.0.0.0/0 $authMethod"; } >> "$PGDATA"/pg_hba.conf
 fi
 
 exec gosu postgres "$@"
-# gosu postgres pg_ctl -D "$PGDATA" start

@@ -1,6 +1,8 @@
+# Base image
 FROM alpine
 
 MAINTAINER  Amish <shah7@iu.edu>, Ankit <asadana@iu.edu>,  Jaini <voraj@iu.edu>, Janak <jbhalla@iu.edu>, Madhukiran <madhradh@iu.edu>
+# Big thanks to kiasaki over at github
 
 RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
 	apk add --update curl ca-certificates bash && \
@@ -10,6 +12,7 @@ RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" >> /etc/apk/reposito
     apk del curl && \
     rm -rf /var/cache/apk/*
 	
+# Setting up environment variables
 ENV LANG en_US.UTF8
 ENV PGDATA /var/lib/postgresql/data
 VOLUME /var/lib/postgresql/data
@@ -26,10 +29,13 @@ EXPOSE 5432
 RUN mkdir -p /home/temp
 WORKDIR /home/temp/
 
-# Copy and run example script
+# Copy entrypoint script and dbsetup.sql
 COPY ./docker-entrypoint.sh /home/temp
 COPY ./dbsetup.sql /home/temp
-RUN chmod +x /home/temp/docker-entrypoint.sh
-ENTRYPOINT ["/home/temp/docker-entrypoint.sh"]
 
+# Making script executable
+RUN chmod +x /home/temp/docker-entrypoint.sh
+
+# Setting up entrypoint to be executed when docker is run
+ENTRYPOINT ["/home/temp/docker-entrypoint.sh"]
 CMD ["postgres"]
