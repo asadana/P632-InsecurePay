@@ -6,7 +6,7 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     sed -ri "s/^#(listen_addresses\s*=\s*)\S+/\1'*'/" "$PGDATA"/postgresql.conf
 
     if [ "$POSTGRES_PASSWORD" ]; then
-      pass="PASSWORD $POSTGRES_PASSWORD"
+      pass="PASSWORD '$POSTGRES_PASSWORD'"
       authMethod=md5
     else
       echo "==============================="
@@ -23,13 +23,15 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
       op=ALTER
     fi
 
-    userSql="$op USER $POSTGRES_USERNAME WITH SUPERUSER;"
+    userSql="$op USER $POSTGRES_USERNAME WITH SUPERUSER $pass;"
+    echo "==== Creating user $op"
     echo $userSql | gosu postgres postgres --single -jE
     echo
 
 
     if [ "$POSTGRES_DATABASE" != 'postgres' ]; then
       createSql="CREATE DATABASE $POSTGRES_DATABASE OWNER $POSTGRES_USERNAME;"
+      echo "==== Creating db $POSTGRES_DATABASE"
       echo $createSql | gosu postgres postgres --single -jE
       echo
     fi
@@ -44,7 +46,7 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     
 	echo "============"
 	pwd
-	echo "value of input variable $SQL_FILE"
+	echo "==== value of input variable $SQL_FILE"
 	
 	if [[ -a $SQL_FILE ]]; then
 		gosu postgres psql --username "$POSTGRES_USERNAME" --dbname "$POSTGRES_DATABASE" -f $SQL_FILE 
@@ -58,4 +60,5 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
     { echo; echo "host all all 0.0.0.0/0 $authMethod"; } >> "$PGDATA"/pg_hba.conf
 fi
 
-gosu postgres pg_ctl -D "$PGDATA" start
+exec gosu postgres "$@"
+# gosu postgres pg_ctl -D "$PGDATA" start
