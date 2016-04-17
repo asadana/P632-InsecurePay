@@ -46,6 +46,9 @@ public class TransferActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing started");
+
         setContentView(R.layout.activity_transfer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,7 +83,7 @@ public class TransferActivity extends AppCompatActivity {
             }
         });
 
-
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing finished");
     }
 
     /**
@@ -140,6 +143,9 @@ public class TransferActivity extends AppCompatActivity {
         @Override
         protected void postSuccess(String amountTransferred) {
             super.postSuccess(amountTransferred);
+
+            Log.d(this.getClass().getSimpleName(),
+                    "postSuccess: Response from server: " + amountTransferred);
 
             // Handles the case when transfer could not take place
             if (amountTransferred.equals("false")) {

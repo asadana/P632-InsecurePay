@@ -46,6 +46,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing started");
+
         // Getting values from intent and initializing commonVOObj with it
         Bundle bundleObj = getIntent().getExtras();
         commonVOObj = (CommonVO) bundleObj.get(getString(R.string.common_VO));
@@ -105,6 +107,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing finished");
     }
 
     /**
