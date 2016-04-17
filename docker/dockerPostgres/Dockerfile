@@ -30,12 +30,12 @@ RUN mkdir -p /home/temp
 WORKDIR /home/temp/
 
 # Copy entrypoint script and dbsetup.sql
-COPY ./docker-entrypoint.sh /home/temp
+COPY ./docker-psql-entrypoint.sh /home/temp
 COPY ./dbsetup.sql /home/temp
 
 # Making script executable
-RUN chmod +x /home/temp/docker-entrypoint.sh
+RUN chmod +x /home/temp/docker-psql-entrypoint.sh
 
 # Setting up entrypoint to be executed when docker is run
-ENTRYPOINT ["/home/temp/docker-entrypoint.sh"]
+ENTRYPOINT ["/home/temp/docker-psql-entrypoint.sh"]
 CMD ["postgres"]
