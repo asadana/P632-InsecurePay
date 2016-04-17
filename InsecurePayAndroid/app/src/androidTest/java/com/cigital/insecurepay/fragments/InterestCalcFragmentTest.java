@@ -32,20 +32,14 @@ public class InterestCalcFragmentTest {
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void calcInterest() {
+    public void calculateInterestTest() {
 
         Calendar calendarObj = Calendar.getInstance();
         Constants.principal = calendarObj.get(Calendar.MILLISECOND)*calendarObj.get(Calendar.MILLISECOND);
         Constants.period  = calendarObj.get(Calendar.HOUR_OF_DAY);
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-
-        // Enter correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        // Logging in
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))

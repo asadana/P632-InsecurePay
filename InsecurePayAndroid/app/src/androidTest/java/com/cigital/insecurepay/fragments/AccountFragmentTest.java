@@ -40,18 +40,12 @@ public class AccountFragmentTest {
     private Activity activityObj;
 
     @Test
-    public void checkChangePassword() {
+    public void changepasswordTest() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        // Logging in
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
@@ -104,17 +98,12 @@ public class AccountFragmentTest {
     }
 
     @Test
-    public void checkAccountUpdate() {
+    public void accountUpdateTest() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        // Logging in
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
@@ -159,6 +148,7 @@ public class AccountFragmentTest {
                 .perform(click());
 
 
+        // Checking if the current value of zipcode is same as what we entered
         onView(withId(R.id.etAccount_fillAddressZip))
                 .check(matches(new TypeSafeMatcher<View>() {
                     @Override
@@ -173,6 +163,7 @@ public class AccountFragmentTest {
                     }
                 }));
 
+        // Logging out
         Constants.logout();
     }
 }

@@ -11,9 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -28,21 +25,16 @@ public class HomePageTest {
     @Test
     public void homePageTest() {
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
+        // Logging in
+        Constants.login();
 
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
+        // Checking if the user's values are retrieved on load
         onView(withId(R.id.tvHome_fillAccountNumber))
                 .check(matches(not(withText(""))));
-
         onView(withId(R.id.tvHome_fillBalance))
                 .check(matches(not(withText(""))));
 
+        // Logging out
         Constants.logout();
     }
 }

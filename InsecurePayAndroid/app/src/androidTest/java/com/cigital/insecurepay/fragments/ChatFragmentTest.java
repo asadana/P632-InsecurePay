@@ -18,8 +18,6 @@ import java.util.Calendar;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -36,15 +34,10 @@ public class ChatFragmentTest {
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void submitMessage() {
+    public void submitMessageTest() {
 
         // Logging in
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))

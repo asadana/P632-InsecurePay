@@ -89,7 +89,7 @@ public class LoginActivityTest {
                 perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
         onView(withId(R.id.password)).
                 perform(replaceText(Constants.wrongInput), closeSoftKeyboard());
-        // First attempt
+
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
@@ -123,13 +123,7 @@ public class LoginActivityTest {
                 .perform(click())
                 .check(matches(isChecked()));
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        Constants.login();
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
 
@@ -140,11 +134,13 @@ public class LoginActivityTest {
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
 
+        // Checking if the edit text fields retain their values
         onView(withId(R.id.username)).check(matches(inTextEdit(Constants.correctUsername)));
         onView(withId(R.id.password)).check(matches(inTextEdit(Constants.defaultPassword)));
 
         Constants.sleepWait();
 
+        // Check if the checkbox is checked
         onView(withId(R.id.saveLoginCheckBox))
                 .check(matches(isChecked()))
                 .perform(click());
@@ -152,6 +148,7 @@ public class LoginActivityTest {
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
+        // Logging out
         Constants.logout();
     }
 }
