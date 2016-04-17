@@ -36,10 +36,45 @@ import static org.hamcrest.CoreMatchers.not;
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    private Activity activityObj;
-
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    private Activity activityObj;
+
+    // A matcher to match the credentials after coming back to the app
+    private static Matcher<View> inTextEdit(final String credentials) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public boolean matchesSafely(View view) {
+                EditText editTextObj = (EditText) view;
+                String text = editTextObj.getText().toString();
+
+                return credentials.equals(text);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+            }
+        };
+    }
+
+    // A Matcher to match the error message displayed on EditText
+    private static Matcher<View> withError(final String expected) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public boolean matchesSafely(View view) throws NullPointerException {
+
+                EditText editTextObj = (EditText) view;
+                return editTextObj.getError().toString().equals(expected);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+
+            }
+        };
+    }
 
     @Test
     public void loginFailTest() {
@@ -118,41 +153,5 @@ public class LoginActivityTest {
                 .perform(click());
 
         Constants.logout();
-    }
-
-    // A matcher to match the credentials after coming back to the app
-    public static Matcher<View> inTextEdit(final String credentials) {
-        return new TypeSafeMatcher<View>() {
-
-            @Override
-            public boolean matchesSafely(View view) {
-                EditText editTextObj = (EditText) view;
-                String text = editTextObj.getText().toString();
-
-                return credentials.equals(text);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-            }
-        };
-    }
-
-    // A Matcher to match the error message displayed on EditText
-    private static Matcher<View> withError(final String expected) {
-        return new TypeSafeMatcher<View>() {
-
-            @Override
-            public boolean matchesSafely(View view) throws NullPointerException {
-
-                EditText editTextObj = (EditText) view;
-                return editTextObj.getError().toString().equals(expected);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
     }
 }
