@@ -111,8 +111,8 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     /**
-     * TransferTask extends PostAsyncCommonTask to communicate with the server to perform post
-     * and transfer funds for the user.
+     * TransferTask extends PostAsyncCommonTask to asynchronously communicate with the
+     * server and perform post to transfer funds for the user.
      */
     private class TransferTask extends PostAsyncCommonTask<TransferFundsVO> {
 
@@ -176,7 +176,8 @@ public class TransferActivity extends AppCompatActivity {
                             .setAutoCancel(true).build();
 
                     NotificationManager notificationManager =
-                            (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                            (NotificationManager) getApplicationContext()
+                                    .getSystemService(Context.NOTIFICATION_SERVICE);
 
                     notificationManager.notify(0, n);
 
@@ -188,7 +189,8 @@ public class TransferActivity extends AppCompatActivity {
                     // Terminating TransferActivity
                     TransferActivity.this.finish();
                 } else {
-                    Log.e(this.getClass().getSimpleName(), "postSuccess: Invalid response on transfer funds");
+                    Log.e(this.getClass().getSimpleName(),
+                            "postSuccess: Invalid response on transfer funds");
                 }
             }
         }
