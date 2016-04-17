@@ -1,8 +1,7 @@
 package com.cigital.insecurepay.activity;
 
-import android.support.test.espresso.Espresso;
+import android.app.Activity;
 import android.support.test.rule.ActivityTestRule;
-import android.test.suitebuilder.annotation.LargeTest;
 
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.Constants;
@@ -21,14 +20,16 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.not;
 
-public class ForgotPasswordTest {
+public class ForgotPasswordActivityTest {
 
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    private Activity activityObj;
 
-    @LargeTest
     @Test
     public void passwordResetFail() {
+
+        activityObj = loginActivityActivityTestRule.getActivity();
 
         onView(withId(R.id.btnForgotPassword)).
                 perform(click());
@@ -48,13 +49,14 @@ public class ForgotPasswordTest {
                 perform(click());
 
         onView(withText(R.string.information_mismatch))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 
-    @LargeTest
     @Test
     public void passwordResetPass() {
+
+        activityObj = loginActivityActivityTestRule.getActivity();
 
         onView(withId(R.id.btnForgotPassword)).
                 perform(click());
@@ -74,7 +76,7 @@ public class ForgotPasswordTest {
                 perform(click());
 
         onView(withText(R.string.default_password_link_sent))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .inRoot(withDecorView(not(activityObj.getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
     }
 

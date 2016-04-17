@@ -49,7 +49,7 @@
                 android:value="com.cigital.insecurepay.activity.LoginActivity" />
         </activity>
         <activity
-            android:name=".activity.ForgotPassword"
+            android:name=".activity.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
             android:parentActivityName=".activity.LoginActivity"
             android:screenOrientation="portrait"

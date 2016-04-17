@@ -18,7 +18,7 @@ import static java.lang.Thread.sleep;
 
 public class Constants {
 
-    // For ForgotPasswordTest
+    // For ForgotPasswordActivityTest
     public static final String correctSSN = "132137";
     public static final String wrongSSN = "1234234";
     public static final String correctAccountNo = "2008";

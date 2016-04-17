@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View v) {
                 Log.d(this.getClass().getSimpleName(), "forgot password view");
-                intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPasswordActivity.class);
                 intent.putExtra(getString(R.string.common_VO), commonVO);
                 startActivity(intent);
             }
