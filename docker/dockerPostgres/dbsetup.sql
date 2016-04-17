@@ -1,5 +1,5 @@
 
-GRANT ALL PRIVILEGES ON DATABASE insecurepaydatabase TO insecurepay;
+GRANT ALL PRIVILEGES ON DATABASE :db TO :user;
 
 -- Creation of tables
 CREATE TABLE customer
@@ -19,7 +19,7 @@ CREATE TABLE customer
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE customer OWNER TO insecurepay;
+ALTER TABLE customer OWNER TO :user;
 
 CREATE TABLE public.cust_credentials
 (
@@ -34,7 +34,7 @@ CREATE TABLE public.cust_credentials
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.cust_credentials OWNER TO insecurepay;
+ALTER TABLE public.cust_credentials OWNER TO :user;
 
 CREATE INDEX "fki_Cust_no_Fkey" ON public.cust_credentials USING btree(cust_no);
 
@@ -52,7 +52,7 @@ WITH (
   OIDS=FALSE
 );
 
-ALTER TABLE public.account OWNER TO insecurepay;
+ALTER TABLE public.account OWNER TO :user;
 
 CREATE SEQUENCE public.seq_transferid
   INCREMENT 1
@@ -60,7 +60,7 @@ CREATE SEQUENCE public.seq_transferid
   MAXVALUE 9223372036854775807
   START 76
   CACHE 1;
-ALTER TABLE public.seq_transferid OWNER TO insecurepay;
+ALTER TABLE public.seq_transferid OWNER TO :user;
 
 CREATE TABLE public.transfer_funds
 (
@@ -93,7 +93,7 @@ CREATE TABLE public.transfer_funds
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE public.transfer_funds OWNER TO insecurepay;
+ALTER TABLE public.transfer_funds OWNER TO :user;
 
 --Inserting queries into respective tables
 

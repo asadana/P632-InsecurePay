@@ -58,10 +58,10 @@ if [ -z "$(ls -A "$PGDATA")" ]; then
 		gosu postgres psql \
 		--username "$POSTGRES_USERNAME" \
 		--dbname "$POSTGRES_DATABASE" \
+		-v db="$POSTGRES_DATABASE"\
+		-v user="$POSTGRES_USERNAME"\
 		-f $SQL_FILE 
     fi
-
-    gosu postgres psql --list
 
    	# Stopping the temporary server
     gosu postgres pg_ctl -D "$PGDATA" -m fast -w stop
