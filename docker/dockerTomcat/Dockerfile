@@ -77,6 +77,9 @@ CMD ${CATALINA_HOME}/bin/catalina.sh run
 RUN rm -rf ${CATALINA_HOME}/webapps/docs \
 	${CATALINA_HOME}/webapps/examples \
 	${CATALINA_HOME}/webapps/ROOT
-ADD InsecurePayServiceServer.war ${CATALINA_HOME}/webapps/ROOT.war
 
+# Deploying war file
+ADD InsecurePayServiceServer-tintin.war ${CATALINA_HOME}/webapps/ROOT.war
+
+# Restarting server after deploying
 CMD ${CATALINA_HOME}/bin/catalina.sh run
