@@ -71,7 +71,12 @@ RUN sed -i 's/52428800/5242880000/g' /opt/tomcat/webapps/manager/WEB-INF/web.xml
 
 # Set environment
 ENV CATALINA_HOME /opt/tomcat
-COPY ./InsecurePayServiceServer.war /usr/local/tomcat/webapps/InsecurePayServiceServer.war
 
 # Launch Tomcat on startup
+CMD ${CATALINA_HOME}/bin/catalina.sh run
+RUN rm -rf ${CATALINA_HOME}/webapps/docs \
+	${CATALINA_HOME}/webapps/examples \
+	${CATALINA_HOME}/webapps/ROOT
+ADD InsecurePayServiceServer.war ${CATALINA_HOME}/webapps/ROOT.war
+
 CMD ${CATALINA_HOME}/bin/catalina.sh run
