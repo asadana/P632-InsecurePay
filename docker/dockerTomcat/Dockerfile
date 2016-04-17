@@ -54,5 +54,24 @@ RUN mkdir -p /opt && \
 ENV JAVA_HOME /opt/jre
 ENV PATH ${PATH}:${JAVA_HOME}/bin
 
+# Download and install tomcat
+RUN curl -kLsS https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_VERSION_MAJOR}/v${TOMCAT_VERSION_FULL}/bin/apache-tomcat-${TOMCAT_VERSION_FULL}.tar.gz \
+    | gunzip -c - | tar -xf - -C /opt &&\
+	ln -s /opt/apache-tomcat-${TOMCAT_VERSION_FULL} /opt/tomcat &&\
+	rm -rf /opt/tomcat/webapps/examples /opt/tomcat/webapps/docs && \
+	apk del curl && \
+	rm -rf /var/cache/apk/*
+
 # Expose port
 EXPOSE 8080
+
+# Configuration
+COPY ./tomcat-users.xml /opt/tomcat/conf/
+RUN sed -i 's/52428800/5242880000/g' /opt/tomcat/webapps/manager/WEB-INF/web.xml 
+
+# Set environment
+ENV CATALINA_HOME /opt/tomcat
+COPY ./InsecurePayServiceServer.war /usr/local/tomcat/webapps/InsecurePayServiceServer.war
+
+# Launch Tomcat on startup
+CMD ${CATALINA_HOME}/bin/catalina.sh run
