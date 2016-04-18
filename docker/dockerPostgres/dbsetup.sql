@@ -99,15 +99,15 @@ ALTER TABLE public.transfer_funds OWNER TO :user;
 
 INSERT INTO customer VALUES (1, 'Cigital1', 'abc', 'Bloomington', 'Indiana', 47403, 9876545678, 'cigital1@cigital.com', '1980-01-10', 'WFtaWFta');
 INSERT INTO customer VALUES (2, 'Cigital2', 'XYZ', 'Bloomington', 'Indiana', 47403, 9876545645, 'cigital2@cigital.com', '1980-01-10', 'WVpbWVpb');
-INSERT INTO customer VALUES (3, 'Cigital3', 'E 5th street', 'Bloomington', 'Indiana', 47408, 54321679, 'cigital3@cigital.com', '2001-01-03', 'U1BRU1BR');
-INSERT INTO customer VALUES (4, 'Test', 'No where', 'Imaginary City', 'Funky State', 9133, 6666666666, 'test@iu.edu', '2016-03-08', 'UFFRUFFU');
-INSERT INTO customer VALUES (5, 'Cigital Class', 'Manhattan', 'New York City', 'New York', 1234, 123456, 'cigital@gmail.com', '1994-10-15', 'UFBQVVdV');
+INSERT INTO customer VALUES (3, 'Cigital3', 'E 5th street', 'Bloomington', 'Indiana', 47408, 5432163379, 'cigital3@cigital.com', '2001-01-03', 'U1BRU1BR');
+INSERT INTO customer VALUES (4, 'Test', 'No where', 'Imaginary City', 'Funky State', 91333, 6666666666, 'test@iu.edu', '2016-03-08', 'UFFRUFFU');
+INSERT INTO customer VALUES (5, 'Cigital Class', 'Manhattan', 'New York City', 'New York', 12345, 1233456789, 'cigital@gmail.com', '1994-10-15', 'UFBQVVdV');
 
 INSERT INTO cust_credentials VALUES ('cigital1', 'cigital1', 1);
 INSERT INTO cust_credentials VALUES ('cigital2', 'cigital2', 2);
 INSERT INTO cust_credentials VALUES ('cigital3', 'cigital3', 3);
 INSERT INTO cust_credentials VALUES ('testUser', '12345', 4);
-INSERT INTO cust_credentials VALUES ('cigital', 'cigital', 5);
+INSERT INTO cust_credentials VALUES ('cigital4', 'cigital4', 5);
 
 INSERT INTO account VALUES (2001, 1, 2000.50);
 INSERT INTO account VALUES (2002, 2, 1700.96);
