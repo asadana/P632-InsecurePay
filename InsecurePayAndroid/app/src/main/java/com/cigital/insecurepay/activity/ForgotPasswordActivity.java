@@ -26,9 +26,9 @@ import com.google.gson.Gson;
 public class ForgotPasswordActivity extends AppCompatActivity {
 
     // UI Components
-    private EditText accountNoView;
-    private EditText textSSNNoView;
-    private EditText usernameView;
+    private EditText etAccountNo;
+    private EditText etSSN;
+    private EditText etUsername;
 
     private CommonVO commonVOObj;
     private Gson gsonObj;
@@ -64,9 +64,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Initializing UI components
-        accountNoView = (EditText) findViewById(R.id.etForgotPassword_AccountNo);
-        textSSNNoView = (EditText) findViewById(R.id.etForgotPassword_SSNNo);
-        usernameView = (EditText) findViewById(R.id.etForgotPassword_username);
+        etAccountNo = (EditText) findViewById(R.id.etForgotPassword_AccountNo);
+        etSSN = (EditText) findViewById(R.id.etForgotPassword_SSNNo);
+        etUsername = (EditText) findViewById(R.id.etForgotPassword_username);
 
         // Initializing the button and attaching a listener
         Button mSendButton = (Button) findViewById(R.id.btn_send);
@@ -74,21 +74,21 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Display Account No and SSN in log
-                String accountNo = accountNoView.getText().toString();
-                String sSNNo = textSSNNoView.getText().toString();
-                String username = usernameView.getText().toString();
+                String accountNo = etAccountNo.getText().toString();
+                String sSNNo = etSSN.getText().toString();
+                String username = etUsername.getText().toString();
                 boolean cancel = false;
                 View focusView = null;
 
                 // Check for a valid Account No and SSN, if the user entered one.
                 if (TextUtils.isEmpty(accountNo) || TextUtils.isEmpty(username)) {
-                    accountNoView.setError(getString(R.string.error_field_required));
-                    focusView = accountNoView;
+                    etAccountNo.setError(getString(R.string.error_field_required));
+                    focusView = etAccountNo;
                     cancel = true;
                 }
                 if (TextUtils.isEmpty(sSNNo) || isSSNInvalid(sSNNo)) {
-                    textSSNNoView.setError(getString(R.string.error_invalid_field));
-                    focusView = textSSNNoView;
+                    etSSN.setError(getString(R.string.error_invalid_field));
+                    focusView = etSSN;
                     cancel = true;
                 }
                 if (cancel) {
@@ -164,8 +164,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             if (loginValidationVO != null) {
                 // If condition checks if the username used doesn't exist
                 if (!loginValidationVO.isUsernameExists()) {
-                    usernameView.setError(getString(R.string.error_username_does_not_exist));
-                    usernameView.requestFocus();
+                    etUsername.setError(getString(R.string.error_username_does_not_exist));
+                    etUsername.requestFocus();
                 } else {
                     // If condition checks if the details entered were notstne  a match
                     if (!loginValidationVO.isValidUser()) {
