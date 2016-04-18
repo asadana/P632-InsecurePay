@@ -1,7 +1,7 @@
 package com.cigital.insecurepay.common;
 
 import com.cigital.insecurepay.activity.ForgotPasswordActivityTest;
-import com.cigital.insecurepay.activity.HomePageTest;
+import com.cigital.insecurepay.activity.HomePageActivityTest;
 import com.cigital.insecurepay.activity.LoginActivityTest;
 import com.cigital.insecurepay.activity.LoginTest;
 import com.cigital.insecurepay.fragments.AccountFragmentTest;
@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
         ForgotPasswordActivityTest.class,
         LoginActivityTest.class,
         LoginTest.class,
-        HomePageTest.class,
+        HomePageActivityTest.class,
         AccountFragmentTest.class,
         TransferFragmentTest.class,
         ActivityHistoryFragmentTest.class,

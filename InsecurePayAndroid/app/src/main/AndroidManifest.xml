@@ -39,7 +39,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activity.HomePage"
+            android:name=".activity.HomePageActivity"
             android:label="@string/title_activity_home_page"
             android:parentActivityName=".activity.LoginActivity"
             android:screenOrientation="portrait"
@@ -62,12 +62,12 @@
             android:name=".activity.TransferActivity"
             android:exported="true"
             android:label="@string/title_activity_transfer"
-            android:parentActivityName=".activity.HomePage"
+            android:parentActivityName=".activity.HomePageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.cigital.insecurepay.activity.HomePage" />
+                android:value=".activity.HomePageActivity" />
         </activity>
     </application>
 

@@ -159,7 +159,7 @@ public class TransferActivity extends AppCompatActivity {
 
                     // Creating an intent to be injecting in the notification
                     Intent intentNew = new Intent(TransferActivity.this.getApplicationContext(),
-                            HomePage.class);
+                            HomePageActivity.class);
                     intentNew.putExtra(getString(R.string.common_VO), commonVO);
                     intentNew.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -188,7 +188,7 @@ public class TransferActivity extends AppCompatActivity {
                     notificationManager.notify(0, n);
 
                     // Transferring control to HomePageActivity
-                    Intent intent = new Intent(getApplicationContext(), HomePage.class);
+                    Intent intent = new Intent(getApplicationContext(), HomePageActivity.class);
                     intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
 

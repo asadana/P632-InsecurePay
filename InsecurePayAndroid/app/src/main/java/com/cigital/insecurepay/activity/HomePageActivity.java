@@ -29,7 +29,7 @@ import com.cigital.insecurepay.fragments.HomeFragment;
 import com.cigital.insecurepay.fragments.InterestCalcFragment;
 import com.cigital.insecurepay.fragments.TransferFragment;
 
-public class HomePage extends AppCompatActivity
+public class HomePageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, HomeFragment.OnFragmentInteractionListener {
     private DrawerLayout drawer;
 
@@ -193,7 +193,7 @@ public class HomePage extends AppCompatActivity
         @Override
         protected void postSuccess(String resultObj) {
             connectivityObj.deleteCookies();
-            Intent intent = new Intent(HomePage.this, LoginActivity.class);
+            Intent intent = new Intent(HomePageActivity.this, LoginActivity.class);
             startActivity(intent);
         }
     }
