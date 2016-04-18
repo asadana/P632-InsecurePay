@@ -119,7 +119,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     /**
-     * ForgotPassword extends PostAsyncCommonTask to asynchronously communicate with the
+     * ForgotPasswordTask extends PostAsyncCommonTask to asynchronously communicate with the
      * server and perform post to reset password for the user.
      */
     public class ForgotPasswordTask extends PostAsyncCommonTask<ForgotPasswordVO> {
