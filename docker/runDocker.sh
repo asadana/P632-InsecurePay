@@ -7,25 +7,62 @@ command -v docker >/dev/null 2>&1 || {
 	exit 1; 
 }
 
+# tomcatPortNo value points to the host port number assigned to the docker
+echo -n "Enter the port you want to assign to tomcat container [default 8080]: "
+read tomcatPortNo
+
+numberRegex='^[0-9]+$'
+if [[ ( -z $tomcatPortNo ) || ( ! $tomcatPortNo =~ $numberRegex ) ]]; then	
+	echo "Using default port for tomcat container"
+	tomcatPortNo=8080
+	exit 1;
+fi
+
+tomcatName="insecurepay/tomcat:v1"
+tomcatContainerName="tomcat"
+
+postgresName="insecurepay/postgres:v1" 
+# NOTE: If you change the postgresContainerName here, 
+# then you need to change it in InsecurePayServiceServer com/cigital/common/Constants.java
+# and repack the war file docker/dockerTomcat/InsecurePayServiceServer.war
+postgresContainerName="postgres"
 
 cd ./dockerTomcat
-tomcatName="insecurepay/tomcat:v1"
 echo "Building Tomcat image: $tomcatName"
 echo
 docker build -t "$tomcatName" .
 
 cd ./../dockerPostgres
-postgresName="insecurepay/postgres:v1"
 echo "Building Postgres image: $postgresName"
 echo
 docker build -t "$postgresName" .
 
 cd ./../
-# TODO: Add a condition to check if container already exists, with exact name, and remove it
-# docker rm $(docker ps -a -q --filter="name=tomcat")
+
+# Check if container already exists, and remove it
+tomcatContainerID="$(docker ps -a | grep "\s$tomcatContainerName$" | grep -Eo '^[^ ]+')"
+postgresContainerID="$(docker ps -a | grep "\s$postgresContainerName$" | grep -Eo '^[^ ]+')"
+
+if [[ ! -z $tomcatContainerID ]]; then
+	echo
+	echo "===== Removing $tomcatContainerName ====="
+	docker rm -f "$tomcatContainerID"
+fi
+if [[ ! -z $postgresContainerID ]]; then
+	echo
+	echo "===== Removing $postgresContainerName ====="
+	docker rm -f "$postgresContainerID"
+fi
+
+
 echo
-echo "===== Starting postgres container ====="
-docker run -d --name postgres insecurepay/postgres:v1
+echo "===== Starting $postgresContainerName container ====="
+docker run -d --name "$postgresContainerName" "$postgresName"
 echo 
-echo "===== Starting tomcat container ====="
-docker run -d -p 8080:8080 --name tomcat --link postgres:postgres insecurepay/tomcat:v1
+echo "===== Starting $tomcatContainerName container ====="
+docker run \
+		-d \
+		-p "$tomcatPortNo":8080 \
+		--name="$tomcatContainerName" \
+		--link="$postgresContainerName":"$postgresContainerName" \
+		"$tomcatName"
