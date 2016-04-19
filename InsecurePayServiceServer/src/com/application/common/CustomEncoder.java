@@ -2,6 +2,10 @@ package com.application.common;
 
 import java.util.Base64;
 
+/*
+ * Encodes SSN using Base64 encoding
+ */
+
 public class CustomEncoder {
 
 	private static final String key = "abc";
