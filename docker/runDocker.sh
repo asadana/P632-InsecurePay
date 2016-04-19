@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+echo
+
+# Check to see if docker is installed
 command -v docker >/dev/null 2>&1 || { 
 	echo >&2 "This script requires docker to be installed."; 
 	echo "Please install docker and try again.";
@@ -10,52 +13,59 @@ command -v docker >/dev/null 2>&1 || {
 # tomcatPortNo value points to the host port number assigned to the docker
 echo -n "Enter the port you want to assign to tomcat container [default 8080]: "
 read tomcatPortNo
+echo
 
+# Check if entered value is empty or non-numeric, then set value to default
 numberRegex='^[0-9]+$'
 if [[ ( -z $tomcatPortNo ) || ( ! $tomcatPortNo =~ $numberRegex ) ]]; then	
 	echo "Using default port for tomcat container"
 	tomcatPortNo=8080
-	exit 1;
+else
+	echo "Using port: $tomcatPortNo"
 fi
 
 tomcatName="insecurepay/tomcat:v1"
 tomcatContainerName="tomcat"
 
 postgresName="insecurepay/postgres:v1" 
+
 # NOTE: If you change the postgresContainerName here, 
 # then you need to change it in InsecurePayServiceServer com/cigital/common/Constants.java
 # and repack the war file docker/dockerTomcat/InsecurePayServiceServer.war
 postgresContainerName="postgres"
 
+# Building tomcat image
 cd ./dockerTomcat
-echo "Building Tomcat image: $tomcatName"
 echo
-docker build -t "$tomcatName" .
+echo "===== Building Tomcat image: $tomcatName ====="
+docker build -q -t "$tomcatName" .
+echo
 
+# Building postgres image
 cd ./../dockerPostgres
-echo "Building Postgres image: $postgresName"
+echo "===== Building Postgres image: $postgresName ====="
+docker build -q -t "$postgresName" .
 echo
-docker build -t "$postgresName" .
 
 cd ./../
 
 # Check if container already exists, and remove it
-tomcatContainerID="$(docker ps -a | grep "\s$tomcatContainerName$" | grep -Eo '^[^ ]+')"
-postgresContainerID="$(docker ps -a | grep "\s$postgresContainerName$" | grep -Eo '^[^ ]+')"
+tomcatContainerID="$(docker ps -a | \
+					grep "\s$tomcatContainerName$" | grep -Eo '^[^ ]+')"
+postgresContainerID="$(docker ps -a | \
+					grep "\s$postgresContainerName$" | grep -Eo '^[^ ]+')"
 
 if [[ ! -z $tomcatContainerID ]]; then
-	echo
-	echo "===== Removing $tomcatContainerName ====="
+	echo "===== Removing existing $tomcatContainerName container ====="
 	docker rm -f "$tomcatContainerID"
+	echo
 fi
 if [[ ! -z $postgresContainerID ]]; then
-	echo
-	echo "===== Removing $postgresContainerName ====="
+	echo "===== Removing existing $postgresContainerName container ====="
 	docker rm -f "$postgresContainerID"
+	echo
 fi
 
-
-echo
 echo "===== Starting $postgresContainerName container ====="
 docker run -d --name "$postgresContainerName" "$postgresName"
 echo 
@@ -66,3 +76,9 @@ docker run \
 		--name="$tomcatContainerName" \
 		--link="$postgresContainerName":"$postgresContainerName" \
 		"$tomcatName"
+
+echo
+echo "===== Displaying insecurepay containers ====="
+docker ps -a | grep "insecurepay"
+echo
+echo "===== Exiting runDocker script ====="
