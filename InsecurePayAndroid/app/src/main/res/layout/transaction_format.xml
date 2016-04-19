@@ -34,7 +34,7 @@
             android:id="@+id/tvActivityHistory_TransactionAmount"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="30dp"
             android:text="@string/tvActivityHistory_TransactionAmount"
             android:textAlignment="viewEnd"
             android:textAppearance="?android:attr/textAppearanceLarge" />
