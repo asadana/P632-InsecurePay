@@ -74,12 +74,14 @@ ENV CATALINA_HOME /opt/tomcat
 
 # Launch Tomcat on startup
 CMD ${CATALINA_HOME}/bin/catalina.sh run
-RUN rm -rf ${CATALINA_HOME}/webapps/docs \
-	${CATALINA_HOME}/webapps/examples \
-	${CATALINA_HOME}/webapps/ROOT
+
+# Uncomment this if you want the server to launch at root '/'
+# RUN rm -rf ${CATALINA_HOME}/webapps/docs \
+# 	${CATALINA_HOME}/webapps/examples \
+# 	${CATALINA_HOME}/webapps/ROOT
 
 # Deploying war file
-ADD InsecurePayServiceServer.war ${CATALINA_HOME}/webapps/ROOT.war
+ADD InsecurePayServiceServer.war ${CATALINA_HOME}/webapps/InsecurePayServiceServer.war
 
 # Restarting server after deploying
 CMD ${CATALINA_HOME}/bin/catalina.sh run
