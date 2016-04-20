@@ -3,6 +3,7 @@ package com.cigital.insecurepay.fragments;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,10 +23,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.cigital.insecurepay.DBHelper.ActivityHistoryDBHelper;
 import com.cigital.insecurepay.R;
+import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
+import com.cigital.insecurepay.VOs.TransactionVO;
 import com.cigital.insecurepay.common.AsyncCommonTask;
+import com.cigital.insecurepay.common.GetAsyncCommonTask;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.common.ResponseWrapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -33,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class ChatFragment extends Fragment {
 
@@ -40,6 +49,7 @@ public class ChatFragment extends Fragment {
     public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
     private static final String TAG = ChatFragment.class.getSimpleName();
     String fileName;
+    String custSubject;
     WebAppInterface webAppInterface;
     String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
     //WebAppInterface webAppInterface;
@@ -320,6 +330,38 @@ public class ChatFragment extends Fragment {
 
         }
     }
+    private void onSubmit(String subject) {
+        Log.i(this.getClass().getSimpleName(), "Sending subject");
+        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(),"chatService",
+                subject);
+        sendsubject.execute();
+    }
+
+    //Inner class to send subject
+    private class ChatSubjectTask extends PostAsyncCommonTask<String> {
+        public ChatSubjectTask(Context contextObj, String serverAddress, String path, String subject){
+                super(contextObj, serverAddress, path, subject, String.class);
+        }
+
+        @Override
+        protected void postSuccess(String resultObj) {
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+            run(resultObj);
+        }
+    }
+
+    public void run(final String scriptSrc) {
+        mWebView.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(this.getClass().getSimpleName(), "Subject: "+scriptSrc);
+                mWebView.loadUrl("javascript:" + "displaySubject(\'"+scriptSrc+"\')");
+            }
+        });
+    }
+
+
+
 
     class WebAppInterface {
 
@@ -334,13 +376,16 @@ public class ChatFragment extends Fragment {
 
 
         @JavascriptInterface
-        public void showDialog(String dialogMsg) {
-            new AlertDialog.Builder(mContext)
+        public void showDialog(String dialogMsg, String subject) {
+
+            onSubmit(subject);
+            /*new AlertDialog.Builder(mContext)
                     .setMessage(dialogMsg)
                     .setPositiveButton("OK", null)
                     .create().show();
-
+*/
         }
+
     }
 }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+Subject: <input type="text" name="topic" id="subject">
 <button>
 
 <p>Please enter your message:</p>
@@ -13,10 +14,16 @@
 
 <script>
 function myFunction(dialogMsg) {
-    document.getElementById("text").value = "";
-    Android.showDialog(dialogMsg);
-}
 
+    x = document.getElementById("subject").value;
+
+    document.getElementById("subject").value = "";
+    Android.showDialog(dialogMsg, x);
+}
+function displaySubject(subject){
+    var obj = JSON.parse(subject);
+    alert(obj);
+}
 </script>
 
 </body>
