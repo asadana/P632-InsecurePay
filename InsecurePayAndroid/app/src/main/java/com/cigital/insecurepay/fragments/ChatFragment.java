@@ -2,8 +2,6 @@ package com.cigital.insecurepay.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,17 +21,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.cigital.insecurepay.DBHelper.ActivityHistoryDBHelper;
 import com.cigital.insecurepay.R;
-import com.cigital.insecurepay.VOs.ChangePasswordVO;
 import com.cigital.insecurepay.VOs.CommonVO;
-import com.cigital.insecurepay.VOs.TransactionVO;
 import com.cigital.insecurepay.common.AsyncCommonTask;
-import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.common.ResponseWrapper;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -41,7 +33,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 public class ChatFragment extends Fragment {
 
@@ -346,6 +337,8 @@ public class ChatFragment extends Fragment {
         @Override
         protected void postSuccess(String resultObj) {
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+            // Converting the string back to right encoding
+            resultObj = new String(resultObj.toCharArray());
             run(resultObj);
         }
     }
