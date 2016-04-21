@@ -20,7 +20,7 @@ public class AccountNoValidationService extends BaseService {
 		Boolean accountValid = false;
 		try {
 			accountValid = DaoFactory.getInstance(AccountDao.class,
-					this.getConnection()).accountNoValid(accountNo);
+					this.getConnection()).accountNumberValid(accountNo);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
 				| SecurityException | IllegalArgumentException

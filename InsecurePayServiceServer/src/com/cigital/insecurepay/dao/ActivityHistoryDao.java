@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.cigital.insecurepay.common.Queries;
+import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.TransactionBO;
 
 /**
@@ -44,6 +45,8 @@ public class ActivityHistoryDao extends BaseDao {
 		params.add(accountNo);
 		params.add(accountNo);
 		
+		Logging.logger.debug("getActivityHistory: Querying the database.");
+		
 		resultSet = querySql(Queries.GET_ACTIVITY_HISTORY, params);
 		
 		// while loop traverses resultSet and grabs individual details
@@ -62,5 +65,4 @@ public class ActivityHistoryDao extends BaseDao {
 
 		return resultList;
 	}
-
 }

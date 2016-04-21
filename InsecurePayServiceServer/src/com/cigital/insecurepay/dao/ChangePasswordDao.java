@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cigital.insecurepay.common.Queries;
+import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.ChangePasswordBO;
 
 /**
@@ -33,7 +34,7 @@ public class ChangePasswordDao extends BaseDao{
 	 * @return	Boolean		Return a boolean value depending if the query
 	 * 						was successful.
 	 */
-	public Boolean ChangePassword(ChangePasswordBO changePasswordBOObj)
+	public Boolean changePassword(ChangePasswordBO changePasswordBOObj)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
 		
@@ -43,13 +44,18 @@ public class ChangePasswordDao extends BaseDao{
 		params.add(changePasswordBOObj.getPassword());
 		params.add(changePasswordBOObj.getUsername());
 		
+		Logging.logger.debug("changePassword: Querying the database.");
+		
 		int count = updateSql(Queries.UPDATE_PASSWORD, params);
 		
-		if (count>=1) 
+		if (count>=1) {
+			Logging.logger.debug("changePassword: Password change successful.");
 			password_changed = true;
-		else
+		}
+		else {
+			Logging.logger.debug("changePassword: Password change failed.");
 			password_changed = false;	
-	
+		}
 		return password_changed;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cigital.insecurepay.common.Queries;
+import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.CustomerBO;
 
 /**
@@ -42,6 +43,7 @@ public class CustomerDao extends BaseDao {
 		List<Object> params = new ArrayList<Object>();
 		params.add(custNo);
 		
+		Logging.logger.debug("getCustomerDetails: Querying the database.");
 		// Query the database and store the response in resultSet
 		resultSet = querySql(Queries.GET_CUSTOMER_DETAILS, params);
 		
@@ -92,6 +94,7 @@ public class CustomerDao extends BaseDao {
 		params.add(new java.sql.Date(customerBO.getBirthDate().getTime()));
 		params.add(customerBO.getCustNo());
 		
+		Logging.logger.debug("updateCustomerDetails: Querying the database.");
 		// If condition checks if the update was a success
 		if (updateSql(Queries.UPDATE_CUSTOMER_DETAILS, params) > 0) {
 			return true;

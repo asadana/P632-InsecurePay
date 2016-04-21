@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cigital.insecurepay.common.Queries;
+import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.AccountBO;
 
 /**
@@ -58,12 +59,12 @@ public class AccountDao extends BaseDao {
 	/**
 	 * accountNoValid queries the database to check if the account number is valid.
 	 * 
-	 * @param	accountNo	Contains the account number provided by the user.
+	 * @param	accountNumber	Contains the account number provided by the user.
 	 * 
 	 * @return	Boolean		Returns a boolean value depending if the account 
 	 * 						number exists.
 	 */
-	public Boolean accountNoValid(int accountNo) 
+	public Boolean accountNumberValid(int accountNumber) 
 			throws 	InstantiationException, IllegalAccessException,
 					ClassNotFoundException, SQLException {
 		
@@ -71,8 +72,9 @@ public class AccountDao extends BaseDao {
 		ResultSet resultSet = null;
 		
 		List<Object> params = new ArrayList<Object>();
-		params.add(accountNo);
+		params.add(accountNumber);
 		
+		Logging.logger.debug("accountNumberValid: Querying the database");
 		// Query the database to check for the account number
 		// and store it in resultSet.
 		resultSet = querySql(Queries.GET_ACCOUNT_TBL_WITH_ACCNO, params);

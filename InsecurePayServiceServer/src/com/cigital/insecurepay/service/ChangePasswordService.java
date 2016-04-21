@@ -24,7 +24,7 @@ public class ChangePasswordService extends BaseService {
 		Boolean passwordChanged = false;
 		try {
 			passwordChanged = DaoFactory.getInstance(ChangePasswordDao.class,
-					this.getConnection()).ChangePassword(changePasswordBO);
+					this.getConnection()).changePassword(changePasswordBO);
 
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | NoSuchMethodException
