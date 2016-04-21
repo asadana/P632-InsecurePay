@@ -1,6 +1,8 @@
 package com.cigital.common;
 
-
+/**
+ * Constants class contains the constant values used in other classes 
+ */
 public class Constants {
 	
 	// AWS and Tintin version

@@ -4,16 +4,26 @@ import java.util.Date;
 
 import javax.ws.rs.core.NewCookie;
 
+/**
+ * CookieWrapper is a wrapper class that contains a NewCookie, 
+ * customer number and the last date cookie was accessed. 
+ */
 public class CookieWrapper {
 
 	private NewCookie newCookieObj;
 	private int custNo;
 	private Date lastAccessed;
 	
+	/**
+	 * CookieWrapper is a parameterized constructor for CookieWrapper.
+	 * 
+	 *  @param	newCookieObj	Contains the NewCookie object.
+	 *  @param	custNo			Contains the customer number.
+	 */
 	public CookieWrapper(NewCookie newCookieObj, int custNo) {
-		this.newCookieObj = newCookieObj;
-		this.custNo = custNo;
-		this.lastAccessed = null;
+		this.setNewCookieObj(newCookieObj);
+		this.setCustNo(custNo);
+		this.setLastAccessed(null);
 	}
 	
 	public NewCookie getNewCookieObj() {
