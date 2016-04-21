@@ -9,51 +9,80 @@ import java.util.List;
 import com.cigital.insecurepay.common.Queries;
 import com.cigital.insecurepay.service.BO.AccountBO;
 
-/*
- * Instantiates the AccountDao 
+/**
+ * AccountDao extends BaseDao.
+ * This class handles the querying and retrieving basic account
+ * information for the user.
  */
 public class AccountDao extends BaseDao {
 
+	/**
+	 * AccountDao is a parameterized constructor to initialize the 
+	 * super class.
+	 */
 	public AccountDao(Connection conn) {
 		super(conn);
 	}
 
+	/**
+	 * getAccountDetails is a function that queries the database using the 
+	 * user's custNo.
+	 * 
+	 * @param	custNo	Contains the customer number sent by the user.
+	 * 
+	 * @return	AccountBO	Return the {@link AccountBO} object.
+	 */
 	public AccountBO getAccountDetails(int custNo)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
-		ResultSet rs = null;
+		
+		ResultSet resultSet = null;
 		List<Object> params = new ArrayList<Object>();
 		params.add(custNo);
-		//SQL query to get Account details for the particular Customer No
-		rs = querySql(Queries.GET_ACCOUNT_TBL, params);
-		//Instantiates AccountBO object
-		AccountBO account = new AccountBO();
-		if (rs.next()) {
+		
+		// Query using params and store response in resultSet
+		resultSet = querySql(Queries.GET_ACCOUNT_TBL, params);
+		
+		AccountBO account = null;
+		
+		if (resultSet.next()) {
+			account = new AccountBO();
 			//sets result of SQL query to AccountBO object
 			account.setCustNo(custNo);
-			account.setAccNo(rs.getInt("account_no"));
-			account.setAccountBalance(rs.getFloat("account_balance"));
+			account.setAccNo(resultSet.getInt("account_no"));
+			account.setAccountBalance(resultSet.getFloat("account_balance"));
 		}
 		return account;
 	}
 	
-	public Boolean accountNoValid(int accountNo) throws InstantiationException, IllegalAccessException,
-	ClassNotFoundException, SQLException {
+	/**
+	 * accountNoValid queries the database to check if the account number is valid.
+	 * 
+	 * @param	accountNo	Contains the account number provided by the user.
+	 * 
+	 * @return	Boolean		Returns a boolean value depending if the account 
+	 * 						number exists.
+	 */
+	public Boolean accountNoValid(int accountNo) 
+			throws 	InstantiationException, IllegalAccessException,
+					ClassNotFoundException, SQLException {
 		
 		Boolean accountValid = false;
-		ResultSet rs = null;
+		ResultSet resultSet = null;
+		
 		List<Object> params = new ArrayList<Object>();
 		params.add(accountNo);
-		//Checks if Account No is valid by its presence in Account table
-		rs = querySql(Queries.GET_ACCOUNT_TBL_WITH_ACCNO, params);
-		if (rs.next()) 
-			//If atleast one row is returned by SQL query,accountNo is valid
+		
+		// Query the database to check for the account number
+		// and store it in resultSet.
+		resultSet = querySql(Queries.GET_ACCOUNT_TBL_WITH_ACCNO, params);
+		
+		// If atleast one row is returned by SQL query, accountNo is valid
+		if (resultSet.next()) 
 			accountValid = true;
 		else
-			//AccountNO is invalid if its not present in Account table
 			accountValid = false;	
 	
 		return accountValid;
-		
 	}
 }

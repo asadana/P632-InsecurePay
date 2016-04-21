@@ -39,16 +39,20 @@ public class AccountService extends BaseService {
 				| SecurityException | IllegalArgumentException
 				| InvocationTargetException | SQLException e) {
 			logger.error(e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			try {
 				close();
 			} catch (SQLException e) {
 				logger.error(e);
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
-		return Response.status(Response.Status.ACCEPTED).entity(accountBO)
-				.build();
-
+		
+		if (accountBO == null) {
+			return Response.status(Response.Status.BAD_REQUEST).build();
+		} else {
+			return Response.status(Response.Status.ACCEPTED).entity(accountBO).build();	
+		}
 	}
-
 }
