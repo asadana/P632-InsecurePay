@@ -2,19 +2,57 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+
 </head>
+<style>
+    .feedback_form{
+    margin-top: 15px;
+    margin-left: 15px;
+    }
+
+    html, body { height: 100%; width: 100%; margin: 0; }
+    form{
+        height:55%;
+    }
+    #subject{
+    width:75%;
+    }
+    /*To adjust the height of textarea change it here*/
+    #text{
+    width:75%;
+    height:75%;
+    }
+    .displaySubject{
+        font-size: 14pt;
+    }
+</style>
 <body>
-Subject: <input type="text" name="topic" id="subject">
-<button>
 
-<p>Please enter your message:</p>
-<textarea id="text" style="width:250px; height:100px;" >
+<form class="feedback_form">
 
 
+    <label>Subject:</label><br/>
+    <input type="text" name="topic" id="subject">
+    <br/>
+    <label>Please enter your message:</label>
+    <br/>
+        <textarea id="text" >
 </textarea>
-<br>
-    File to upload: <input type="file" name="uploadfile"></button>
-<button id="sendButton" type="reset" value="reset" onclick="onClickSend()">Send!</button>
+    <br/>
+
+    <label>File to upload:</label> <input type="file" name="uploadfile">
+
+    <br/>
+
+    <button id="sendButton" type="reset" value="reset" onclick="onClickSend()">Send!</button>
+
+    <p class="displaySubject"></p>
+</form>
+
 
 <script>
 /*Sends the subject to the server*/
@@ -26,9 +64,10 @@ function onClickSend() {
 /*Display thank you message*/
 function displaySubject(subject){
     var obj = JSON.parse(subject);
-    $(".displaySubject").html("Our team will on: "+obj+". Thank you for your feedback.");
+    $(".displaySubject").html("Our team will work on: "+obj+". Thank you for your feedback.");
 }
+
 </script>
-<p class="displaySubject"></p>
+
 </body>
 </html>
