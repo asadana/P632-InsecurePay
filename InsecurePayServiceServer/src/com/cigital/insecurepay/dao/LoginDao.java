@@ -25,9 +25,9 @@ public class LoginDao extends BaseDao {
 					+ "' and password='"
 					+ l.getPassword()
 					+ "'";
-			s = conn.createStatement();
-			rs = s.executeQuery(sql2);
-			if (rs.next()) {
+			statementObj = connectionObj.createStatement();
+			resultSet = statementObj.executeQuery(sql2);
+			if (resultSet.next()) {
 				validationBO.setValidUser(true);
 			}
 			close();
@@ -40,10 +40,10 @@ public class LoginDao extends BaseDao {
 		String sql = "select * from cust_credentials where cust_username='"
 				+ username + "'";
 		int custNo = -1;
-		s = conn.createStatement();
-		rs = s.executeQuery(sql);
-		if (rs.next()) {
-			custNo = rs.getInt("cust_no");
+		statementObj = connectionObj.createStatement();
+		resultSet = statementObj.executeQuery(sql);
+		if (resultSet.next()) {
+			custNo = resultSet.getInt("cust_no");
 		}
 		close();
 

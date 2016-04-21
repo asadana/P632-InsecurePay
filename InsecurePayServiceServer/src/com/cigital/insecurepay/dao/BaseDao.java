@@ -8,60 +8,101 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-/*
- * Includes core methods of creating and querying results
+/**
+ * BaseDao is a parent class that is inherited by all dao classes.
+ * It includes core methods of creating and querying results.
  */
-
 public class BaseDao {
-	protected Connection conn = null;
+	
+	protected Connection connectionObj = null;
+	protected PreparedStatement preparedStatement = null;
+	protected Statement statementObj = null;
+	protected ResultSet resultSet = null;
 
-	protected PreparedStatement ps = null;
-	protected Statement s = null;
-	protected ResultSet rs = null;
-
-	public BaseDao(Connection conn) {
-		this.conn = conn;
+	/**
+	 * BaseDao is a parameterized constructor that initializes 
+	 * connectionObj.
+	 * 
+	 * @param	connectionObj	Contains the Connection object used
+	 * 							to initialize connectionObj.
+	 */
+	public BaseDao(Connection connectionObj) {
+		this.connectionObj = connectionObj;
 	}
 
-	public ResultSet querySql(String sql, List<Object> params)
+	/**
+	 * querySql is a function that sends a query to the database.
+	 * 
+	 * @param	sqlString	Contains the string containing the sql query.
+	 * @param	params		Contains the params that will be injected into 
+	 * 						the sqlString.
+	 * 
+	 * @return	ResultSet	Returns the response from the database
+	 */
+	public ResultSet querySql(String sqlString, List<Object> params)
 			throws InstantiationException, IllegalAccessException,
 			ClassNotFoundException, SQLException {
-		ps = conn.prepareStatement(sql);
+		
+		preparedStatement = connectionObj.prepareStatement(sqlString);
+		// Adding parameters to the sqlString
 		createParams(params);
-		rs = ps.executeQuery();
-		return rs;
+		// Storing the response from the database into resultSet
+		resultSet = preparedStatement.executeQuery();
+		
+		return resultSet;
 	}
 
-	public int updateSql(String sql, List<Object> params) throws SQLException {
-		ps = conn.prepareStatement(sql);
+	/**
+	 * updateSql is a function that sends an update query to the database.
+	 * 
+	 * @param	sqlString	Contains the string containing the sql query.
+	 * @param	params		Contains the params that will be injected into 
+	 * 						the sqlString.
+	 * 
+	 * @return	int			Returns the response from the server.	
+	 */
+	public int updateSql(String sqlString, List<Object> params) 
+			throws SQLException {
+		
+		preparedStatement = connectionObj.prepareStatement(sqlString);
+		// Adding parameters to the sqlString
 		createParams(params);
-		return ps.executeUpdate();
+		
+		return preparedStatement.executeUpdate();
 	}
 
+	/**
+	 * createParams is a function that adds params to the preparedStatement.
+	 * 
+	 * @param	params		Contains the params in form of a List object.
+	 */
 	private void createParams(List<Object> params) throws SQLException {
 		int i = 1;
+		
+		// For loop traverses the params list and adds them to the preparedStatement.
 		for (Object param : params) {
 			if (param instanceof Integer) {
-				ps.setInt(i, ((Integer) param).intValue());
+				preparedStatement.setInt(i, ((Integer) param).intValue());
 			} else if (param instanceof String) {
-				ps.setString(i, param.toString());
+				preparedStatement.setString(i, param.toString());
 			} else if (param instanceof Date) {
-				ps.setDate(i, (Date) param);
+				preparedStatement.setDate(i, (Date) param);
 			} else if(param instanceof Float){
-				ps.setFloat(i, ((Float)param).floatValue());
+				preparedStatement.setFloat(i, ((Float)param).floatValue());
 			} else if (param instanceof Long) {
-				ps.setLong(i, ((Long) param).longValue());
+				preparedStatement.setLong(i, ((Long) param).longValue());
 			}
 			i++;
 		}
 	}
 
+	/**
+	 * close is a function that closes the preparedStatement and resultSet
+	 */
 	public void close() throws SQLException {
-		if (ps != null)
-			ps.close();
-		if (rs != null)
-			rs.close();
-
+		if (preparedStatement != null)
+			preparedStatement.close();
+		if (resultSet != null)
+			resultSet.close();
 	}
-
 }
