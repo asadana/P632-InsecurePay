@@ -12,7 +12,7 @@ public class LogoutService extends BaseService{
 	@POST
 	public Response Logout()
 	{
-		Constants.cookieList.deleteCookies();
+		Constants.cookieList.deleteExpiredCookies();
 		Logging.logger.debug("Cookies after deletion : " + Constants.cookieList.displayCookies());
 		
 		return Response.status(Response.Status.ACCEPTED).entity(true).build();
