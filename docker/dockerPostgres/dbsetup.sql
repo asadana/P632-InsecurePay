@@ -95,8 +95,11 @@ WITH (
 );
 ALTER TABLE public.transfer_funds OWNER TO :user;
 
---Inserting queries into respective tables
-
+-- Inserting queries into respective tables
+-- While adding new users, all values here are arbitary except the following:
+  -- Zip code should be 5 numeric values
+  -- Phone number should be atleast 10 numeric values
+  -- SSN should be Base64 encoded, for convinience we have a list of SSN's dockerPostgres/addOns/SSNEncodedList.txt
 
 INSERT INTO customer VALUES (1, 'Cigital1', 'abc', 'Bloomington', 'Indiana', 47403, 9876545678, 'cigital1@cigital.com', '1980-01-10', 'WFtaWFta');
 INSERT INTO customer VALUES (2, 'Cigital2', 'XYZ', 'Bloomington', 'Indiana', 47403, 9876545645, 'cigital2@cigital.com', '1990-01-10', 'WVpbWVpb');

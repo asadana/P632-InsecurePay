@@ -62,14 +62,14 @@ RUN curl -kLsS https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_VERSION_MA
 	apk del curl && \
 	rm -rf /var/cache/apk/*
 
-# Expose port
+# Expose internal docker port
 EXPOSE 8080
 
-# Configuration
+# Copying tomcat-users configuration
 COPY ./tomcat-users.xml /opt/tomcat/conf/
 RUN sed -i 's/52428800/5242880000/g' /opt/tomcat/webapps/manager/WEB-INF/web.xml 
 
-# Set environment
+# Setting default environment
 ENV CATALINA_HOME /opt/tomcat
 
 # Launch Tomcat on startup
