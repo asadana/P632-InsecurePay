@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+</head>
+<body>
 Subject: <input type="text" name="topic" id="subject">
 <button>
 
@@ -10,21 +14,21 @@ Subject: <input type="text" name="topic" id="subject">
 </textarea>
 <br>
     File to upload: <input type="file" name="uploadfile"></button>
-<button id="sendButton" type="reset" value="reset" onclick="myFunction('Thank you for your message')">Submit</button>
+<button id="sendButton" type="reset" value="reset" onclick="onClickSend()">Send!</button>
 
 <script>
-function myFunction(dialogMsg) {
-
-    x = document.getElementById("subject").value;
-
+/*Sends the subject to the server*/
+function onClickSend() {
+    feedbackSubject = document.getElementById("subject").value;
     document.getElementById("subject").value = "";
-    Android.showDialog(dialogMsg, x);
+    Android.showDialog(feedbackSubject);
 }
+/*Display thank you message*/
 function displaySubject(subject){
     var obj = JSON.parse(subject);
-    alert(obj);
+    $(".displaySubject").html("Our team will on: "+obj+". Thank you for your feedback.");
 }
 </script>
-
+<p class="displaySubject"></p>
 </body>
 </html>

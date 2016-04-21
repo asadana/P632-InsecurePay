@@ -2,6 +2,7 @@ package com.cigital.insecurepay.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -369,14 +370,8 @@ public class ChatFragment extends Fragment {
 
 
         @JavascriptInterface
-        public void showDialog(String dialogMsg, String subject) {
-
+        public void showDialog( String subject) {
             onSubmit(subject);
-            /*new AlertDialog.Builder(mContext)
-                    .setMessage(dialogMsg)
-                    .setPositiveButton("OK", null)
-                    .create().show();
-*/
         }
 
     }
