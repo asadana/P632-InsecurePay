@@ -17,9 +17,10 @@ ENV LANG en_US.UTF8
 ENV PGDATA /var/lib/postgresql/data
 VOLUME /var/lib/postgresql/data
 
-# These variables are used to create tables and setup the database
-# To link to the tomcat server, these values have been hardcoded in the war file
+# These variables are used to create tables and setup the database.
+# To link to the tomcat server, these values have been hardcoded in the war file.
 # For any alterations, the InsecurePayServiceServer war would have to be recompiled
+# with similar changes in InsecurePayServer/src/com/cigital/insecurepay/common/Constants.java
 ENV POSTGRES_USERNAME insecurepay
 ENV POSTGRES_PASSWORD insecurepassword
 ENV POSTGRES_DATABASE insecurepaydatabase

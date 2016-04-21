@@ -6,24 +6,31 @@ package com.cigital.insecurepay.common;
 public class Constants {
 	
 	// AWS and Tintin version
+	// JDBC details
 	public final static String url = "jdbc:postgresql://tintin.cs.indiana.edu:9003/";
 	public final static String dbName = "cigital_IP";
 	public final static String driver = "org.postgresql.Driver";
 	public final static String userName = "insecurepay";
 	public final static String password = "insecurepay";
-	public final static String defaultPassword = "12345";
+	
+	// Directory on the server where files should be uploaded and stored
 	public final static String fileUploadDir = "/usr/share/tomcat8/temp/uploadedFiles";
 	
 	/*
 	// Docker Version
+	// JDBC details
 	public final static String url = "jdbc:postgresql://postgres:5432/";
 	public final static String dbName = "insecurepaydatabase";
 	public final static String driver = "org.postgresql.Driver";
 	public final static String userName = "insecurepay";
 	public final static String password = "insecurepassword";
-	public final static String defaultPassword = "12345";
+	
+	// Directory on the server where files should be uploaded and stored
 	public final static String fileUploadDir = "/opt/tomcat/temp/uploadedFiles";
 	*/
+	
+	// Reset password
+	public final static String defaultPassword = "12345";
 	
 	// List to store cookies on the server side
 	public static CookieList cookieList = new CookieList();
