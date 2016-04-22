@@ -9,6 +9,7 @@ public class LoginValidationVO {
     private boolean validUser;
     private int customerNumber;
 
+
     /**
      * LoginValidationVO default constructor.
      */
