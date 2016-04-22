@@ -1,10 +1,19 @@
 package com.cigital.insecurepay.VOs;
 
+/**
+ * ChangePasswordVO is a POJO class to store the username and password of the user.
+ */
 public class ChangePasswordVO {
 
     private String username;
     private String password;
 
+    /**
+     * ChangePasswordVO parameterized constructor
+     *
+     * @param	username
+     * @param	password
+     */
     public ChangePasswordVO( String username,String password){
         this.username=username;
         this.password=password;
