@@ -10,6 +10,9 @@ public class AccountVO implements Serializable{
     private int accountNumber;
     private float accountBalance;
 
+    public AccountVO() {
+    }
+
     /**
      * AccountVO parameterized constructor
      *
@@ -17,6 +20,8 @@ public class AccountVO implements Serializable{
      * @param	accountNumber
      * @param	accountBalance
      */
+
+
     public AccountVO(int customerNumber, int accountNumber, float accountBalance) {
         this.customerNumber = customerNumber;
         this.accountNumber = accountNumber;

@@ -93,10 +93,10 @@ public class TransferActivity extends AppCompatActivity {
         Log.i(this.getClass().getSimpleName(), "initValues: Initializing values.");
 
         // Initializing all objects from fragment_transfer
-        tvFromAccountNo.setText(Integer.toString(transferFundsVO.getFromAccount().getAccNo()));
-        tvFromCustomerNo.setText(Integer.toString(transferFundsVO.getFromAccount().getCustNo()));
-        tvToAccountNo.setText(Integer.toString(transferFundsVO.getToAccount().getAccNo()));
-        tvToCustomerNo.setText(Integer.toString(transferFundsVO.getToAccount().getCustNo()));
+        tvFromAccountNo.setText(Integer.toString(transferFundsVO.getFromAccount().getAccountNumber()));
+        tvFromCustomerNo.setText(Integer.toString(transferFundsVO.getFromAccount().getCustomerNumber()));
+        tvToAccountNo.setText(Integer.toString(transferFundsVO.getToAccount().getAccountNumber()));
+        tvToCustomerNo.setText(Integer.toString(transferFundsVO.getToAccount().getCustomerNumber()));
         tvTransferDetails.setText(transferFundsVO.getTransferDetails());
         tvTransferAmount.setText(Float.toString(transferFundsVO.getTransferAmount()));
     }

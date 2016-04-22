@@ -18,6 +18,9 @@ public class CustomerVO {
     private String email;
     private String customerUsername;
 
+    public CustomerVO() {
+    }
+
     /**
      * CustomerVO parameterized constructor.
      * @param custNo

@@ -12,20 +12,6 @@ public class CommonVO implements Serializable {
     private AccountVO accountVO;
     private String username;
 
-    /**
-     * CommonVO parameterized constructor.
-     * @param serverAddress
-     * @param customerNumber
-     * @param accountVO
-     * @param username
-     */
-    public CommonVO(String serverAddress, int customerNumber, AccountVO accountVO, String username) {
-        this.serverAddress = serverAddress;
-        this.customerNumber = customerNumber;
-        this.accountVO = accountVO;
-        this.username = username;
-    }
-
     public String getServerAddress() {
         return serverAddress;
     }

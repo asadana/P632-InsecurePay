@@ -483,7 +483,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
                     intent = new Intent(getApplicationContext(), HomePageActivity.class);
                     commonVO.setUsername(loginVOObj.getUsername());
-                    commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
+                    commonVO.setCustomerNumber(lockoutVO.getLoginValidationVO().getCustNo());
                     intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
                 } catch (Exception e) {
