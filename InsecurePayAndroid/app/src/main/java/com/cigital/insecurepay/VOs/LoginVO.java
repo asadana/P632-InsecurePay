@@ -1,8 +1,19 @@
 package com.cigital.insecurepay.VOs;
 
+
+/**
+ * LoginVO is POJO for passing login credentials - username and password
+ */
 public class LoginVO {
     private String username;
     private String password;
+
+    /**
+     * LoginVO parameterized constructor.
+     *
+     * @param username
+     * @param password
+     */
     public LoginVO(String username, String password){
         this.username = username;
         this.password = password;
@@ -22,6 +33,5 @@ public class LoginVO {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
 }

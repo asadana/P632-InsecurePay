@@ -18,12 +18,20 @@ public class CustomerVO {
     private String email;
     private String customerUsername;
 
-
-    public CustomerVO() {
-
-    }
-
-   
+    /**
+     * CustomerVO parameterized constructor.
+     * @param custNo
+     * @param custName
+     * @param street
+     * @param city
+     * @param state
+     * @param zipcode
+     * @param phoneNo
+     * @param birthDate
+     * @param ssn
+     * @param email
+     * @param custUsername
+     */
     public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, long phoneNo,
                       String birthDate, String ssn, String email, String custUsername) {
         super();
