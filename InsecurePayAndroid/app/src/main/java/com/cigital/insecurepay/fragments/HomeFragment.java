@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
         tvAccountNumber = (TextView)viewObj.findViewById(R.id.tvHome_fillAccountNumber);
         CommonVO commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         ContentValues contentValues = new ContentValues();
-        contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
+        contentValues.put(getString(R.string.cust_no), commonVO.getCustomerNumber());
         CustAccountFetchTask task = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.account_details_path), contentValues);
         task.execute();
@@ -79,7 +79,7 @@ public class HomeFragment extends Fragment {
             Log.d(this.getClass().getSimpleName(), "postSuccess: Customer Balance: " + accountVOObj.getAccountBalance());
 
             tvBalance.setText(Float.toString(accountVOObj.getAccountBalance()));
-            tvAccountNumber.setText(Integer.toString(accountVOObj.getAccNo()));
+            tvAccountNumber.setText(Integer.toString(accountVOObj.getAccountNumber()));
             mListener.setAccDetails(accountVOObj);
         }
     }

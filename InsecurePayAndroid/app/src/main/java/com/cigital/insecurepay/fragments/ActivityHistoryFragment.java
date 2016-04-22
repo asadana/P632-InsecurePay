@@ -53,7 +53,7 @@ public class ActivityHistoryFragment extends Fragment {
         etAccountNumber = (EditText) viewObj.findViewById(R.id.etActivityHistory_AccountNo);
         btnSubmit = (Button) viewObj.findViewById(R.id.btnSubmit);
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
-        etAccountNumber.setText(String.valueOf(commonVO.getAccountVO().getAccNo()));
+        etAccountNumber.setText(String.valueOf(commonVO.getAccountVO().getAccountNumber()));
 
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override

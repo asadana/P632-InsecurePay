@@ -136,7 +136,7 @@ public class ChatFragment extends Fragment {
             try {
                 cursor = getActivity().getContentResolver().query(fileUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
+                    fileName = "custNo-" + String.valueOf(commonVO.getCustomerNumber()) +
                             '-' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                     fileName = fileName.replaceAll("\\s", "");
                 }
@@ -146,7 +146,7 @@ public class ChatFragment extends Fragment {
                 }
             }
         } else if (uriString.startsWith("file://")) {
-            fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
+            fileName = "custNo-" + String.valueOf(commonVO.getCustomerNumber()) +
                     '-' + myFile.getName();
             fileName = fileName.replaceAll("\\s", "");
         }
