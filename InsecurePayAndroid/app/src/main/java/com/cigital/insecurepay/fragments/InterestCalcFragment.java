@@ -18,7 +18,9 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import java.math.BigDecimal;
 import java.util.Random;
 
-
+/**
+ * InterestCalcFragment extends Fragment and is used for calculating interest based on credit score
+ */
 public class InterestCalcFragment extends Fragment {
 
 
@@ -69,7 +71,7 @@ public class InterestCalcFragment extends Fragment {
         // Required empty public constructor
     }
 
-
+    // onCreateView is called when the class's view is being generated
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,10 +85,12 @@ public class InterestCalcFragment extends Fragment {
         return viewObj;
     }
 
+    // generateCreditScore is called to determine the credit score
     private int generateCreditScore() {
         Log.i(this.getClass().getSimpleName(), "Generating credit Score ... ");
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         double account_bal = commonVO.getAccountVO().getAccountBalance();
+        //Determine credit score range depending on Account Balance
         int creditScoreRank = RANK_ONE;
         if (account_bal >= RANGE_BASE && account_bal <= RANGE_LEVEL1) {
             creditScoreRank = RANK_FOUR;
@@ -147,6 +151,7 @@ public class InterestCalcFragment extends Fragment {
         });
     }
 
+    // Initializes all the variables
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing Values..");
         tvBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_AccountBalance);
@@ -171,6 +176,9 @@ public class InterestCalcFragment extends Fragment {
 
     }
 
+    /**
+     * calcInterest is called for calculating interest
+     */
     private void calcInterest(double time, double principal) {
         Log.i(this.getClass().getSimpleName(), "Calculating Interest...");
 
