@@ -18,8 +18,6 @@ import java.util.Calendar;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.web.assertion.WebViewAssertions.webMatches;
@@ -27,7 +25,6 @@ import static android.support.test.espresso.web.sugar.Web.onWebView;
 import static android.support.test.espresso.web.webdriver.DriverAtoms.clearElement;
 import static android.support.test.espresso.web.webdriver.DriverAtoms.findElement;
 import static android.support.test.espresso.web.webdriver.DriverAtoms.getText;
-import static android.support.test.espresso.web.webdriver.DriverAtoms.selectFrameByIdOrName;
 import static android.support.test.espresso.web.webdriver.DriverAtoms.webClick;
 import static org.hamcrest.Matchers.containsString;
 
@@ -35,7 +32,8 @@ import static org.hamcrest.Matchers.containsString;
 public class ChatFragmentTest {
 
     @Rule
-    public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
+    public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule
+            = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
     public void submitMessageTest() {
@@ -55,13 +53,13 @@ public class ChatFragmentTest {
 
         Calendar calendarObj = Calendar.getInstance();
 
-        //Enter data in subject area
+        // Enter data in subject area
         onWebView().withElement(findElement(Locator.ID, "subject"))
                 .perform(clearElement())
                 .perform(DriverAtoms.webKeys(String.valueOf(calendarObj.DATE)));
 
 
-        //Enter data in text area
+        // Enter data in text area
         onWebView().withElement(findElement(Locator.ID, "text"))
                 .perform(clearElement())
                 .perform(DriverAtoms.webKeys(String.valueOf(calendarObj.DATE)));
@@ -72,7 +70,9 @@ public class ChatFragmentTest {
 
         onWebView()
                 .withElement(findElement(Locator.CLASS_NAME, "displaySubject"))
-                .check(webMatches(getText(), containsString("Thank you for your feedback on: "+calendarObj.DATE)));
+                .check(webMatches(getText(),
+                        containsString("Thank you for your feedback on: "
+                                + calendarObj.DATE)));
         // Logout
         Constants.logout();
     }
