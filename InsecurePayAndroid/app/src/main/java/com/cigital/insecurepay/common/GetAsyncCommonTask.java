@@ -5,11 +5,24 @@ import android.content.Context;
 
 import java.net.HttpURLConnection;
 
+/**
+ * GetAsyncCommonTask is used to handle all the GET requests Async tasks
+ */
 public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
     protected T objReceived;
     private ContentValues contentValuesObj;
     private Class<T> classObj;
 
+
+    /**
+     * ForgotPasswordTask is the parameterized constructor of ForgotPasswordTask
+     *
+     * @param contextObj    Contains the context of the parent activity.
+     * @param serverAddress Contains the server url/address .
+     * @param path          Contains the sub-path to the service that needs to be used.
+     * @param contentValues Data or Object of the VO class being sent to the server
+     * @param classObj      Object of the VO class sent by server in response
+     */
     public GetAsyncCommonTask(Context contextObj, String serverAddress, String path,
                               ContentValues contentValues, Class<T> classObj) {
         super(contextObj, serverAddress, path);
@@ -27,6 +40,13 @@ public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
         }
     }
 
+    /**
+     * postSuccess is called when the server responds with a non-error code response.
+     * This function performs all the tasks to be done in postExecute when server response
+     * is not an error.
+     *
+     * @param resultObj Contains the string sent from the server as part of the response.
+     */
     @Override
     protected void postSuccess(String resultObj) {
         super.postSuccess(resultObj);
