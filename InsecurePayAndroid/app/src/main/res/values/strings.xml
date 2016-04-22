@@ -127,10 +127,7 @@
     <string name="btnSubmit">Submit</string>
     <string name="account_no">accountNo</string>
 
-    <!--For Chat Fragment-->
-    <string name="chatUploadSuccess">File upload successful</string>
-    <string name="chatUploadFailure">File upload failed</string>
-    <string name="chatThankyou">Thank you for your message</string>
+
     <!--For Transaction List item-->
     <string name="tvActivityHistory_Description">Description</string>
     <string name="tvActivityHistory_Date">Date</string>
@@ -157,6 +154,12 @@
     <string name="tvIntCalc_RateOfInterest">Rate Of Interest </string>
     <string name="tvIntCalc_FillRateOfInterest" />
     <string name="tvIntCalc_Percent">"%"</string>
+
+    <!--For Chat Fragment-->
+    <string name="chatUploadSuccess">File upload successful</string>
+    <string name="chatUploadFailure">File upload failed</string>
+    <string name="chatThankyou">Thank you for your message</string>
+
 
     <string-array name="Date">
         <item>Years</item>
