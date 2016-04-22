@@ -2,6 +2,10 @@ package com.cigital.insecurepay.VOs;
 
 import java.io.Serializable;
 
+/**
+ * TransferFundsVO is POJO to store details of the transfer being made for the
+ * user.
+ */
 public class TransferFundsVO implements Serializable {
 
     private AccountVO fromAccount;
@@ -9,6 +13,20 @@ public class TransferFundsVO implements Serializable {
     private float transferAmount;
     private String transferDetails;
 
+    /**
+     * TransferFundsVO default constructor
+     */
+    public TransferFundsVO() {
+    }
+
+    /**
+     * TransferFundsVO parameterized constructor
+     *
+     * @param	fromAccount
+     * @param	toAccount
+     * @param	transferAmount
+     * @param	transferDetails
+     */
     public TransferFundsVO(AccountVO fromAccount, AccountVO toAccount, float transferAmount, String transferDetails) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
@@ -16,9 +34,7 @@ public class TransferFundsVO implements Serializable {
         this.transferDetails = transferDetails;
     }
 
-    public TransferFundsVO(){
 
-    }
 
     public AccountVO getFromAccount() {
         return fromAccount;
