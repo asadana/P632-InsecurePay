@@ -61,7 +61,7 @@ public class ForgotPasswordDao extends BaseDao {
 				close();
 
 				params = new ArrayList<Object>();
-				params.add(forgotPasswordBO.getAccountNo());
+				params.add(forgotPasswordBO.getAccountNumber());
 
 				Logging.logger.debug("validateUser: Querying database for " 
 									+ "customer number from account table.");
@@ -72,7 +72,7 @@ public class ForgotPasswordDao extends BaseDao {
 				close();
 
 				params = new ArrayList<Object>();
-				params.add(forgotPasswordBO.getEncodedSSNNo());
+				params.add(forgotPasswordBO.getEncodedSSNNumber());
 
 				Logging.logger.debug("validateUser: Querying database for " 
 									+ "customer number from customer table.");

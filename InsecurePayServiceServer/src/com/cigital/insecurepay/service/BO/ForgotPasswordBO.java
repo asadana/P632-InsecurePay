@@ -4,37 +4,50 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.cigital.insecurepay.common.CustomEncoder;
 
+/** 
+ * ForgotPasswordBO is POJO to store details sent by the user
+ * for ForgotPasswordService.
+ */
 @XmlRootElement
 public class ForgotPasswordBO {
 	
-	private int accountNo;
-    private String sSNNo;
+	private int accountNumber;
+    private String ssnNumber;
     private String username;
 
-    public ForgotPasswordBO() {
-	}
+    /**
+     * ForgotPasswordBO default constructor.
+     */
+    public ForgotPasswordBO() {}
     
-    public ForgotPasswordBO(int accountNo, String sSNNo, String username){
-    	super();
-        this.accountNo = accountNo;
-        this.sSNNo = sSNNo;
-        this.username=username;
+    /**
+     * ForgotPasswordBO parameterized constructor.
+     * 
+     * @param	accountNumber
+     * @param	ssnNumber
+     * @param	username
+     */
+    public ForgotPasswordBO(int accountNumber, String ssnNumber, 
+    						String username){
+        this.setAccountNumber(accountNumber);
+        this.setSSNNumber(ssnNumber);
+        this.setUsername(username);
     }
 
-	public int getAccountNo() {
-		return accountNo;
+	public int getAccountNumber() {
+		return accountNumber;
 	}
 
-	public void setAccountNo(int accountNo) {
-		this.accountNo = accountNo;
+	public void setAccountNumber(int accountNumber) {
+		this.accountNumber = accountNumber;
 	}
 
-	public String getsSNNo() {
-		return sSNNo;
+	public String getSSNNumber() {
+		return ssnNumber;
 	}
 
-	public void setsSNNo(String sSNNo) {
-		this.sSNNo = sSNNo;
+	public void setSSNNumber(String ssnNumber) {
+		this.ssnNumber = ssnNumber;
 	}
 
 	public String getUsername() {
@@ -45,8 +58,8 @@ public class ForgotPasswordBO {
 		this.username = username;
 	}
 	
-	public String getEncodedSSNNo(){
-		return CustomEncoder.encode(getsSNNo());
+	public String getEncodedSSNNumber(){
+		return CustomEncoder.encode(getSSNNumber());
 	}
     
  
