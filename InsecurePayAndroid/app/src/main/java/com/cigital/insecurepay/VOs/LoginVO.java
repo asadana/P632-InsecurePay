@@ -9,6 +9,11 @@ public class LoginVO {
     private String password;
 
     /**
+     * LoginVO default constructor
+     */
+    public LoginVO() {
+    }
+    /**
      * LoginVO parameterized constructor.
      *
      * @param username
