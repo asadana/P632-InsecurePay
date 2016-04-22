@@ -457,9 +457,23 @@ public class AccountFragment extends Fragment {
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
-            Log.d(this.getClass().getSimpleName(), "postSuccess: Updated account information successfully.");
-            Toast.makeText(getContext(), getString(R.string.account_update_successful), Toast.LENGTH_SHORT).show();
-            btnUpdateInfo.setEnabled(false);
+            switch (resultObj) {
+                case "true":
+                    Log.d(this.getClass().getSimpleName(),
+                            "postSuccess: Updated account information successfully.");
+                    Toast.makeText(getContext(),
+                                    getString(R.string.account_update_successful),
+                                                Toast.LENGTH_SHORT).show();
+                    btnUpdateInfo.setEnabled(false);
+                    break;
+                case "false":
+                    Log.d(this.getClass().getSimpleName(),
+                            "postSuccess: Updating account information failed.");
+                    Toast.makeText(getContext(),
+                                    getString(R.string.account_update_failed),
+                                                Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
         @Override
