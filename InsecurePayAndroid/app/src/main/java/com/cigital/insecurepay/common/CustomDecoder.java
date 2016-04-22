@@ -8,26 +8,46 @@ import android.util.Base64;
  */
 public class CustomDecoder {
 
-    //Key for XOR function
+    //Key used for XOR function
     private static final String key = "abc";
 
-    //Main Decode function which calls Decode and XOR function
-    public static String decode(String s) {
-        return new String(xorWithKey(base64Decode(s), key.getBytes()));
+    /**
+     * decode is a function that receives the encoded SSN NO as string and decodes it.
+     *
+     * @param	ssnString	Contains the string/SSN that needs to be decoded.
+     *
+     * @return	String		Returns the decoded string.
+     */
+    public static String decode(String ssnString) {
+        return new String(xorWithKey(base64Decode(ssnString), key.getBytes()));
     }
 
-    //XOR with key function
-    private static byte[] xorWithKey(byte[] a, byte[] key) {
-        byte[] out = new byte[a.length];
-        for (int i = 0; i < a.length; i++) {
-            out[i] = (byte) (a[i] ^ key[i % key.length]);
+    /**
+     * xorWithKey is a function to XOR the SSN with key
+     *
+     * @param	ssnStringBytes	Contains the byte array from the ssn string
+     * @param	keyStringBytes	Contains the byte array from the key string
+     *
+     * @return	byte[]			Returns the xor'ed byte array
+     */
+    private static byte[] xorWithKey(byte[] ssnStringBytes, byte[] keyStringBytes) {
+        byte[] resultObjBytes = new byte[ssnStringBytes.length];
+        // For loop to XOR each byte of the ssnString
+        for (int i = 0; i < ssnStringBytes.length; i++) {
+            resultObjBytes[i] = (byte) (ssnStringBytes[i] ^ keyStringBytes[i % keyStringBytes.length]);
         }
-        return out;
+        return resultObjBytes;
     }
 
-    //Base64 Decode function
-    private static byte[] base64Decode(String s) {
-        return Base64.decode(s, Base64.DEFAULT);
+    /**
+     * base64Decode is a function that performs Base64 decoding of ssnStringBytes
+     *
+     * @param	ssnStringBytes	Contains a byte array of ssnString
+     *
+     * @return	String			Return the string generated after decoding.
+     */
+    private static byte[] base64Decode(String ssnStringBytes) {
+        return Base64.decode(ssnStringBytes, Base64.DEFAULT);
     }
 
 }
