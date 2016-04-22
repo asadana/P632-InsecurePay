@@ -17,19 +17,27 @@ import com.cigital.insecurepay.common.DaoFactory;
 import com.cigital.insecurepay.dao.AccountDao;
 import com.cigital.insecurepay.service.BO.AccountBO;
 
+/**
+ * AccountService extends {@link BaseService}.
+ * This class is a service that retrieves basic account
+ * information based on the customer number sent by the user.
+ */
 @Path("/accountService")
 public class AccountService extends BaseService {
 
+	/**
+	 * getCustomerDetails is a function that calls an instance of 
+	 * {@link AccountDao} to get basic account details.
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCustomerDetails(@QueryParam("custNo") int custNo, 
-			@CookieParam("CookieID") Cookie cookieObj)
-			throws SQLException, InstantiationException,
-			IllegalAccessException, NoSuchMethodException, SecurityException,
-			IllegalArgumentException, InvocationTargetException,
-			ClassNotFoundException {
+			@CookieParam("CookieID") Cookie cookieObj) {
 		
+		// Updating the cookie object sent by the customer with the
+		// corersponding customer number
 		Constants.cookieList.updateCustNo(cookieObj, custNo);
+		
 		AccountBO accountBO = null;
 		try {
 			accountBO = DaoFactory.getInstance(AccountDao.class,

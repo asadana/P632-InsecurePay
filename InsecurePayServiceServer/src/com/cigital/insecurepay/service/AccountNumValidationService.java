@@ -8,7 +8,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import com.cigital.insecurepay.common.Constants;
 import com.cigital.insecurepay.common.DaoFactory;
 import com.cigital.insecurepay.dao.AccountDao;
 
@@ -23,7 +22,6 @@ public class AccountNumValidationService extends BaseService {
 	/**
 	 * accountNumberValid is a function that calls an instance of 
 	 * {@link AccountDao} to validate the account number.
-	 * 
 	 */
 	@GET
 	public Response accountNumberValid(@QueryParam("accountNo") int accountNo) {
@@ -38,7 +36,7 @@ public class AccountNumValidationService extends BaseService {
 				| InvocationTargetException | SQLException e) {
 			
 			logger.error(e);
-			return Response.status(Response.Status.BAD_REQUEST).build();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			
 		} finally {
 
@@ -46,7 +44,7 @@ public class AccountNumValidationService extends BaseService {
 				close();
 			} catch (SQLException e) {
 				logger.error(e);
-				return Response.status(Response.Status.BAD_REQUEST).build();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 		return Response.status(Response.Status.OK).entity(accountValid).build();
