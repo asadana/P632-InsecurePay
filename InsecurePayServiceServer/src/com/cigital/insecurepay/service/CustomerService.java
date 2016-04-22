@@ -57,7 +57,7 @@ public class CustomerService extends BaseService {
 		Boolean booleanObj = false;
 		
 		try {
-			customergenBO.setCustNo(Integer.parseInt(cookieCustNo));
+			customergenBO.setCustomerNumber(Integer.parseInt(cookieCustNo));
 			
 			booleanObj = DaoFactory.getInstance(CustomerDao.class,
 					this.getConnection()).updateCustomerDetails(customergenBO);

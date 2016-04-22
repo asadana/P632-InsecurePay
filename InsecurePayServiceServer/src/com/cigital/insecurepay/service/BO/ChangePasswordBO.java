@@ -2,19 +2,30 @@ package com.cigital.insecurepay.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/** 
+ * ChangePasswordBO is POJO to store username and password
+ * for the user.
+ */
 @XmlRootElement
 public class ChangePasswordBO {
 
     private String username;
     private String password;
 
-    public ChangePasswordBO() {
-	}
+    /**
+     * ChangePasswordBO default constructor
+     */
+    public ChangePasswordBO() {}
     
-    public ChangePasswordBO(String username,String password){
-    	super();
-        this.username=username;
-        this.password=password;
+    /**
+     * ChangePasswordBO parameterized constructor
+     * 
+     * @param	username
+     * @param	password
+     */
+    public ChangePasswordBO(String username, String password) {
+        this.setUsername(username);
+        this.setPassword(password);
     }
 
 	public String getUsername() {
