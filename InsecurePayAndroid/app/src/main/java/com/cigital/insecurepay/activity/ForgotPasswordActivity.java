@@ -125,7 +125,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     public class ForgotPasswordTask extends PostAsyncCommonTask<ForgotPasswordVO> {
 
         /**
-         * ForgotPasswordTask is the parametrized constructor of ForgotPasswordTask
+         * ForgotPasswordTask is the parameterized constructor of ForgotPasswordTask
          *
          * @param contextObj    Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .
@@ -167,7 +167,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     etUsername.setError(getString(R.string.error_username_does_not_exist));
                     etUsername.requestFocus();
                 } else {
-                    // If condition checks if the details entered were notstne  a match
+                    // If condition checks if the details entered were not a match
                     if (!loginValidationVO.isValidUser()) {
                         Toast.makeText(
                                 ForgotPasswordActivity.this.getApplicationContext(),

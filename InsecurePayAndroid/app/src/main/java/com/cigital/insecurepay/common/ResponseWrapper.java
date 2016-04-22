@@ -8,6 +8,9 @@ public class ResponseWrapper {
     private String responseString;
     private String responseMessage;
 
+    /**
+     * ResponseWrapper parameterized constructor
+     */
     public ResponseWrapper(int responseCode, String responseString, String responseMessage) {
         this.responseCode = responseCode;
         this.responseString = responseString;
