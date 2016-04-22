@@ -5,6 +5,9 @@ import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+/**
+ * WebLoader is called for using Webview for Chat Fragment
+ */
 public class WebLoader extends WebViewClient {
 
     @Override

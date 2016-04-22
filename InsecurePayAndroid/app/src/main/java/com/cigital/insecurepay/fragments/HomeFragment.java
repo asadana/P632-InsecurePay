@@ -16,18 +16,29 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.common.GetAsyncCommonTask;
 import com.google.gson.Gson;
 
-
+/**
+ * HomeFragment displays the Home Screen consisting of Account No and current balance
+ */
 public class HomeFragment extends Fragment {
 
-    private Gson gson = new Gson();
+    // UI Components
     private TextView tvBalance;
     private TextView tvAccountNumber;
     private OnFragmentInteractionListener mListener;
+
+    private Gson gson = new Gson();
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * onCreate is the first method called when the Activity is being created.
+     * It populates and initializes the text views.
+     *
+     * @param savedInstanceState Object that is used to pass data to this activity while
+     *                           creating it.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,12 +49,15 @@ public class HomeFragment extends Fragment {
         CommonVO commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         ContentValues contentValues = new ContentValues();
         contentValues.put(getString(R.string.cust_no), commonVO.getCustomerNumber());
-        CustAccountFetchTask task = new CustAccountFetchTask(getContext(), commonVO.getServerAddress(),
+        CustomerAccountFetchTask task = new CustomerAccountFetchTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.account_details_path), contentValues);
         task.execute();
         return viewObj;
     }
 
+    /**
+     * onAttach is called to associate the particular fragment with or from the activity
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -55,6 +69,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    /**
+     * onDetach is called to detach the particular fragment with or from the activity
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -65,20 +82,39 @@ public class HomeFragment extends Fragment {
         void setAccDetails(AccountVO accountVO);
     }
 
-    private class CustAccountFetchTask extends GetAsyncCommonTask<AccountVO> {
+    /**
+     * CustomerAccountFetchTask extends GetAsyncCommonTask to get the account details of customer
+     */
+    private class CustomerAccountFetchTask extends GetAsyncCommonTask<AccountVO> {
         private AccountVO accountVOObj;
 
-        public CustAccountFetchTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+        /**
+         * CustomerAccountFetchTask is the parametrized constructor of ForgotPasswordTask
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param contentValues Contains data to be sent to the server
+         */
+        public CustomerAccountFetchTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
             super(contextObj, serverAddress, path, contentValues, AccountVO.class);
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         *                  Server sends AccountVO object as response
+         */
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
             accountVOObj = objReceived;
             Log.d(this.getClass().getSimpleName(), "postSuccess: Account NO: " + accountVOObj.getAccountNumber());
             Log.d(this.getClass().getSimpleName(), "postSuccess: Customer Balance: " + accountVOObj.getAccountBalance());
-
+            //display Account number and current balance on home screen
             tvBalance.setText(Float.toString(accountVOObj.getAccountBalance()));
             tvAccountNumber.setText(Integer.toString(accountVOObj.getAccountNumber()));
             mListener.setAccDetails(accountVOObj);
