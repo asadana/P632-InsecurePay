@@ -2,7 +2,6 @@ package com.cigital.insecurepay.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 /** 
  * LoginBO is POJO to store the user credentials
  * for the user.
