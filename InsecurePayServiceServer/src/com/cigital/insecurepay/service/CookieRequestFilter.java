@@ -1,6 +1,5 @@
 package com.cigital.insecurepay.service;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -17,57 +16,69 @@ import javax.ws.rs.ext.Provider;
 import com.cigital.insecurepay.common.Constants;
 import com.cigital.insecurepay.common.CookieWrapper;
 
+/**
+ * CookieRequestFilter implements {@link ContainerRequestFilter}.
+ * This class acts as a filter for all incoming requests.
+ */
 @Provider
 public class CookieRequestFilter implements ContainerRequestFilter {
+	
 	@Context
 	private UriInfo uriInfo;
 
+	/**
+	 * filter is an overridden function that defines constraints on the
+	 * incoming requests.
+	 */
 	@Override
-	public void filter(ContainerRequestContext clientRequest)
-			throws IOException {
+	public void filter(ContainerRequestContext clientRequest) {
 
-		if (!(uriInfo.getPath().equals("login") || uriInfo.getPath().equals("forgotPassword"))) {
-			
+		// If condition checks if the incoming service is not one of the listed
+		// This is where you can add services that need to bypass cookie check.
+		if (!(uriInfo.getPath().equals("login") 
+				|| uriInfo.getPath().equals("forgotPassword"))) {
+
 			// display all the cookies
-			Logging.logger.debug("Displaying cookies: " + Constants.cookieList.displayCookies());
-			
+			Logging.logger.debug("Displaying cookies: " 
+									+ Constants.cookieList.displayCookies());
+
 			Map<String, Cookie> cookies = clientRequest.getCookies();
+			
 			if (cookies.size() == 0) {
 				Logging.logger.warn("Cookies list null");
 				throw new WebApplicationException(Status.UNAUTHORIZED);
 			} else {
 				Logging.logger.info("Request Cookies :" + cookies.toString());
 				Cookie cookieObj = cookies.get("CookieID");
-				
+
+				// Find the incoming cookie in the list
 				CookieWrapper cookieWrapperObj = Constants.cookieList.findCookie(cookieObj);
-				
-				// TODO: Remove these variables with direct get calls
+
 				int custNo = 0;
 				NewCookie newCookieObj = null;
-				
+
 				if (cookieWrapperObj != null) {
 					newCookieObj = cookieWrapperObj.getNewCookieObj();
 					custNo = cookieWrapperObj.getCustNo();
-					Logging.logger.debug("REMOVE ME: Found cookie: " + 
-											newCookieObj.getValue() + "; CustNo: " + Integer.toString(custNo));
+					Logging.logger.debug("Found cookie: " + newCookieObj.getValue() 
+										+ "; CustNo: " + Integer.toString(custNo));
 				}
-				
+
+				// Get current date and time
 				Date dateObj = Calendar.getInstance().getTime();
+
 				// Check to see if the value of the cookie is correct
 				// and if the cookie is not yet expired
-				
-				if (newCookieObj == null
-						|| dateObj.compareTo(newCookieObj.getExpiry()) > 0) {
-					Logging.logger.warn("Invalid cookie used.");
+				if (newCookieObj == null || dateObj.compareTo(newCookieObj.getExpiry()) > 0) {
+					Logging.logger.debug("Invalid cookie used.");
 					throw new WebApplicationException(Status.UNAUTHORIZED);
 				} else {
-					Logging.logger.info("REMOVE ME: Inside if : "
-							+ cookieObj.toString());
+					Logging.logger.debug("Valid cookie used.");
 					cookieWrapperObj.setLastAccessed(Calendar.getInstance().getTime());
+					// Add the customer number from the mapped object to the header for other requests.
 					clientRequest.getHeaders().add("CustNo", Integer.toString(custNo));
 				}
 			}
 		}
-
 	}
 }
