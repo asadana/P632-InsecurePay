@@ -37,11 +37,10 @@ import java.net.URL;
 
 /**
  * ChatFragment extends Fragment and is used to handles file upload and sending customer feedback operations.
- * */
+ */
 public class ChatFragment extends Fragment {
-
     //declare all mime types which user can upload
-    String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
+    String[] mimeTypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
     //declare webView reference
     private WebView mWebView;
     //A callback interface used to provide values asynchronously.
@@ -49,14 +48,23 @@ public class ChatFragment extends Fragment {
     //declare VO
     private CommonVO commonVO;
 
+    //Tag to be used for logging
+    private static final String TAG = ChatFragment.class.getSimpleName();
+
     //Following are the constants and references needed for file upload operations
     public static final int INPUT_FILE_REQUEST_CODE = 1;
     private int megaByteSize = 1024 * 1024;
     private int maxFileSize = 5 * megaByteSize;
-    String fileName;
-
-    //Tag to be used for logging
-    private static final String TAG = ChatFragment.class.getSimpleName();
+    private String fileName;
+    private String forAllTypes = "*/*";
+    private String fileChooserTitle = "File Chooser";
+    private String pathToLiveChat = "file:///android_asset/LiveChat.html";
+    private String uriStart = "content://";
+    private String fileUriStart = "file://";
+    private String fileNameStart ="custNo-";
+    private String webAppInterface = "Android";
+    private String httpTimeOutError =  "HTTP Client Timeout";
+    private String httpInternalError ="HTTP Internal Error";
 
     public ChatFragment() {
         // Required empty public constructor
@@ -73,7 +81,7 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
+        mWebView.addJavascriptInterface(new WebAppInterface(getContext()),webAppInterface);
         setUpWebViewDefaults(mWebView);
 
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -84,6 +92,8 @@ public class ChatFragment extends Fragment {
             mWebView.restoreState(savedInstanceState);
         }
 
+        //This class is called when something that might impact a browser UI happens, for instance, progress updates
+        // and JavaScript alerts are sent here
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -92,34 +102,36 @@ public class ChatFragment extends Fragment {
                     mFilePathCallback.onReceiveValue(null);
                 }
                 mFilePathCallback = filePathCallback;
-
+                /**
+                 * ACTION_GET_CONTENT with MIME type in the given setType() and category CATEGORY_OPENABLE
+                 * Display all pickers for data that can be opened with ContentResolver.openInputStream(),
+                 * allowing the user to pick one of them and then some data inside of it and returning the resulting URI to the caller.
+                 * */
                 Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("*/*");
-
+                contentSelectionIntent.setType(forAllTypes);
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                 chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, fileChooserTitle);
+                chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
                 startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
                 return true;
             }
 
         });
 
-        // Load the local index.html file
+        // Load the local LiveChat.html file
         if (mWebView.getUrl() == null) {
-            mWebView.loadUrl("file:///android_asset/LiveChat.html");
+            mWebView.loadUrl(pathToLiveChat);
         }
 
         return rootView;
     }
 
-
+    //To set the basic webView settings
     private void setUpWebViewDefaults(WebView webView) {
         WebSettings settings = webView.getSettings();
-        // Enable Javascript
+        // Enable Javascript to support JS in the web page to be rendered.
         settings.setJavaScriptEnabled(true);
 
         // We set the WebViewClient to ensure links are consumed by the WebView rather
@@ -127,18 +139,19 @@ public class ChatFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient());
     }
 
+
     public void getFileName(Uri fileUri) {
         String uriString = fileUri.toString();
         File myFile = new File(uriString);
         String path = myFile.getAbsolutePath();
 
         //get name of the selected file
-        if (uriString.startsWith("content://")) {
+        if (uriString.startsWith(uriStart)) {
             Cursor cursor = null;
             try {
                 cursor = getActivity().getContentResolver().query(fileUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    fileName = "custNo-" + String.valueOf(commonVO.getCustomerNumber()) +
+                    fileName = fileNameStart + String.valueOf(commonVO.getCustomerNumber()) +
                             '-' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                     fileName = fileName.replaceAll("\\s", "");
                 }
@@ -147,8 +160,8 @@ public class ChatFragment extends Fragment {
                     cursor.close();
                 }
             }
-        } else if (uriString.startsWith("file://")) {
-            fileName = "custNo-" + String.valueOf(commonVO.getCustomerNumber()) +
+        } else if (uriString.startsWith(fileUriStart)) {
+            fileName = fileNameStart + String.valueOf(commonVO.getCustomerNumber()) +
                     '-' + myFile.getName();
             fileName = fileName.replaceAll("\\s", "");
         }
@@ -296,12 +309,12 @@ public class ChatFragment extends Fragment {
 
                 } else {
                     return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null,
-                            "HTTP Client Timeout");
+                            httpTimeOutError);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "doInBackground: ", e);
                 return new ResponseWrapper(HttpURLConnection.HTTP_INTERNAL_ERROR, null,
-                        "HTTP Internal Error");
+                        httpInternalError);
             }
         }
 
@@ -323,17 +336,18 @@ public class ChatFragment extends Fragment {
 
         }
     }
+
     private void onSubmit(String subject) {
         Log.i(this.getClass().getSimpleName(), "Sending subject");
-        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(),getString(R.string.chatService),
+        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(), getString(R.string.chatService),
                 subject);
         sendsubject.execute();
     }
 
     //Inner class to send subject
     private class ChatSubjectTask extends PostAsyncCommonTask<String> {
-        public ChatSubjectTask(Context contextObj, String serverAddress, String path, String subject){
-                super(contextObj, serverAddress, path, subject, String.class);
+        public ChatSubjectTask(Context contextObj, String serverAddress, String path, String subject) {
+            super(contextObj, serverAddress, path, subject, String.class);
         }
 
         @Override
@@ -349,13 +363,11 @@ public class ChatFragment extends Fragment {
         mWebView.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(this.getClass().getSimpleName(), "Subject: "+scriptSrc);
-                mWebView.loadUrl("javascript:" + "displaySubject(\'"+scriptSrc+"\')");
+                Log.d(this.getClass().getSimpleName(), "Display subject to be rendered" + scriptSrc);
+                mWebView.loadUrl("javascript:" + "displaySubject(\'" + scriptSrc + "\')");
             }
         });
     }
-
-
 
 
     class WebAppInterface {
@@ -371,7 +383,7 @@ public class ChatFragment extends Fragment {
 
 
         @JavascriptInterface
-        public void showDialog( String subject) {
+        public void showDialog(String subject) {
             onSubmit(subject);
         }
 
