@@ -21,9 +21,9 @@ public class DBHelper extends SQLiteOpenHelper {
     protected static final String TRANSFER_AMOUNT = "Transfer_amount";
     protected static final String TRANSFERS = "Transfers";
     public static final String LOGIN_TRIALS = "LoginTrials";
-    public static final String CUSTOMER_USERNAME = "Cust_username";
+    public static final String CUSTOMER_USERNAME = "cust_username";
     public static final String TRIALS = "trials";
-    public static final String CURRENT_TIME = "current_time";
+    public static final String CURRENT_TIME = "curr_time";
     public static final String isLocked = "isLocked";
     public static final String ACCOUNT_NUMBER = "AccountNo";
 
