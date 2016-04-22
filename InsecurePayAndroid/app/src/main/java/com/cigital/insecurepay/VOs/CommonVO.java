@@ -2,12 +2,16 @@ package com.cigital.insecurepay.VOs;
 
 import java.io.Serializable;
 
+/**
+ * CommonVO is a POJO used to store username,account details,customer number and server address which are required often
+ */
 public class CommonVO implements Serializable {
 
     private String serverAddress;
-    private int custNo;
+    private int customerNumber;
     private AccountVO accountVO;
     private String username;
+
     public String getServerAddress() {
         return serverAddress;
     }
@@ -17,11 +21,11 @@ public class CommonVO implements Serializable {
     }
 
     public int getCustNo() {
-        return custNo;
+        return customerNumber;
     }
 
     public void setCustNo(int custNo) {
-        this.custNo = custNo;
+        this.customerNumber = custNo;
     }
 
     public AccountVO getAccountVO() {
