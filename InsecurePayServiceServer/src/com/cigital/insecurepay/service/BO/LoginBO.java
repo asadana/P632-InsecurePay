@@ -2,18 +2,28 @@ package com.cigital.insecurepay.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
-/*
- * Pojo class to allow serialization and deserialization of json objects
- */
 
+/** 
+ * LoginBO is POJO to store the user credentials
+ * for the user.
+ */
 @XmlRootElement
 public class LoginBO {
 	private String username;
 	private String password;
 
+	/**
+     * LoginBO default constructor
+     */
 	public LoginBO() {
 	}
 
+	/**
+     * LoginBO parameterized constructor
+     * 
+     * @param	username
+     * @param	password
+     */
 	public LoginBO(String username, String password) {
 		super();
 		this.username = username;
