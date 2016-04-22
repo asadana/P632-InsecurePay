@@ -15,17 +15,29 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * JsonFileHandler is used to handle read and write data to files
+ */
 public class JsonFileHandler {
     private final Context contextObj;
     private String fileName;
     private String contentToStore;
     private Gson gsonObj = new Gson();
 
+    /**
+     * JsonFileHandler parameterized constructor
+     *
+     * @param contextObj    Contains the context of the parent activity.
+     * @param fileName      Contains the filename .
+     */
     public JsonFileHandler(Context contextObj, String fileName) {
         this.contextObj = contextObj;
         this.fileName = fileName;
     }
 
+    /**
+     * writeToFile is called to write data to the file in local storage
+     */
     public boolean writeToFile(String contentToStore) {
 
         this.contentToStore = contentToStore;
@@ -45,6 +57,9 @@ public class JsonFileHandler {
         }
     }
 
+    /**
+     * readFromFile is called to read data from the file stored in local storage
+     */
     public String readFromFile() throws IOException {
         FileInputStream fileInputStreamObj = contextObj.openFileInput(fileName);
         InputStreamReader inputStreamReaderObj = new InputStreamReader(fileInputStreamObj);
