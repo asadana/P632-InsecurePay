@@ -50,8 +50,8 @@ public class CustomerDao extends BaseDao {
 			// and store the result in customerBOObj
 			if (resultSet.next()) {
 				customerBOObj = new CustomerBO();
-				customerBOObj.setCustNo(resultSet.getInt("cust_no"));
-				customerBOObj.setCustName(resultSet.getString("cust_name"));
+				customerBOObj.setCustomerNumber(resultSet.getInt("cust_no"));
+				customerBOObj.setCustomerName(resultSet.getString("cust_name"));
 				customerBOObj.setStreet(resultSet.getString("street"));
 				customerBOObj.setCity(resultSet.getString("city"));
 				customerBOObj.setState(resultSet.getString("state"));
@@ -83,7 +83,7 @@ public class CustomerDao extends BaseDao {
 	public boolean updateCustomerDetails(CustomerBO customerBO) {
 
 		List<Object> params = new ArrayList<Object>();
-		params.add(customerBO.getCustName());
+		params.add(customerBO.getCustomerName());
 		params.add(customerBO.getStreet());
 		params.add(customerBO.getCity());
 		params.add(customerBO.getState());
@@ -93,7 +93,7 @@ public class CustomerDao extends BaseDao {
 		// Converting java.util.Date (supported by JSON/GSON)
 		// into java.sql.Date (supported by database)
 		params.add(new java.sql.Date(customerBO.getBirthDate().getTime()));
-		params.add(customerBO.getCustNo());
+		params.add(customerBO.getCustomerNumber());
 
 		Logging.logger.debug("updateCustomerDetails: Querying the database.");
 		try {
