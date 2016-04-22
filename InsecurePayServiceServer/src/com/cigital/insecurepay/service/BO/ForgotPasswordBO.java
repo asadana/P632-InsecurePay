@@ -29,6 +29,7 @@ public class ForgotPasswordBO {
      */
     public ForgotPasswordBO(int accountNumber, String ssnNumber, 
     						String username){
+    	super();
         this.setAccountNumber(accountNumber);
         this.setSSNNumber(ssnNumber);
         this.setUsername(username);
