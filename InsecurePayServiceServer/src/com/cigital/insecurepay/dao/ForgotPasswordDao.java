@@ -51,7 +51,7 @@ public class ForgotPasswordDao extends BaseDao {
 		List<Object> params = new ArrayList<Object>();
 		params.add(forgotPasswordBO.getUsername());
 
-		Logging.logger.debug("validateUser: Querying the database for username.");
+		Logging.logger.debug("Querying the database for username.");
 
 		try {
 			resultSet = querySql(Queries.USERNAME_EXISTS, params);
@@ -63,7 +63,7 @@ public class ForgotPasswordDao extends BaseDao {
 				params = new ArrayList<Object>();
 				params.add(forgotPasswordBO.getAccountNumber());
 
-				Logging.logger.debug("validateUser: Querying database for " 
+				Logging.logger.debug("Querying database for " 
 									+ "customer number from account table.");
 				resultSet = querySql(Queries.GET_CUSTNO_ACCOUNT_TBL, params);
 				if (resultSet.next()) {
@@ -74,7 +74,7 @@ public class ForgotPasswordDao extends BaseDao {
 				params = new ArrayList<Object>();
 				params.add(forgotPasswordBO.getEncodedSSNNumber());
 
-				Logging.logger.debug("validateUser: Querying database for " 
+				Logging.logger.debug("Querying database for " 
 									+ "customer number from customer table.");
 				resultSet = querySql(Queries.GET_CUSTNO_CUST_TBL, params);
 
@@ -91,19 +91,19 @@ public class ForgotPasswordDao extends BaseDao {
 					params.add(Constants.defaultPassword);
 					params.add(forgotPasswordBO.getUsername());
 
-					Logging.logger.debug("validateUser: Updating the database " 
+					Logging.logger.debug("Updating the database " 
 										+ "with default password.");
 					int count = updateSql(Queries.UPDATE_DEFAULT_PASSWORD, params);
 					if (count != 0) {
-						Logging.logger.debug("validateUser: Password reset successful.");
+						Logging.logger.debug("Password reset successful.");
 					} else {
-						Logging.logger.debug("validateUser: Password reset failed.");
+						Logging.logger.debug("Password reset failed.");
 					}
 				} else
 					validUser = false;
 
 			} else {
-				Logging.logger.debug("validateUser: Username does not exist.");
+				Logging.logger.debug("Username does not exist.");
 			}
 
 			loginValidationBO = new LoginValidationBO(usernameExists, 
@@ -111,7 +111,7 @@ public class ForgotPasswordDao extends BaseDao {
 			return loginValidationBO;
 		} catch (InstantiationException | IllegalAccessException | 
 					ClassNotFoundException | SQLException e) {
-			Logging.logger.error("validateuser: " + e);
+			Logging.logger.error(e);
 			return loginValidationBO;
 		}
 	}

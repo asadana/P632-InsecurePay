@@ -42,22 +42,22 @@ public class ChangePasswordDao extends BaseDao {
 		params.add(changePasswordBOObj.getPassword());
 		params.add(changePasswordBOObj.getUsername());
 
-		Logging.logger.debug("changePassword: Querying the database.");
+		Logging.logger.debug("Querying the database.");
 		try {
 			int count = updateSql(Queries.UPDATE_PASSWORD, params);
 
 			if (count >= 1) {
-				Logging.logger.debug("changePassword: Password change successful.");
+				Logging.logger.debug("Password change successful.");
 				password_changed = true;
 			} else {
-				Logging.logger.debug("changePassword: Password change failed.");
+				Logging.logger.debug("Password change failed.");
 				password_changed = false;
 			}
 			close();
 			
 			return password_changed;
 		} catch (SQLException e) {
-			Logging.logger.error("changePassword: " + e);
+			Logging.logger.error(e);
 			return password_changed;
 		}
 	}

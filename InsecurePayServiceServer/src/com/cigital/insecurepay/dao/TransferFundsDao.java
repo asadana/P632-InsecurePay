@@ -60,7 +60,7 @@ public class TransferFundsDao extends BaseDao {
 		params.add(toAfterAmt);
 		params.add(transferFundsBO.getTransferDetails());
 
-		Logging.logger.debug("transfer: Querying the database.");
+		Logging.logger.debug("Querying the database.");
 
 		try {
 			// Querying the database to transfer funds.
@@ -74,7 +74,7 @@ public class TransferFundsDao extends BaseDao {
 				params.add(fromAfterAmt);
 				params.add(fromAccountBO.getAccountNumber());
 
-				Logging.logger.debug("transfer: Updating account balance.");
+				Logging.logger.debug("Updating account balance.");
 				count = updateSql(Queries.UPDATE_ACCOUNT_BALANCE, params);
 
 				params = new ArrayList<Object>();
@@ -84,7 +84,7 @@ public class TransferFundsDao extends BaseDao {
 			}
 			return fundsTransferred;
 		} catch (SQLException e) {
-			Logging.logger.error("transfer: " + e);
+			Logging.logger.error(e);
 			return fundsTransferred;
 		}
 	}

@@ -55,7 +55,7 @@ public class AccountDao extends BaseDao {
 			return accountBO;
 		} catch (InstantiationException | IllegalAccessException | 
 					ClassNotFoundException | SQLException e) {
-			Logging.logger.error("getAccountDetails: " + e);
+			Logging.logger.error(e);
 			return accountBO;
 		}
 	}
@@ -78,7 +78,7 @@ public class AccountDao extends BaseDao {
 		List<Object> params = new ArrayList<Object>();
 		params.add(accountNumber);
 
-		Logging.logger.debug("accountNumberValid: Querying the database");
+		Logging.logger.debug("Querying the database");
 		try {
 			// Query the database to check for the account number
 			// and store it in resultSet.
@@ -92,7 +92,7 @@ public class AccountDao extends BaseDao {
 			return accountValid;
 		} catch (InstantiationException | IllegalAccessException | 
 					ClassNotFoundException | SQLException e) {
-			Logging.logger.error("accountNumberValid: " + e);
+			Logging.logger.error(e);
 			return accountValid;
 		}
 	}

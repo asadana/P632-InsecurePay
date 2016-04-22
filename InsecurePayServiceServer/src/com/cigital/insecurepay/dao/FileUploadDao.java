@@ -45,25 +45,25 @@ public class FileUploadDao extends BaseDao {
 		// Folder location from the Constants class
 		File folderFileObj = new File(Constants.fileUploadDir);
 
-		Logging.logger.debug("saveUploadedFile: Folder path: " + Constants.fileUploadDir);
-		Logging.logger.debug("saveUploadedFile: Folder exists?: " + folderFileObj.exists());
-		Logging.logger.debug("saveUploadedFile: Folder is a directory?: " + folderFileObj.isDirectory());
+		Logging.logger.debug("Folder path: " + Constants.fileUploadDir);
+		Logging.logger.debug("Folder exists?: " + folderFileObj.exists());
+		Logging.logger.debug("Folder is a directory?: " + folderFileObj.isDirectory());
 		
 		// If condition checks if the the folder path doesn't exists or is not a directory
 		if (!(folderFileObj.exists() && folderFileObj.isDirectory())) {
-			Logging.logger.debug("saveUploadedFile: folder not found");
+			Logging.logger.debug("Folder not found");
 			
 			// If condition attempts to make a directory
 			if (folderFileObj.mkdir()) {
-				Logging.logger.debug("saveUploadedFile: Creating folder");
+				Logging.logger.debug("Creating folder");
 				
 				// Check again if the folder path exists or is not a directory
 				if (!(folderFileObj.exists() && folderFileObj.isDirectory())) {
-					Logging.logger.debug("saveUploadedFile: Unable to create a folder");
+					Logging.logger.debug("Unable to create a folder");
 					return false;
 				}
 			} else {
-				Logging.logger.debug("writeToFile: Unable to create a folder");
+				Logging.logger.debug("Unable to create a folder");
 				return false;
 			}
 		}
@@ -74,7 +74,7 @@ public class FileUploadDao extends BaseDao {
 		// boolean object to store if the file write was successful or not
 		boolean booleanObj = writeToFile(uploadedInputStream, uploadedFileLocation); 
 		
-		Logging.logger.debug("storeUploadedFile: writeToFile returned " + booleanObj);
+		Logging.logger.debug("writeToFile returned " + booleanObj);
 		return booleanObj;
 	}
 
@@ -93,14 +93,14 @@ public class FileUploadDao extends BaseDao {
 
 		try {
 			OutputStream outputStream = new FileOutputStream(new File(uploadedFileLocation));
-			Logging.logger.debug("writeToFile: File created.");
+			Logging.logger.debug("File created.");
 			
 			int readBytes = 0;
 			byte[] bytesArray = new byte[1024];
 
 			outputStream = new FileOutputStream(new File(uploadedFileLocation));
 			
-			Logging.logger.debug("writeToFile: File writing started.");
+			Logging.logger.debug("File writing started.");
 			
 			// While loop reads the bytes from the uploadedInputStream
 			while ((readBytes = uploadedInputStream.read(bytesArray)) != -1) {
@@ -109,11 +109,11 @@ public class FileUploadDao extends BaseDao {
 			
 			outputStream.flush();
 			outputStream.close();
-			Logging.logger.debug("writeToFile: File writing completed.");
+			Logging.logger.debug("File writing completed.");
 			
 			return true;
 		} catch (IOException e) {
-			Logging.logger.debug("writeToFile: Unable to write to a file");
+			Logging.logger.debug("Unable to write to a file");
 			Logging.logger.error(e);
 			return false;
 		}

@@ -46,7 +46,7 @@ public class LoginDao extends BaseDao {
 			params.add(loginBO.getUsername());
 			params.add(loginBO.getPassword());
 			
-			Logging.logger.debug("validateUser: Attempting to login.");
+			Logging.logger.debug("Attempting to login.");
 			try {
 				// Querying the database to attempt login
 				resultSet = querySql(Queries.ATTEMPT_LOGIN, params);
@@ -58,7 +58,7 @@ public class LoginDao extends BaseDao {
 				
 			} catch (SQLException | InstantiationException | 
 					IllegalAccessException | ClassNotFoundException e) {
-				Logging.logger.error("validateUser: "+ e);
+				Logging.logger.error(e);
 				return validationBO;
 			}
 		}
@@ -81,7 +81,7 @@ public class LoginDao extends BaseDao {
 		
 		try {
 			// Querying the database to check if username exists
-			Logging.logger.debug("checkUsername: Checking if the username exists.");
+			Logging.logger.debug("Checking if the username exists.");
 			resultSet = querySql(Queries.USERNAME_EXISTS, params);
 			if (resultSet.next()) {
 				custNo = resultSet.getInt("cust_no");

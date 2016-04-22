@@ -45,7 +45,7 @@ public class ActivityHistoryDao extends BaseDao {
 		params.add(accountNo);
 		params.add(accountNo);
 
-		Logging.logger.debug("getActivityHistory: Querying the database.");
+		Logging.logger.debug("Querying the database.");
 
 		try {
 			resultSet = querySql(Queries.GET_ACTIVITY_HISTORY, params);
@@ -66,7 +66,7 @@ public class ActivityHistoryDao extends BaseDao {
 			return resultList;
 		} catch (InstantiationException | IllegalAccessException | 
 					ClassNotFoundException | SQLException e) {
-			Logging.logger.error("getActivityHistory: " + e);
+			Logging.logger.error(e);
 			return resultList;
 		}
 	}

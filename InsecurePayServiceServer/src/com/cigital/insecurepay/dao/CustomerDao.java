@@ -41,7 +41,7 @@ public class CustomerDao extends BaseDao {
 		params.add(custNo);
 
 		CustomerBO customerBOObj = null;
-		Logging.logger.debug("getCustomerDetails: Querying the database.");
+		Logging.logger.debug("Querying the database.");
 		try {
 			// Query the database and store the response in resultSet
 			resultSet = querySql(Queries.GET_CUSTOMER_DETAILS, params);
@@ -64,7 +64,7 @@ public class CustomerDao extends BaseDao {
 			return customerBOObj;
 		} catch (InstantiationException | IllegalAccessException | 
 					ClassNotFoundException | SQLException e) {
-			Logging.logger.error("getCustomerDetails: " + e);
+			Logging.logger.error(e);
 			return customerBOObj;
 		}
 	}
@@ -95,7 +95,7 @@ public class CustomerDao extends BaseDao {
 		params.add(new java.sql.Date(customerBO.getBirthDate().getTime()));
 		params.add(customerBO.getCustomerNumber());
 
-		Logging.logger.debug("updateCustomerDetails: Querying the database.");
+		Logging.logger.debug("Querying the database.");
 		try {
 			// If condition checks if the update was a success
 			if (updateSql(Queries.UPDATE_CUSTOMER_DETAILS, params) > 0) {
@@ -103,7 +103,7 @@ public class CustomerDao extends BaseDao {
 			}
 			return false;
 		} catch (SQLException e) {
-			Logging.logger.error("updateCustomerDetails: " + e);
+			Logging.logger.error(e);
 			return false;
 		}
 	}
