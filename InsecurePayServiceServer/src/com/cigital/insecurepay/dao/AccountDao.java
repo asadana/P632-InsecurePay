@@ -11,7 +11,7 @@ import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.AccountBO;
 
 /**
- * AccountDao extends BaseDao.
+ * AccountDao extends {@link BaseDao}.
  * This class handles the querying and retrieving basic account
  * information for the user.
  */

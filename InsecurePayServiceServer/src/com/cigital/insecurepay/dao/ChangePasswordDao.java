@@ -11,7 +11,7 @@ import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.ChangePasswordBO;
 
 /**
- * ChangePasswordDao extends BaseDao.
+ * ChangePasswordDao extends {@link BaseDao}.
  * This class queries the database to update the user's password.
  */
 public class ChangePasswordDao extends BaseDao{

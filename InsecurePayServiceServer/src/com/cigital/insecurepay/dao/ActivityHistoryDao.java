@@ -12,7 +12,7 @@ import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.TransactionBO;
 
 /**
- * ActivityHistoryDao extends BaseDao.
+ * ActivityHistoryDao extends {@link BaseDao}.
  * This class handles the querying and retrieving Account History for the user.
  */
 public class ActivityHistoryDao extends BaseDao {

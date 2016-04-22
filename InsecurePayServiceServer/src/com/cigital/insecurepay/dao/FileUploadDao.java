@@ -11,7 +11,7 @@ import com.cigital.insecurepay.common.Constants;
 import com.cigital.insecurepay.service.Logging;
 
 /**
- * FileUploadDao extends BaseDao.
+ * FileUploadDao extends {@link BaseDao}.
  * This class takes the InputStream from the user
  * and stores it into a file with a given fileName.
  */

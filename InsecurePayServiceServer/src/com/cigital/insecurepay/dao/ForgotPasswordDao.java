@@ -13,7 +13,7 @@ import com.cigital.insecurepay.service.BO.ForgotPasswordBO;
 import com.cigital.insecurepay.service.BO.LoginValidationBO;
 
 /**
- * ForgotPasswordDao extends BaseDao.
+ * ForgotPasswordDao extends {@link BaseDao}.
  * This class handles the querying the database and resetting the
  * password for the user.
  */
