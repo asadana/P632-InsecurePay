@@ -37,7 +37,6 @@ import java.net.URL;
 
 /**
  * ChatFragment extends Fragment and is used to handles file upload and sending customer feedback operations.
- *
  * */
 public class ChatFragment extends Fragment {
 
