@@ -13,8 +13,12 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+/**
+ * LoginDBHelper is a class that is used to keep track of login attempts and account lockout status in 'LoginTrials' table.
+ */
 public class LoginDBHelper extends DBHelper {
 
+    //Initialize column variable names
     public static final String CUST_USERNAME = "cust_username";
     public static final String TRIALS = "trials";
     public static final String CURR_TIME = "curr_time";
@@ -33,31 +37,50 @@ public class LoginDBHelper extends DBHelper {
 
     }
 
-    // Add trials to SqlLite DB
+    /**
+     * addTrial is called to make entry in 'LoginTrials' table when first unsuccessful login attempt is made.
+     *
+     * @param username Username used to login into the database
+     *
+     */
     public void addTrial(String username) {
         Log.d("LoginDBHelper", "addtrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        //prepares row entry for insertion
         values.put(TRIALS, 1);
         values.put(CUST_USERNAME, username);
         values.put(isLocked, 0);
         values.put(CURR_TIME, format.print(DateTime.now()));
+        //inserts the row in database
         db.insert(contextObj.getString(R.string.tableLoginTrials), null, values);
     }
 
-    // Update trials to SqlLite DB with incremented trials
-    public void updateTrial(String username, int trial, boolean locked) {
+    /**
+     * updateTrial is called to update the number of unsuccessful trails made for logging in
+     *
+     * @param username Username used to login into the database
+     *        trial    Trail count
+     *        islocked Specifies if the account is locked or not
+     */
+    public void updateTrial(String username, int trial, boolean islocked) {
         Log.d("LoginDBHelper", "updateTrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        //prepares row entry for insertion
         values.put(TRIALS, trial);
-        values.put(isLocked, locked);
+        values.put(isLocked, islocked);
         values.put(CURR_TIME, format.print(DateTime.now()));
+        //updates the row of the database
         db.update(contextObj.getString(R.string.tableLoginTrials), values,
                     CUST_USERNAME + "='" + username + "'", null);
     }
 
-    // Fetch trials from SqlLite DB
+    /**
+     * getTrial is called to check number of unsuccessful login trials made to determine lockout
+     *
+     * @param username Username used to login into the database
+     */
     public int getTrial(String username) {
         Log.d("LoginDBHelper", "getTrial");
         int userTrial = -1;
@@ -74,6 +97,12 @@ public class LoginDBHelper extends DBHelper {
         return userTrial;
     }
 
+    /**
+     * getTimestamp is used to get the timestamp when account got locked. If the time is greater than a particular
+     * duration then account is unlocked
+     *
+     * @param username Username used to login into the database
+     */
     public DateTime getTimestamp(String username) {
         Log.d("LoginDBHelper", "getTimestamp");
         SQLiteDatabase db = this.getReadableDatabase();
@@ -89,7 +118,11 @@ public class LoginDBHelper extends DBHelper {
             cursor.close();return entryTime;
     }
 
-    //Checks if the account is locked due to 3 or more unsuccessful login attempts
+    /**
+     * isLocked is called to check if the account is locked due to 3 or more unsuccessful login attempts
+     *
+     * @param username Username used to login into the database
+     */
     public boolean isLocked(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         boolean locked = false;
@@ -105,11 +138,15 @@ public class LoginDBHelper extends DBHelper {
         return locked;
     }
 
+    /**
+     * deleteTrial is called to delete the entry from table on successful login
+     *
+     * @param username Username used to login into the database
+     */
     public void deleteTrial(String username) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(contextObj.getString(R.string.tableLoginTrials),
                     CUST_USERNAME + "='" + username + "'", null);
     }
-
 
 }
