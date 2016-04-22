@@ -58,7 +58,8 @@ public class LoginDao extends BaseDao {
 				
 			} catch (SQLException | InstantiationException | 
 					IllegalAccessException | ClassNotFoundException e) {
-				Logging.logger.error(e);
+				Logging.logger.error("validateUser: "+ e);
+				return validationBO;
 			}
 		}
 		return validationBO;
@@ -87,12 +88,11 @@ public class LoginDao extends BaseDao {
 			}
 			close();
 			
+			return custNo;
 		} catch (SQLException | InstantiationException | 
 					IllegalAccessException | ClassNotFoundException e) {
 			Logging.logger.error(e);
 			return custNo;
 		}
-		
-		return custNo;
 	}
 }

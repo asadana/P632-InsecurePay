@@ -11,51 +11,54 @@ import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.ChangePasswordBO;
 
 /**
- * ChangePasswordDao extends {@link BaseDao}.
- * This class queries the database to update the user's password.
+ * ChangePasswordDao extends {@link BaseDao}. This class queries the database to
+ * update the user's password.
  */
-public class ChangePasswordDao extends BaseDao{
-	
+public class ChangePasswordDao extends BaseDao {
+
 	/**
-	 * ChangePasswordDao is a parameterized constructor to initialize the 
-	 * super class.
+	 * ChangePasswordDao is a parameterized constructor to initialize the super
+	 * class.
 	 */
 	public ChangePasswordDao(Connection conn) {
 		super(conn);
 	}
-	
+
 	/**
-	 * ChangePasswordDao is a function that queries the database and updates the 
+	 * ChangePasswordDao is a function that queries the database and updates the
 	 * password for the user.
 	 * 
-	 * @param	changePasswordBOObj		Contains an object of ChangePassword
-	 * 									class.
+	 * @param changePasswordBOObj
+	 *            Contains an object of ChangePassword class.
 	 * 
-	 * @return	Boolean		Return a boolean value depending if the query
-	 * 						was successful.
+	 * @return Boolean Return a boolean value depending if the query was
+	 *         successful.
 	 */
-	public Boolean changePassword(ChangePasswordBO changePasswordBOObj)
-			throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException, SQLException {
-		
+	public Boolean changePassword(ChangePasswordBO changePasswordBOObj) {
+
 		Boolean password_changed = false;
 
 		List<Object> params = new ArrayList<Object>();
 		params.add(changePasswordBOObj.getPassword());
 		params.add(changePasswordBOObj.getUsername());
-		
+
 		Logging.logger.debug("changePassword: Querying the database.");
-		
-		int count = updateSql(Queries.UPDATE_PASSWORD, params);
-		
-		if (count>=1) {
-			Logging.logger.debug("changePassword: Password change successful.");
-			password_changed = true;
+		try {
+			int count = updateSql(Queries.UPDATE_PASSWORD, params);
+
+			if (count >= 1) {
+				Logging.logger.debug("changePassword: Password change successful.");
+				password_changed = true;
+			} else {
+				Logging.logger.debug("changePassword: Password change failed.");
+				password_changed = false;
+			}
+			close();
+			
+			return password_changed;
+		} catch (SQLException e) {
+			Logging.logger.error("changePassword: " + e);
+			return password_changed;
 		}
-		else {
-			Logging.logger.debug("changePassword: Password change failed.");
-			password_changed = false;	
-		}
-		return password_changed;
 	}
 }

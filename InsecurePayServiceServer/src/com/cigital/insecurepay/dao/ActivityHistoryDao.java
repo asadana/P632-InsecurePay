@@ -12,14 +12,14 @@ import com.cigital.insecurepay.service.Logging;
 import com.cigital.insecurepay.service.BO.TransactionBO;
 
 /**
- * ActivityHistoryDao extends {@link BaseDao}.
- * This class handles the querying and retrieving Account History for the user.
+ * ActivityHistoryDao extends {@link BaseDao}. This class handles the querying
+ * and retrieving Account History for the user.
  */
 public class ActivityHistoryDao extends BaseDao {
 
 	/**
-	 * ActivityHistoryDao is a parameterized constructor to initialize the 
-	 * super class.
+	 * ActivityHistoryDao is a parameterized constructor to initialize the super
+	 * class.
 	 */
 	public ActivityHistoryDao(Connection connectionObj) {
 		super(connectionObj);
@@ -29,40 +29,45 @@ public class ActivityHistoryDao extends BaseDao {
 	 * getActivityHistory is a function that queries the database for the given
 	 * account number.
 	 * 
-	 * @param	accountNo	Contains the account number given by the user.
+	 * @param accountNo
+	 *            Contains the account number given by the user.
 	 * 
-	 * @return	List<TransactionBO>	Returns a List of {@link TransactionBO} object.
+	 * @return List<TransactionBO> Returns a List of {@link TransactionBO}
+	 *         object.
 	 */
-	public List<TransactionBO> getActivityHistory(int accountNo)
-			throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException, SQLException {
+	public List<TransactionBO> getActivityHistory(int accountNo) {
 
 		List<TransactionBO> resultList = new ArrayList<TransactionBO>();
 		ResultSet resultSet = null;
 		Date transferDate;
-		
+
 		List<Object> params = new ArrayList<Object>();
 		params.add(accountNo);
 		params.add(accountNo);
-		
-		Logging.logger.debug("getActivityHistory: Querying the database.");
-		
-		resultSet = querySql(Queries.GET_ACTIVITY_HISTORY, params);
-		
-		// while loop traverses resultSet and grabs individual details
-		// for each object.
-		while (resultSet.next()) {
-			TransactionBO transaction = new TransactionBO();
-			transaction.setDescription(resultSet.getString("transfer_details"));
-			transferDate = resultSet.getDate("transfer_date");
-			transaction.setDate(transferDate.toString());
-			transaction.setFinalAmount(resultSet.getFloat("final_amount"));
-			transaction.setTransactionAmount(resultSet.getFloat("transfer_amount"));
-			transaction.setType(resultSet.getInt("type"));
-			resultList.add(transaction);
-		}
-		close();
 
-		return resultList;
+		Logging.logger.debug("getActivityHistory: Querying the database.");
+
+		try {
+			resultSet = querySql(Queries.GET_ACTIVITY_HISTORY, params);
+
+			// while loop traverses resultSet and grabs individual details
+			// for each object.
+			while (resultSet.next()) {
+				TransactionBO transaction = new TransactionBO();
+				transaction.setDescription(resultSet.getString("transfer_details"));
+				transferDate = resultSet.getDate("transfer_date");
+				transaction.setDate(transferDate.toString());
+				transaction.setFinalAmount(resultSet.getFloat("final_amount"));
+				transaction.setTransactionAmount(resultSet.getFloat("transfer_amount"));
+				transaction.setType(resultSet.getInt("type"));
+				resultList.add(transaction);
+			}
+			close();
+			return resultList;
+		} catch (InstantiationException | IllegalAccessException | 
+					ClassNotFoundException | SQLException e) {
+			Logging.logger.error("getActivityHistory: " + e);
+			return resultList;
+		}
 	}
 }
