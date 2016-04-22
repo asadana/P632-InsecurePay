@@ -26,11 +26,17 @@ public class ActivityHistoryService extends BaseService{
 	/**
 	 * getActivityHistory is a function that calls an instance of 
 	 * {@link ActivityHistoryDao} to query the database.
+	 * 
+	 * @param	accountNo	Contains the account number as int variable.
+	 * 
+	 * @return	Response	Return a {@link Response}
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getActivityHistory(@QueryParam("accountNo") int accountNo){
+		
 		List<TransactionBO> resultlist = null;
+		
 		try {
 			resultlist = DaoFactory.getInstance(ActivityHistoryDao.class,
 					this.getConnection()).getActivityHistory(accountNo);

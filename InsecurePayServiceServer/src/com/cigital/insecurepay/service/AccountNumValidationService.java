@@ -22,6 +22,10 @@ public class AccountNumValidationService extends BaseService {
 	/**
 	 * accountNumberValid is a function that calls an instance of 
 	 * {@link AccountDao} to validate the account number.
+	 * 
+	 * @param	accountNo	Contains the account number as int variable.
+	 * 
+	 * @return	Response	Return a {@link Response}
 	 */
 	@GET
 	public Response accountNumberValid(@QueryParam("accountNo") int accountNo) {

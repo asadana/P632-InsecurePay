@@ -25,7 +25,10 @@ public class ChangePasswordService extends BaseService {
 	 * changePassword is a function that calls an instance of
 	 * {@link ChangePasswordDao} to update the database with the new password.
 	 * 
-	 * @param	changePasswordBO	{@link ChangePasswordBO}
+	 * @param	changePasswordBO	Contains the details needed to update password in form of
+	 * 								{@link ChangePasswordBO} object.
+	 * 
+	 * @return	Response	Return a {@link Response}
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

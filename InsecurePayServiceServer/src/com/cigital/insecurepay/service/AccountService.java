@@ -28,6 +28,12 @@ public class AccountService extends BaseService {
 	/**
 	 * getCustomerDetails is a function that calls an instance of 
 	 * {@link AccountDao} to get basic account details.
+	 * 
+	 * @param	custNo		Contains the customer number sent by the user
+	 * 						as an int variable.
+	 * @param	cookieObj	Contains the cookie sent by the user in the request.
+	 * 
+	 * @return	Response	Return a {@link Response}
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
