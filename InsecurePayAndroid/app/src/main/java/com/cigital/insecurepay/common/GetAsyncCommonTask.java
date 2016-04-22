@@ -15,7 +15,7 @@ public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
 
 
     /**
-     * ForgotPasswordTask is the parameterized constructor of ForgotPasswordTask
+     * GetAsyncCommonTask is the parameterized constructor
      *
      * @param contextObj    Contains the context of the parent activity.
      * @param serverAddress Contains the server url/address .
