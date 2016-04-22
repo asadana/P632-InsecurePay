@@ -35,33 +35,36 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * ChatFragment extends Fragment and is used to handles file upload and sending customer feedback operations.
+ *
+ * */
 public class ChatFragment extends Fragment {
 
-    public static final int INPUT_FILE_REQUEST_CODE = 1;
-    public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
-    private static final String TAG = ChatFragment.class.getSimpleName();
-    String fileName;
-    String custSubject;
-    WebAppInterface webAppInterface;
+    //declare all mime types which user can upload
     String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
-    //WebAppInterface webAppInterface;
+    //declare webView reference
     private WebView mWebView;
+    //A callback interface used to provide values asynchronously.
     private ValueCallback<Uri[]> mFilePathCallback;
+    //declare VO
     private CommonVO commonVO;
 
-    // 1 MB = 1024 * 1024 bytes
+    //Following are the constants and references needed for file upload operations
+    public static final int INPUT_FILE_REQUEST_CODE = 1;
     private int megaByteSize = 1024 * 1024;
-
-    // File Size Limit 5 MB = 5 * 1024 * 1024
     private int maxFileSize = 5 * megaByteSize;
+    String fileName;
+
+    //Tag to be used for logging
+    private static final String TAG = ChatFragment.class.getSimpleName();
 
     public ChatFragment() {
-
+        // Required empty public constructor
     }
 
     @SuppressLint("JavascriptInterface")
     @Override
-
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -190,7 +193,7 @@ public class ChatFragment extends Fragment {
                 if (bytesAvailable <= maxFileSize) {
                     UploadFileTask task = null;
                     task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
-                            getString(R.string.chatFileUploadPath), results[0]);
+                            getString(R.string.chatService), results[0]);
                     task.execute();
                 } else {
                     int allowedSize = maxFileSize / megaByteSize;
@@ -246,7 +249,6 @@ public class ChatFragment extends Fragment {
             try {
                 InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
                 URL url = new URL(serverAddress + path);
-
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true); // Allow Inputs
                 conn.setDoOutput(true); // Allow Outputs
@@ -324,7 +326,7 @@ public class ChatFragment extends Fragment {
     }
     private void onSubmit(String subject) {
         Log.i(this.getClass().getSimpleName(), "Sending subject");
-        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(),"chatService",
+        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(),getString(R.string.chatService),
                 subject);
         sendsubject.execute();
     }

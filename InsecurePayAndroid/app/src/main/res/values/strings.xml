@@ -51,7 +51,7 @@
     <string name="transfer_validation_path">transferValidation</string>
     <string name="accountno_validation_path">accountNumberValidation</string>
     <string name="activity_history_path">activityHistory</string>
-    <string name="chatFileUploadPath">chatService</string>
+    <string name="chatService">chatService</string>
     <string name="logout_path">logout</string>
 
     <!--For Navigation Drawer Toolbar titles-->
