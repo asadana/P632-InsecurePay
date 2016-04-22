@@ -159,6 +159,7 @@ public class AccountFragment extends Fragment {
         }
     };
     private PhoneNumberFormattingTextWatcher twPhone = new PhoneNumberFormattingTextWatcher("US") {
+
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             super.beforeTextChanged(s, start, count, after);
@@ -240,7 +241,7 @@ public class AccountFragment extends Fragment {
         // Initializing JsonFileHandler
         jsonFileHandlerObj = new JsonFileHandler(getContext(), commonVO.getUsername());
         ContentValues contentValues = new ContentValues();
-        contentValues.put(getString(R.string.cust_no), commonVO.getCustNo());
+        contentValues.put(getString(R.string.cust_no), commonVO.getCustomerNumber());
 
         GetCustomerDetailsTask getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
                 getString(R.string.cust_details_path), contentValues);
@@ -430,8 +431,8 @@ public class AccountFragment extends Fragment {
             jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj, CustomerVO.class));
 
             // Populating customerVO with the information retrieved
-            tvName.setText(customerVOObj.getCustName());
-            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccNo()));
+            tvName.setText(customerVOObj.getCustomerName());
+            tvAccountNumber.setText(Integer.toString(commonVO.getAccountVO().getAccountNumber()));
             tvSSN.setText(customerVOObj.getDecodedSsn());
             tvUserDOB.setText(customerVOObj.getBirthDate());
             etEmail.setText(customerVOObj.getEmail(), TextView.BufferType.EDITABLE);
@@ -465,9 +466,9 @@ public class AccountFragment extends Fragment {
         protected void postFailure(ResponseWrapper responseWrapperObj) {
             Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
             ArrayList<String> arrayListObj = new ArrayList<String>();
-            arrayListObj.add("Customer Name: " + customerVOObj.getCustName());
-            arrayListObj.add("Customer Number: " + customerVOObj.getCustNo());
-            arrayListObj.add("Customer Account Number: " + Integer.toString(commonVO.getAccountVO().getAccNo()));
+            arrayListObj.add("Customer Name: " + customerVOObj.getCustomerName());
+            arrayListObj.add("Customer Number: " + customerVOObj.getCustomerNumber());
+            arrayListObj.add("Customer Account Number: " + Integer.toString(commonVO.getAccountVO().getAccountNumber()));
             arrayListObj.add("Customer SSN: " + customerVOObj.getDecodedSsn());
             String currentString = responseWrapperObj.getResponseString();
             responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);

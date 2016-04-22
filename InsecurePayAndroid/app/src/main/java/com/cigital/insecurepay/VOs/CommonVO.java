@@ -20,12 +20,12 @@ public class CommonVO implements Serializable {
         this.serverAddress = serverAddress;
     }
 
-    public int getCustNo() {
+    public int getCustomerNumber() {
         return customerNumber;
     }
 
-    public void setCustNo(int custNo) {
-        this.customerNumber = custNo;
+    public void setCustomerNumber(int customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
     public AccountVO getAccountVO() {
@@ -43,5 +43,4 @@ public class CommonVO implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
 }

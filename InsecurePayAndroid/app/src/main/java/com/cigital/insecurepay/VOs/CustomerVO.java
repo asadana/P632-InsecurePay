@@ -2,9 +2,12 @@ package com.cigital.insecurepay.VOs;
 
 import com.cigital.insecurepay.common.CustomDecoder;
 
+/**
+ * CustomerVO is a POJO used to store customer details
+ */
 public class CustomerVO {
-    private int custNo;
-    private String custName;
+    private int customerNumber;
+    private String customerName;
     private String street;
     private String city;
     private String state;
@@ -13,18 +16,19 @@ public class CustomerVO {
     private String birthDate;
     private String ssn;
     private String email;
-    private String custUsername;
+    private String customerUsername;
 
 
     public CustomerVO() {
 
     }
 
+   
     public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, long phoneNo,
                       String birthDate, String ssn, String email, String custUsername) {
         super();
-        this.custNo = custNo;
-        this.custName = custName;
+        this.customerNumber = custNo;
+        this.customerName = custName;
         this.street = street;
         this.city = city;
         this.state = state;
@@ -33,23 +37,27 @@ public class CustomerVO {
         this.birthDate = birthDate;
         this.ssn = ssn;
         this.email = email;
-        this.custUsername = custUsername;
+        this.customerUsername = custUsername;
     }
 
-    public int getCustNo() {
-        return custNo;
+    public String getDecodedSsn() {
+        return CustomDecoder.decode(getSsn());
     }
 
-    public void setCustNo(int custNo) {
-        this.custNo = custNo;
+    public int getCustomerNumber() {
+        return customerNumber;
     }
 
-    public String getCustName() {
-        return custName;
+    public void setCustomerNumber(int customerNumber) {
+        this.customerNumber = customerNumber;
     }
 
-    public void setCustName(String custName) {
-        this.custName = custName;
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getStreet() {
@@ -108,10 +116,6 @@ public class CustomerVO {
         this.ssn = ssn;
     }
 
-    public String getDecodedSsn() {
-        return CustomDecoder.decode(getSsn());
-    }
-
     public String getEmail() {
         return email;
     }
@@ -120,14 +124,12 @@ public class CustomerVO {
         this.email = email;
     }
 
-    public String getCustUsername() {
-        return custUsername;
+    public String getCustomerUsername() {
+        return customerUsername;
     }
 
-    public void setCustUsername(String custUsername) {
-        this.custUsername = custUsername;
+    public void setCustomerUsername(String customerUsername) {
+        this.customerUsername = customerUsername;
     }
-
-
 }
 
