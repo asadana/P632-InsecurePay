@@ -31,7 +31,6 @@ public class LoginDBHelper extends DBHelper {
         this.contextObj = context;
     }
 
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -44,7 +43,7 @@ public class LoginDBHelper extends DBHelper {
      *
      */
     public void addTrial(String username) {
-        Log.d("LoginDBHelper", "addtrial");
+        Log.d("LoginDBHelper", "addTrial");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         //prepares row entry for insertion
