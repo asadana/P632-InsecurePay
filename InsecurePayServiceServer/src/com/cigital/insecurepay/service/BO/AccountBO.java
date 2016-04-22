@@ -2,47 +2,55 @@ package com.cigital.insecurepay.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/** 
+ * AccountBO is POJO to store basic account information
+ * for the user.
+ */
 @XmlRootElement
 public class AccountBO {
-	private int custNo;
-    private int accNo;
+	private int customerNumber;
+    private int accountNumber;
     private float accountBalance;
-    
 
-    public AccountBO(int custNo, int accNo, float accountBalance) {
-        this.custNo = custNo;
-        this.accNo = accNo;
-        this.accountBalance = accountBalance;
-        
-    }
-
+    /**
+     * AccountBO default constructor
+     */
     public AccountBO() {}
-
-	public int getCustNo() {
-        return custNo;
+    
+    /**
+     * AccountBo parameterized constructor
+     * 
+     * @param	customerNumber
+     * @param	accountNumber
+     * @param	accountBalance
+     */
+    public AccountBO(int customerNumber, int accountNumber, float accountBalance) {
+        this.setCustomerNumber(customerNumber);
+        this.setAccountNumber(accountNumber);
+        this.setAccountBalance(accountBalance);   
     }
 
-    public void setCustNo(int custNo) {
-        this.custNo = custNo;
-    }
+    public int getCustomerNumber() {
+		return customerNumber;
+	}
 
-    public int getAccNo() {
-        return accNo;
-    }
+	public void setCustomerNumber(int customerNumber) {
+		this.customerNumber = customerNumber;
+	}
 
-    public void setAccNo(int accNo) {
-        this.accNo = accNo;
-    }
+	public int getAccountNumber() {
+		return accountNumber;
+	}
 
-    public float getAccountBalance() {
+	public void setAccountNumber(int accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public float getAccountBalance() {
         return accountBalance;
     }
 
     public void setAccountBalance(float accountBalance) {
         this.accountBalance = accountBalance;
     }
-
-
-	
-	
 }

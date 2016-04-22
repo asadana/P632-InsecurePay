@@ -47,8 +47,8 @@ public class AccountDao extends BaseDao {
 			if (resultSet.next()) {
 				accountBO = new AccountBO();
 				// sets result of SQL query to AccountBO object
-				accountBO.setCustNo(custNo);
-				accountBO.setAccNo(resultSet.getInt("account_no"));
+				accountBO.setCustomerNumber(custNo);
+				accountBO.setAccountNumber(resultSet.getInt("account_no"));
 				accountBO.setAccountBalance(resultSet.getFloat("account_balance"));
 			}
 			close();

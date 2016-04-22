@@ -25,7 +25,7 @@ public class TransferFundsService extends BaseService {
 			@HeaderParam("CustNo") String cookieCustNo) {
 		Boolean fundsTransferred = false;
 		try {
-			transferFundsBO.getFromAccount().setCustNo(Integer.parseInt(cookieCustNo));
+			transferFundsBO.getFromAccount().setCustomerNumber(Integer.parseInt(cookieCustNo));
 			fundsTransferred = DaoFactory.getInstance(TransferFundsDao.class,
 					this.getConnection()).transfer(transferFundsBO);
 		} catch (InstantiationException | IllegalAccessException
