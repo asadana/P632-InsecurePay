@@ -18,6 +18,9 @@ public class CustomerVO {
     private String email;
     private String customerUsername;
 
+    /**
+     * CustomerVO default constructor.
+     */
     public CustomerVO() {
     }
 

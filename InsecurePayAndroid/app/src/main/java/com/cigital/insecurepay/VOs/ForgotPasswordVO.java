@@ -11,6 +11,9 @@ public class ForgotPasswordVO {
     private String ssnNumber;
     private String username;
 
+    /**
+     * ForgotPasswordVO default constructor.
+     */
     public ForgotPasswordVO() {
     }
 

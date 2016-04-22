@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment {
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
             accountVOObj = objReceived;
+            Log.d(this.getClass().getSimpleName(), "postSuccess: Account NO: " + accountVOObj.getAccountNumber());
             Log.d(this.getClass().getSimpleName(), "postSuccess: Customer Balance: " + accountVOObj.getAccountBalance());
 
             tvBalance.setText(Float.toString(accountVOObj.getAccountBalance()));

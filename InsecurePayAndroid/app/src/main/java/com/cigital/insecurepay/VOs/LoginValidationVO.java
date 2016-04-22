@@ -1,18 +1,30 @@
 package com.cigital.insecurepay.VOs;
 
-
+/**
+ * LoginValidationVO is a POJO used to verify if the user is valid or not, username exists and the respective customer number
+ */
 public class LoginValidationVO {
 
     private boolean usernameExists;
     private boolean validUser;
-    private int custNo;
+    private int customerNumber;
 
+    /**
+     * LoginValidationVO default constructor.
+     */
     public LoginValidationVO() {}
 
-    public LoginValidationVO(boolean usernameExists, boolean validUser) {
+    /**
+     * LoginValidationVO parameterized constructor.
+     *
+     * @param usernameExists
+     * @param validUser
+     */
+    public LoginValidationVO(boolean usernameExists, boolean validUser,int customerNumber) {
         super();
         this.usernameExists = usernameExists;
         this.validUser = validUser;
+        this.customerNumber=customerNumber;
     }
 
     public boolean isUsernameExists() {
@@ -31,11 +43,11 @@ public class LoginValidationVO {
         this.validUser = validUser;
     }
 
-    public int getCustNo() {
-        return custNo;
+    public int getCustomerNumber() {
+        return customerNumber;
     }
 
-    public void setCustNo(int custNo) {
-        this.custNo = custNo;
+    public void setCustomerNumber(int customerNumber) {
+        this.customerNumber = customerNumber;
     }
 }
