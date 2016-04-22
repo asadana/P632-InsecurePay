@@ -31,7 +31,7 @@ public class ForgotPasswordBO {
     						String username){
     	super();
         this.setAccountNumber(accountNumber);
-        this.setSSNNumber(ssnNumber);
+        this.setSsnNumber(ssnNumber);
         this.setUsername(username);
     }
 
@@ -43,11 +43,11 @@ public class ForgotPasswordBO {
 		this.accountNumber = accountNumber;
 	}
 
-	public String getSSNNumber() {
+	public String getSsnNumber() {
 		return ssnNumber;
 	}
 
-	public void setSSNNumber(String ssnNumber) {
+	public void setSsnNumber(String ssnNumber) {
 		this.ssnNumber = ssnNumber;
 	}
 
@@ -60,7 +60,7 @@ public class ForgotPasswordBO {
 	}
 	
 	public String getEncodedSSNNumber(){
-		return CustomEncoder.encode(getSSNNumber());
+		return CustomEncoder.encode(getSsnNumber());
 	}
     
  
