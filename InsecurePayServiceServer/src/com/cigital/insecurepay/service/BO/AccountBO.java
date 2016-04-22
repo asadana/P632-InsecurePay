@@ -18,7 +18,7 @@ public class AccountBO {
     public AccountBO() {}
     
     /**
-     * AccountBo parameterized constructor
+     * AccountBO parameterized constructor
      * 
      * @param	customerNumber
      * @param	accountNumber

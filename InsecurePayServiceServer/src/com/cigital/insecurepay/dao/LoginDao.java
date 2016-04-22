@@ -37,9 +37,9 @@ public class LoginDao extends BaseDao {
 	public LoginValidationBO validateUser(LoginBO loginBO) {
 		
 		LoginValidationBO validationBO = new LoginValidationBO(false, false, -1);
-		validationBO.setCustNo(checkUsername(loginBO.getUsername()));
+		validationBO.setCustomerNumber(checkUsername(loginBO.getUsername()));
 
-		if (validationBO.getCustNo() != -1) {
+		if (validationBO.getCustomerNumber() != -1) {
 			validationBO.setUsernameExists(true);
 			
 			List<Object> params = new ArrayList<Object>();

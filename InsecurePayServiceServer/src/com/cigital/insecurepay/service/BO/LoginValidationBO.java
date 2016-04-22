@@ -2,20 +2,35 @@ package com.cigital.insecurepay.service.BO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/** 
+ * LoginValidationBO is POJO to validate the user 
+ * for the user.
+ */
 @XmlRootElement
 public class LoginValidationBO {
 
 	private boolean usernameExists;
 	private boolean validUser;
-	private int custNo;
+	private int customerNumber;
 
+	/**
+     * LoginValidationBO default constructor
+     */
 	public LoginValidationBO() {}
 
-	public LoginValidationBO(boolean usernameExists, boolean validUser, int custNo) {
+    /**
+     * LoginValidationBO parameterized constructor
+     * 
+     * @param	usernameExists
+     * @param	validUser
+     * @param	customerNumber
+     */	
+	public LoginValidationBO (boolean usernameExists, 
+								boolean validUser, int customerNumber) {
 		super();
-		this.usernameExists = usernameExists;
-		this.validUser = validUser;
-		this.custNo = custNo;
+		this.setUsernameExists(usernameExists);
+		this.setValidUser(validUser);
+		this.setCustomerNumber(customerNumber);
 	}
 
 	public boolean isUsernameExists() {
@@ -34,12 +49,12 @@ public class LoginValidationBO {
 		this.validUser = validUser;
 	}
 
-	public int getCustNo() {
-		return custNo;
+	public int getCustomerNumber() {
+		return customerNumber;
 	}
 
-	public void setCustNo(int custNo) {
-		this.custNo = custNo;
+	public void setCustomerNumber(int customerNumber) {
+		this.customerNumber = customerNumber;
 	}
 
 	

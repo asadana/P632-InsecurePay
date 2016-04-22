@@ -50,7 +50,7 @@ public class LoginService extends BaseService {
 				}
 
 				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(),
-																validate.getCustNo());
+																validate.getCustomerNumber());
 				logger.debug("REMOVE ME: " + newCookieObj.toString());
 				logger.debug("REMOVE ME: " + Constants.cookieList);
 

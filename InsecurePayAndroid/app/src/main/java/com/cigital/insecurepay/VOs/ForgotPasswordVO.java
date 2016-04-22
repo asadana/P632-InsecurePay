@@ -11,9 +11,6 @@ public class ForgotPasswordVO {
     private String ssnNumber;
     private String username;
 
-    public ForgotPasswordVO() {
-    }
-
     /**
      * ForgotPasswordBO parameterized constructor.
      *
