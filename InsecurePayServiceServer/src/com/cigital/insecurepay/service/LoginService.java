@@ -19,56 +19,68 @@ import com.cigital.insecurepay.service.BO.LoginBO;
 import com.cigital.insecurepay.service.BO.LoginValidationBO;
 
 /**
- * Service called for login
+ * LoginService extends {@link BaseService}. This class is a service 
+ * that allows user to be validated before other services can 
+ * be accessed from a client.
  */
-
 @Path("/login")
 public class LoginService extends BaseService {
 
 	@Context
 	private HttpServletRequest request;
 
+	/**
+	 * validateLogin is a function that validates the credentials 
+	 * sent by the user against the database credentials. If valid, 
+	 * the user is allotted a cookie.
+	 * 
+	 * @param	loginBO		Contains the user credentials received
+	 * 						in the form of {@link LoginBO} object.
+	 * 
+	 * @return	Response	Return a {@link Response}
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response validateLogin(LoginBO loginBO) {
 
-	
 		LoginValidationBO validate = null;
 		NewCookie newCookieObj = null;
 
 		try {
 
 			validate = DaoFactory.getInstance(LoginDao.class,
-					this.getConnection()).validateUser(loginBO);
+												this.getConnection())
+								.validateUser(loginBO);
+			
+			// If condition checks if the user was validated
 			if (validate.isValidUser()) {
-				if (Constants.counter >= Constants.counterInitial && 
-						Constants.counter < Constants.counterLimit) {
+				// If condition checks if the cookie counter is under a given range
+				if (Constants.counter >= Constants.counterInitial 
+						&& Constants.counter < Constants.counterLimit) {
 					Constants.counter++;
 				} else {
-					Constants.counter = Constants.counterInitial;	
+					Constants.counter = Constants.counterInitial;
 				}
 
-				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(),
+				// Alloting cookie to the validated user
+				newCookieObj = Constants.cookieList.allotCookie(loginBO.getUsername(), 
 																validate.getCustomerNumber());
-				logger.debug("REMOVE ME: " + newCookieObj.toString());
-				logger.debug("REMOVE ME: " + Constants.cookieList);
-
 			}
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException | NoSuchMethodException
-				| SecurityException | IllegalArgumentException
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException 
+				| NoSuchMethodException | SecurityException | IllegalArgumentException 
 				| InvocationTargetException | SQLException e) {
 			logger.error(e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 
 			try {
 				close();
 			} catch (SQLException e) {
 				logger.error(e);
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
-		return Response.status(Response.Status.OK).entity(validate)
-				.cookie(newCookieObj).build();
+		return Response.status(Response.Status.OK).entity(validate).cookie(newCookieObj).build();
 	}
 }
