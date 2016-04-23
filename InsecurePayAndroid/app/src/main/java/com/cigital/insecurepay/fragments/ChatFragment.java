@@ -47,7 +47,6 @@ public class ChatFragment extends Fragment {
     private ValueCallback<Uri[]> mFilePathCallback;
     //declare VO
     private CommonVO commonVO;
-
     //Tag to be used for logging
     private static final String TAG = ChatFragment.class.getSimpleName();
 
@@ -61,10 +60,10 @@ public class ChatFragment extends Fragment {
     private String pathToLiveChat = "file:///android_asset/LiveChat.html";
     private String uriStart = "content://";
     private String fileUriStart = "file://";
-    private String fileNameStart ="custNo-";
+    private String fileNameStart = "custNo-";
     private String webAppInterface = "Android";
-    private String httpTimeOutError =  "HTTP Client Timeout";
-    private String httpInternalError ="HTTP Internal Error";
+    private String httpTimeOutError = "HTTP Client Timeout";
+    private String httpInternalError = "HTTP Internal Error";
 
     public ChatFragment() {
         // Required empty public constructor
@@ -72,6 +71,15 @@ public class ChatFragment extends Fragment {
 
     @SuppressLint("JavascriptInterface")
     @Override
+    /**
+     * onCreateView is the first method called when the Fragment is being created.
+     * It populates and initializes the necessary views.
+     *@param savedInstanceState Object that is used to pass data to this activity while
+     *                           creating it.
+     *@param inflater The LayoutInflater object that is used to inflate fragment_chat
+     *@param savedInstanceState  If non-null, this fragment is being re-constructed from a previous saved state
+     *
+     * */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -81,7 +89,7 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(new WebAppInterface(getContext()),webAppInterface);
+        mWebView.addJavascriptInterface(new WebAppInterface(getContext()), webAppInterface);
         setUpWebViewDefaults(mWebView);
 
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -91,9 +99,12 @@ public class ChatFragment extends Fragment {
             // Restore the previous URL and history stack
             mWebView.restoreState(savedInstanceState);
         }
-
-        //This class is called when something that might impact a browser UI happens, for instance, progress updates
-        // and JavaScript alerts are sent here
+        /**
+         *
+         *      This class is called when something that might impact a browser UI happens, for instance, progress updates
+         *      and JavaScript alerts are sent here
+         *
+         * */
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -128,7 +139,10 @@ public class ChatFragment extends Fragment {
         return rootView;
     }
 
-    //To set the basic webView settings
+    /**
+     * To set the basic webView settings
+     * @param webView The webView Object
+     * */
     private void setUpWebViewDefaults(WebView webView) {
         WebSettings settings = webView.getSettings();
         // Enable Javascript to support JS in the web page to be rendered.
@@ -139,7 +153,10 @@ public class ChatFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient());
     }
 
-
+    /**
+     * Get the name of the file to uploaded
+     * @param fileUri The fileUri object
+     */
     public void getFileName(Uri fileUri) {
         String uriString = fileUri.toString();
         File myFile = new File(uriString);
@@ -168,6 +185,12 @@ public class ChatFragment extends Fragment {
     }
 
     @Override
+    /**
+     *When the user is done with selecting file and returns, the system calls this method
+     * @param requestCode The request code you passed to startActivityForResult().
+     * @param resultCode A result code specified by the second activity
+     * @param data An Intent that carries the result data.
+     * */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode != INPUT_FILE_REQUEST_CODE || mFilePathCallback == null) {
@@ -233,12 +256,21 @@ public class ChatFragment extends Fragment {
         mFilePathCallback = null;
     }
 
+    /* UploadFileTask extends AsyncCommonTask to asynchronously communicate with the
+    * server and upload file
+    */
     class UploadFileTask extends AsyncCommonTask {
 
         private Uri sourceFileUri;
         private String serverAddress;
         private String path;
 
+        /** Constructor for
+         * @param contextObj Context object
+         *  @param serverAddress Address of the server
+         *  @param path service path
+         *  @param  sourceFileUri URI of the source file
+         * */
         public UploadFileTask(Context contextObj, String serverAddress,
                               String path, Uri sourceFileUri) {
             super(contextObj, serverAddress, path);
@@ -247,6 +279,12 @@ public class ChatFragment extends Fragment {
             this.path = path;
         }
 
+
+        /**
+         * doInBackground  invokes a background thread to upload file
+         * @params Pass objects that may be used to pass data to doInBackground
+         * @return ResponseWrapper Returns the response wrapper received from server
+         * */
         @Override
         protected ResponseWrapper doInBackground(Object... params) {
             super.doInBackground(params);
@@ -317,7 +355,13 @@ public class ChatFragment extends Fragment {
                         httpInternalError);
             }
         }
-
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         */
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
@@ -327,6 +371,12 @@ public class ChatFragment extends Fragment {
         }
 
         @Override
+        /**
+         * postFailure is called when the server responds with an error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is an error.
+         * @param responseWrapperObj Contains the response wrapper sent from the server
+         * */
         protected void postFailure(ResponseWrapper responseWrapperObj) {
             if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
@@ -337,19 +387,39 @@ public class ChatFragment extends Fragment {
         }
     }
 
+    /**
+     * onSubmit is invoked when send button is clicked which creates sendSubject object for ChatSubjectTask
+     * @param subject The string given as input from the user
+     * */
     private void onSubmit(String subject) {
         Log.i(this.getClass().getSimpleName(), "Sending subject");
-        ChatSubjectTask sendsubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(), getString(R.string.chatService),
+        ChatSubjectTask sendSubject = new ChatSubjectTask(getContext(), commonVO.getServerAddress(), getString(R.string.chatService),
                 subject);
-        sendsubject.execute();
+        sendSubject.execute();
     }
 
-    //Inner class to send subject
+    /**
+     * ChatSubjectTask extends PostAsyncCommonTask to asynchronously communicate with the
+     * server and send subject
+     * */
     private class ChatSubjectTask extends PostAsyncCommonTask<String> {
+        /**
+         * ChatSubjectTask is the parametrized constructor of ChatSubjectTask
+         *@param contextObj Contains the context of the parent activity.
+         *@param serverAddress Contains the server url/address .
+         * @param path         Contains the sub-path to the service that needs to be used.
+         * @param subject     Contains subject to be sent
+         * */
         public ChatSubjectTask(Context contextObj, String serverAddress, String path, String subject) {
             super(contextObj, serverAddress, path, subject, String.class);
         }
-
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         */
         @Override
         protected void postSuccess(String resultObj) {
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
@@ -358,30 +428,40 @@ public class ChatFragment extends Fragment {
             run(resultObj);
         }
     }
-
-    public void run(final String scriptSrc) {
+    /**
+     * Start a new thread to render feeedback message on the webview. It is called from postSuccess
+     * @param responseFeedback The subject to be displayed
+     * */
+    public void run(final String responseFeedback) {
         mWebView.post(new Runnable() {
             @Override
             public void run() {
-                Log.d(this.getClass().getSimpleName(), "Display subject to be rendered" + scriptSrc);
-                mWebView.loadUrl("javascript:" + "displaySubject(\'" + scriptSrc + "\')");
+                Log.d(this.getClass().getSimpleName(), "Display subject to be rendered" + responseFeedback);
+                mWebView.loadUrl("javascript:" + "displaySubject(\'" + responseFeedback + "\')");
             }
         });
     }
 
-
+    /**
+     * This class allows webPage to call showDialog()
+     * */
     class WebAppInterface {
 
         Context mContext;
 
         /**
-         * Instantiate the interface and set the context
+         * WebAppInterface is a parametrized constructor to instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
             mContext = c;
         }
 
 
+
+        /**
+         * showDialog is invoked from html page and calls onSubmit to send subject to server
+         * @param subject Contains the input subject
+         * */
         @JavascriptInterface
         public void showDialog(String subject) {
             onSubmit(subject);
