@@ -76,7 +76,7 @@ public class TransferFragment extends Fragment {
      * @param viewObj   Contains the {@link View} of the fragment.
      */
     private void initValues(View viewObj) {
-        Log.i(this.getClass().getSimpleName(), "initValues: Initializing values.");
+        Log.d(this.getClass().getSimpleName(), "initValues: Initializing values.");
 
         etTransfer_Amount = (EditText) viewObj.findViewById(R.id.ettransferAmount);
         etTransfer_Details = (EditText) viewObj.findViewById(R.id.ettransferDetails);
@@ -95,7 +95,7 @@ public class TransferFragment extends Fragment {
      * to various components.
      */
     private void addListeners() {
-        Log.i(this.getClass().getSimpleName(), "addListeners: Adding Listeners");
+        Log.d(this.getClass().getSimpleName(), "addListeners: Adding Listeners");
 
         btnTransfer.setOnClickListener(new View.OnClickListener() {
             @Override

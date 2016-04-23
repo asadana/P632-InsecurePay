@@ -70,16 +70,22 @@ public class TransactionAdapter extends ArrayAdapter {
         TextView tvActivityHistory_TransactionAmount;
 
         //Adapter uses convertView to recycle old view objects no longer being used
-        tvActivityHistory_Description = (TextView) convertView.findViewById(R.id.tvActivityHistory_Description);
-        tvActivityHistory_Date = (TextView) convertView.findViewById(R.id.tvActivityHistory_Date);
-        tvActivityHistory_FinalAmount = (TextView) convertView.findViewById(R.id.tvActivityHistory_FinalAmount);
-        tvActivityHistory_TransactionAmount = (TextView) convertView.findViewById(R.id.tvActivityHistory_TransactionAmount);
+        tvActivityHistory_Description = (TextView) convertView
+                .findViewById(R.id.tvActivityHistory_Description);
+        tvActivityHistory_Date = (TextView) convertView
+                .findViewById(R.id.tvActivityHistory_Date);
+        tvActivityHistory_FinalAmount = (TextView) convertView
+                .findViewById(R.id.tvActivityHistory_FinalAmount);
+        tvActivityHistory_TransactionAmount = (TextView) convertView
+                .findViewById(R.id.tvActivityHistory_TransactionAmount);
 
         //Transaction details are placed in appropriate textView holders
         tvActivityHistory_Description.setText(transactionVOList.get(position).getDescription());
         tvActivityHistory_Date.setText(transactionVOList.get(position).getDate());
-        tvActivityHistory_FinalAmount.setText(dollarSymbol + transactionVOList.get(position).getFinalAmount());
-        tvActivityHistory_TransactionAmount.setText(dollarSymbol + transactionVOList.get(position).getTransactionAmount());
+        tvActivityHistory_FinalAmount.setText(dollarSymbol +
+                transactionVOList.get(position).getFinalAmount());
+        tvActivityHistory_TransactionAmount.setText(dollarSymbol +
+                transactionVOList.get(position).getTransactionAmount());
         type = transactionVOList.get(position).getType();
 
         // type 1 is debit and type 2 is credit
