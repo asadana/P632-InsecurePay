@@ -25,54 +25,74 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Connectivity is a class that implements {@link Serializable} and is used to handle most
+ * connection related properties including cookies.
+ */
 public class Connectivity implements Serializable {
 
-    final static String COOKIES_HEADER = "Set-Cookie";
+    private final static String COOKIES_HEADER = "Set-Cookie";
     // Stores and handles cookies
     private static CookieStore mCookieStore;
     private static CookieManager mCookieManager = new CookieManager(mCookieStore, null);
+
     private Context context;
     private String path;
-    private String sendToServer;
+    private String serverAddress;
     private URL url;
     private HttpURLConnection httpURLConnectionObj;
 
+    private String sendToServer;
     private ResponseWrapper responseWrapperObj;
-    private InputStream is;
-    private String serverAddress;
+    private InputStream inputStream;
 
+    /**
+     * Connectivity is the parametrized constructor of this class.
+     *
+     * @param serverAddress Contains the server address for the connection.
+     */
     public Connectivity(String serverAddress) {
         this.serverAddress = serverAddress;
         mCookieStore = mCookieManager.getCookieStore();
     }
 
-    /*
-     * Sends data to server in JSON format and receives response in JSON as well
+    /**
+     * post is a function that is used to do a post onto the server.
+     *
+     * @return ResponseWrapper  Returns a {@link ResponseWrapper} object.
      */
     public ResponseWrapper post() {
-        Log.d(this.getClass().getSimpleName(), "In Post()");
+        Log.d(this.getClass().getSimpleName(), "post: Creating a post request.");
         try {
             url = new URL(serverAddress + path);
-            Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url.toString());
+
+            Log.d(this.getClass().getSimpleName(),
+                    "post: Now opening connection to " + url.toString());
+
             httpURLConnectionObj = (HttpURLConnection) url.openConnection();
             httpURLConnectionObj.setDoInput(true);
             httpURLConnectionObj.setDoOutput(true);
             httpURLConnectionObj.setChunkedStreamingMode(0);
             httpURLConnectionObj.setRequestMethod("POST");
             httpURLConnectionObj.setRequestProperty("Content-Type", "application/json");
+
             addCookiesToRequest();
+
             writeIt();
+
             try {
-                is = httpURLConnectionObj.getInputStream();
+                inputStream = httpURLConnectionObj.getInputStream();
                 Log.d(this.getClass().getSimpleName(), "post: Getting InputStream");
-                if (is != null) {
+
+                if (inputStream != null) {
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            readIt(is), httpURLConnectionObj.getResponseMessage());
+                            readIt(inputStream), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "post: InputStream is not null");
                 }
             } catch (IOException e) {
-                is = httpURLConnectionObj.getErrorStream();
-                if (is != null) {
+                inputStream = httpURLConnectionObj.getErrorStream();
+
+                if (inputStream != null) {
                     // Dumping stacktrace into message
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
                             errorToString(e), httpURLConnectionObj.getResponseMessage());
@@ -82,13 +102,14 @@ public class Connectivity implements Serializable {
                 Log.d(this.getClass().getSimpleName(), "post: Getting ErrorStream");
             }
 
-            if (is == null) {
+            if (inputStream == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
                         "Unable to connect to the server", "HTTP not found");
                 Log.e(this.getClass().getSimpleName(), "post: InputStream is null");
             }
 
-            if (mCookieStore.getCookies().size() <= 0 && is != null) {
+            // Check to see if no cookies exist for this application yet
+            if (mCookieStore.getCookies().size() <= 0 && inputStream != null) {
                 Map<String, List<String>> headerFields = httpURLConnectionObj.getHeaderFields();
                 List<String> cookieHeaderList = headerFields.get(COOKIES_HEADER);
                 if (cookieHeaderList != null) {
@@ -112,31 +133,49 @@ public class Connectivity implements Serializable {
             try {
                 if (httpURLConnectionObj != null)
                     httpURLConnectionObj.disconnect();
-                if (is != null)
-                    is.close();
+                if (inputStream != null)
+                    inputStream.close();
             } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Post error", e);
+                Log.e(this.getClass().getSimpleName(), "post: Post error", e);
             }
         }
         return responseWrapperObj;
     }
 
+    /**
+     * addCookiesToRequest is a function that is called to add existing cookies to the request
+     * being sent.
+     */
     public void addCookiesToRequest() {
         if (mCookieStore.getCookies().size() > 0) {
             //To join cookies in the request
-            httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-            Log.d("IN POST METHOD", mCookieStore.getCookies().toString());
+            httpURLConnectionObj.setRequestProperty("Cookie",
+                    TextUtils.join(";", mCookieStore.getCookies()));
+            Log.d(this.getClass().getSimpleName(), "addCookiesToRequest" +
+                    mCookieStore.getCookies().toString());
         }
     }
 
+    /**
+     * get is a function that is called to send a get request to the server.
+     *
+     * @param contentValues Contains the values being sent to the server in the request.
+     * @return ResponseWrapper  Return an object of {@link ResponseWrapper}.
+     */
     public ResponseWrapper get(ContentValues contentValues) {
-        Log.d(this.getClass().getSimpleName(), "In Get()");
+        Log.d(this.getClass().getSimpleName(), "get: Creating a get request.");
+
         String params = null;
+
         if (contentValues != null)
             params = setParameters(contentValues);
+
         try {
             url = new URL(serverAddress + path + params);
-            Log.d(this.getClass().getSimpleName(), "URL set now opening connections " + url);
+
+            Log.d(this.getClass().getSimpleName(),
+                    "get: Now opening connection to " + url.toString());
+
             httpURLConnectionObj = (HttpURLConnection) url.openConnection();
             httpURLConnectionObj.setReadTimeout(10000);
             httpURLConnectionObj.setConnectTimeout(15000);
@@ -145,52 +184,63 @@ public class Connectivity implements Serializable {
 
             if (mCookieStore.getCookies().size() > 0) {
                 //To join cookies in the request
-                httpURLConnectionObj.setRequestProperty("Cookie", TextUtils.join(";", mCookieStore.getCookies()));
-                Log.d("IN GET METHOD", mCookieStore.getCookies().toString());
+                httpURLConnectionObj.setRequestProperty("Cookie",
+                        TextUtils.join(";", mCookieStore.getCookies()));
+                Log.d(this.getClass().getSimpleName(),
+                        "get: " + mCookieStore.getCookies().toString());
             }
 
             try {
-                is = httpURLConnectionObj.getInputStream();
+                inputStream = httpURLConnectionObj.getInputStream();
                 Log.d(this.getClass().getSimpleName(), "get: Getting InputStream");
-                Log.d(this.getClass().getSimpleName(), "get: " + httpURLConnectionObj.getResponseMessage());
-                if (is != null) {
+                Log.d(this.getClass().getSimpleName(), "get: "
+                        + httpURLConnectionObj.getResponseMessage());
+
+                if (inputStream != null) {
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
-                            readIt(is), httpURLConnectionObj.getResponseMessage());
+                            readIt(inputStream), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
                 }
             } catch (IOException e) {
-                is = httpURLConnectionObj.getErrorStream();
-                if (is != null) {
+                inputStream = httpURLConnectionObj.getErrorStream();
+                if (inputStream != null) {
                     // Dumping stacktrace into message
                     responseWrapperObj = new ResponseWrapper(httpURLConnectionObj.getResponseCode(),
                             errorToString(e), httpURLConnectionObj.getResponseMessage());
                     Log.d(this.getClass().getSimpleName(), "get: InputStream is not null");
                 }
                 Log.d(this.getClass().getSimpleName(), "get: Getting ErrorStream");
+                Log.e(this.getClass().getSimpleName(), "get: ", e);
             }
 
-            if (is == null) {
+            if (inputStream == null) {
                 responseWrapperObj = new ResponseWrapper(HttpURLConnection.HTTP_NOT_FOUND,
                         "Unable to connect to the server", "HTTP not found");
                 Log.e(this.getClass().getSimpleName(), "get: InputStream is null");
             }
 
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Get error", e);
+            Log.e(this.getClass().getSimpleName(), "get: ", e);
         } finally {
             try {
                 if (httpURLConnectionObj != null)
                     httpURLConnectionObj.disconnect();
-                if (is != null)
-                    is.close();
+                if (inputStream != null)
+                    inputStream.close();
             } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Get error", e);
+                Log.e(this.getClass().getSimpleName(), "get: ", e);
             }
         }
-
         return responseWrapperObj;
     }
 
+    /**
+     * setParameters is a function that is called to set content to be sent to the server.
+     *
+     * @param contentValues Contains the content to be sent to the server.
+     *
+     * @return String   Return the string representation of content.
+     */
     private String setParameters(ContentValues contentValues) {
         String key;
         String value;
@@ -203,9 +253,16 @@ public class Connectivity implements Serializable {
         return builder.build().toString();
     }
 
-    //To read the response from server
+    /**
+     * readIt is a function that takes an InputStream and reads it into a string.
+     *
+     * @param stream Contains the InputStream received.
+     *
+     * @return String   Return the string representation of the input stream.
+     */
     public String readIt(InputStream stream) {
-        Log.d(this.getClass().getSimpleName(), "Reading response");
+        Log.d(this.getClass().getSimpleName(), "readIt: Reading response");
+
         StringBuilder sb = new StringBuilder();
         String line;
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -215,22 +272,24 @@ public class Connectivity implements Serializable {
                 sb.append(line);
             }
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Reading response error", e);
+            Log.e(this.getClass().getSimpleName(), "readIt: Reading response error", e);
         } finally {
             try {
                 if (reader != null)
                     reader.close();
             } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Reading response error", e);
+                Log.e(this.getClass().getSimpleName(), "readIt: Reading response error", e);
             }
         }
-
         return sb.toString();
     }
 
-    //To send request to server
+    /**
+     * writeIt is a function that opens an OutputStream and send content to the server.
+     */
     private void writeIt() {
-        Log.d(this.getClass().getSimpleName(), "Sending data to server");
+        Log.d(this.getClass().getSimpleName(), "writeIt: Sending data to server.");
+
         OutputStream out;
         OutputStreamWriter outWriter = null;
         try {
@@ -240,24 +299,38 @@ public class Connectivity implements Serializable {
             outWriter.flush();
             Log.d(this.getClass().getSimpleName(), "Sent");
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), "Error sending data to server", e);
+            Log.e(this.getClass().getSimpleName(), "writeIt: Error sending data to server", e);
         } finally {
             try {
                 if (outWriter != null) {
                     outWriter.close();
                 }
             } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Sending data to server", e);
+                Log.e(this.getClass().getSimpleName(), "writeIt: ", e);
             }
         }
-
-
     }
 
-    public String errorToString(Exception e) {
+    /**
+     * errorToString is a function that is called to translate the {@link Throwable} from
+     * an exception into a string.
+     *
+     * @param exception  Contains the the {@link Throwable} exception.
+     *
+     * @return String   Return the string representation of the exception.
+     */
+    public String errorToString(Exception exception) {
         StringWriter stringWriterObj = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriterObj));
+        exception.printStackTrace(new PrintWriter(stringWriterObj));
         return stringWriterObj.toString();
+    }
+
+    /**
+     * deleteCookies is a function that deletes all cookies of the app from the device.
+     */
+    public void deleteCookies() {
+        mCookieStore.removeAll();
+        Log.d(this.getClass().getSimpleName(), "deleteCookies: Cookies deleted.");
     }
 
     public void setConnectionParameters(String path) {
@@ -272,10 +345,6 @@ public class Connectivity implements Serializable {
         this.responseWrapperObj = responseWrapperObj;
     }
 
-    public void deleteCookies() {
-        mCookieStore.removeAll();
-        Log.d(this.getClass().getSimpleName(), "deleteCookies: Cookies deleted");
-    }
 
     public String getSendToServer() {
         return sendToServer;
