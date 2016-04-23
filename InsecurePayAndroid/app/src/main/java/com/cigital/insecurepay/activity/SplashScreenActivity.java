@@ -9,6 +9,7 @@ import android.util.Log;
  * SplashScreenActivity is an activity class with no layout file.
  * This class is used to display a splash screen to the user
  * before passing the control to LoginActivity.
+ * SplashScreenActivity extends {@link AppCompatActivity}.
  */
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -24,7 +25,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            Thread.sleep(1500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Log.e(this.getClass().getSimpleName(), "onCreate: ", e);
         }

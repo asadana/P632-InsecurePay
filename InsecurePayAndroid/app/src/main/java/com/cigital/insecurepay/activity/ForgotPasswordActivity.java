@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 /**
  * ForgotPasswordActivity is an activity that allows the user to reset his/her password
  * by entering certain account information.
+ * ForgotPasswordActivity extends {@link AppCompatActivity}.
  */
 public class ForgotPasswordActivity extends AppCompatActivity {
 
@@ -119,13 +120,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     /**
-     * ForgotPasswordTask extends PostAsyncCommonTask to asynchronously communicate with the
-     * server and perform post to reset password for the user.
+     * ForgotPasswordTask extends {@link PostAsyncCommonTask} to asynchronously communicate
+     * with the server and perform post to reset password for the user.
      */
     public class ForgotPasswordTask extends PostAsyncCommonTask<ForgotPasswordVO> {
 
         /**
-         * ForgotPasswordTask is the parameterized constructor of ForgotPasswordTask
+         * ForgotPasswordTask is the parametrized constructor of ForgotPasswordTask
          *
          * @param contextObj    Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .

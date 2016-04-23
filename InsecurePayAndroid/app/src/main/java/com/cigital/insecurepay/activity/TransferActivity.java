@@ -22,6 +22,7 @@ import com.cigital.insecurepay.common.PostAsyncCommonTask;
 /**
  * TransferActivity is an activity class that displays all the transfer information, giving the
  * user an option to review and confirm or cancel the transaction.
+ * TransferActivity extends {@link AppCompatActivity}.
  */
 public class TransferActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class TransferActivity extends AppCompatActivity {
     private TextView tvFromCustomerNo;
     private TextView tvToCustomerNo;
     private TextView tvTransferDetails;
+
     private TransferFundsVO transferFundsVO;
 
     private CommonVO commonVO;
@@ -90,14 +92,19 @@ public class TransferActivity extends AppCompatActivity {
      * initValues populates the UI components.
      */
     private void initValues() {
-        Log.i(this.getClass().getSimpleName(), "initValues: Initializing values.");
+        Log.d(this.getClass().getSimpleName(), "initValues: Initializing values.");
 
         // Initializing all objects from fragment_transfer
-        tvFromAccountNo.setText(Integer.toString(transferFundsVO.getFromAccount().getAccountNumber()));
-        tvFromCustomerNo.setText(Integer.toString(transferFundsVO.getFromAccount().getCustomerNumber()));
-        tvToAccountNo.setText(Integer.toString(transferFundsVO.getToAccount().getAccountNumber()));
-        tvToCustomerNo.setText(Integer.toString(transferFundsVO.getToAccount().getCustomerNumber()));
-        tvTransferDetails.setText(transferFundsVO.getTransferDetails());
+        tvFromAccountNo
+                .setText(Integer.toString(transferFundsVO.getFromAccount().getAccountNumber()));
+        tvFromCustomerNo
+                .setText(Integer.toString(transferFundsVO.getFromAccount().getCustomerNumber()));
+        tvToAccountNo
+                .setText(Integer.toString(transferFundsVO.getToAccount().getAccountNumber()));
+        tvToCustomerNo
+                .setText(Integer.toString(transferFundsVO.getToAccount().getCustomerNumber()));
+        tvTransferDetails
+                .setText(transferFundsVO.getTransferDetails());
         tvTransferAmount.setText(Float.toString(transferFundsVO.getTransferAmount()));
     }
 
@@ -114,7 +121,7 @@ public class TransferActivity extends AppCompatActivity {
     }
 
     /**
-     * TransferTask extends PostAsyncCommonTask to asynchronously communicate with the
+     * TransferTask extends {@link PostAsyncCommonTask} to asynchronously communicate with the
      * server and perform post to transfer funds for the user.
      */
     private class TransferTask extends PostAsyncCommonTask<TransferFundsVO> {
@@ -168,8 +175,8 @@ public class TransferActivity extends AppCompatActivity {
                             (int) System.currentTimeMillis(), intentNew, 0);
 
                     // Notification message
-                    String transferMessage = "Amount Transferred from Acc No "
-                            + tvFromAccountNo.getText() + " to Acc No "
+                    String transferMessage = "Amount Transferred from Account Number "
+                            + tvFromAccountNo.getText() + " to Account Number "
                             + tvToAccountNo.getText();
 
                     // Creating a notification

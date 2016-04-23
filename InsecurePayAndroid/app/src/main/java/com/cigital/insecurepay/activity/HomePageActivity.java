@@ -31,6 +31,9 @@ import com.cigital.insecurepay.fragments.TransferFragment;
 /**
  * HomePageActivity is an activity that is the entry point after the user logs in.
  * This activity also acts as a host to Fragments and Navigation Drawer.
+ * HomePageActivity extends {@link AppCompatActivity} and
+ * implements {@link android.support.design.widget.NavigationView.OnNavigationItemSelectedListener}
+ * and {@link com.cigital.insecurepay.fragments.HomeFragment.OnFragmentInteractionListener}.
  */
 public class HomePageActivity
         extends AppCompatActivity
@@ -254,7 +257,7 @@ public class HomePageActivity
     }
 
     /**
-     * LogoutTask extends PostAsyncCommonTask to asynchronously communicate with the
+     * LogoutTask extends {@link PostAsyncCommonTask} to asynchronously communicate with the
      * server and perform logout for the user.
      */
     private class LogoutTask extends PostAsyncCommonTask<String> {
