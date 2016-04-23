@@ -14,38 +14,55 @@ import com.cigital.insecurepay.VOs.TransactionVO;
 import java.util.List;
 
 /**
- * TransactionAdapter is called for making a View for each transfer in the transaction list.
+ * TransactionAdapter extends {@link ArrayAdapter}.
+ * This class is called for making a {@link View} for each transfer in the transaction list.
  */
 public class TransactionAdapter extends ArrayAdapter {
 
-    //View objects
+    /*
+     * transactionVOList is a list of {@link TransactionVO} objects
+     */
     private List<TransactionVO> transactionVOList;
+
     private int resource;
-    private LayoutInflater inflater;
-    private String DollarSymbol="$";
+    private String dollarSymbol = "$";
+
+    private LayoutInflater layoutInflater;
 
     /**
-     * TransactionAdapter parameterized constructor
+     * TransactionAdapter parametrized constructor
      *
-     * @param context
-     * @param resource
-     * @param transactionVOList
+     * @param context   Contains the context of the parent activity.
+     * @param resource  Contains the resource of the parent.
+     * @param transactionVOList     Contains the list of {@link TransactionVO}.
      */
-    public TransactionAdapter(Context context, int resource, List<TransactionVO> transactionVOList) {
+    public TransactionAdapter(Context context, int resource,
+                              List<TransactionVO> transactionVOList) {
         super(context, resource, transactionVOList);
+
         this.resource = resource;
         this.transactionVOList = transactionVOList;
-        this.inflater = LayoutInflater.from(context);
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
+    /**
+     * getView is an overridden function that is called to retrieve the {@link View} object.
+     *
+     * @param position        Contains the position of the view
+     * @param convertView     Contains the view object being used
+     * @param viewGroupParent Contains the {@link ViewGroup} of the parent.
+     * @return View     Return the new {@link View} object.
+     */
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup viewGroupParent) {
 
+        // If condition checks if the convertView being passed is null
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.transaction_format, null);
+            convertView = layoutInflater.inflate(R.layout.transaction_format, null);
         }
 
         int type;
+
         //Text placeholders
         TextView tvActivityHistory_Description;
         TextView tvActivityHistory_Date;
@@ -61,10 +78,12 @@ public class TransactionAdapter extends ArrayAdapter {
         //Transaction details are placed in appropriate textView holders
         tvActivityHistory_Description.setText(transactionVOList.get(position).getDescription());
         tvActivityHistory_Date.setText(transactionVOList.get(position).getDate());
-        tvActivityHistory_FinalAmount.setText(DollarSymbol + transactionVOList.get(position).getFinalAmount());
-        tvActivityHistory_TransactionAmount.setText( DollarSymbol + transactionVOList.get(position).getTransactionAmount());
+        tvActivityHistory_FinalAmount.setText(dollarSymbol + transactionVOList.get(position).getFinalAmount());
+        tvActivityHistory_TransactionAmount.setText(dollarSymbol + transactionVOList.get(position).getTransactionAmount());
         type = transactionVOList.get(position).getType();
-        if (type == 1) //type 1 is debit and type 2 is credit
+
+        // type 1 is debit and type 2 is credit
+        if (type == 1)
             tvActivityHistory_TransactionAmount.setTextColor(Color.RED);
         else
             tvActivityHistory_TransactionAmount.setTextColor(Color.BLUE);
