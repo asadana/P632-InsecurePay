@@ -42,6 +42,7 @@
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
     <!--<string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>-->
+    <string name="progress_dialog_message">Loading. Please wait..</string>
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
@@ -51,8 +52,8 @@
     <string name="transfer_validation_path">transferValidation</string>
     <string name="accountno_validation_path">accountNumberValidation</string>
     <string name="activity_history_path">activityHistory</string>
+    <string name="chat_path">chatService</string>
     <string name="logout_path">logout</string>
-    <string name="chatService">chatService</string>
 
     <!--For Navigation Drawer Toolbar titles-->
     <string name="nav_homepage">Home</string>

@@ -239,7 +239,7 @@ public class ChatFragment extends Fragment {
                 if (bytesAvailable <= maxFileSize) {
                     UploadFileTask task = null;
                     task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
-                            getString(R.string.chatService), results[0]);
+                            getString(R.string.chat_path), results[0]);
                     task.execute();
                 } else {
                     int allowedSize = maxFileSize / megaByteSize;
@@ -278,7 +278,7 @@ public class ChatFragment extends Fragment {
         Log.i(this.getClass().getSimpleName(), "onSubmit: Sending subject");
         ChatSubjectTask sendSubject = new ChatSubjectTask(getContext(),
                 commonVO.getServerAddress(),
-                getString(R.string.chatService),
+                getString(R.string.chat_path),
                 subject);
         sendSubject.execute();
     }

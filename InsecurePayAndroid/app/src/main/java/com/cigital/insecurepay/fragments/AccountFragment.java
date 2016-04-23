@@ -593,7 +593,7 @@ public class AccountFragment extends Fragment {
         }
 
         /**
-         * postSuccess is called when the server responds with an error code response.
+         * postFailure is called when the server responds with an error code response.
          * This function performs all the tasks to be done in postExecute when server response
          * is an error.
          *
