@@ -48,13 +48,13 @@ public class InterestCalcFragment extends Fragment {
     private static final double RANGE_LEVEL2 = 4000;
     private static final double RANGE_LEVEL3 = 10000;
     // View objects
-    private TextView tvBalance;
+
     private TextView tvDisplayBalance;
-    private TextView tvPrincipal;
+
     private EditText etPrincipal;
-    private TextView tvPeriod;
+
     private EditText etDate;
-    private TextView tvCreditScore;
+
     private TextView tvDisplayCreditScore;
     private Button btnCalculate;
     private Spinner dateType;
@@ -64,8 +64,8 @@ public class InterestCalcFragment extends Fragment {
     private TextView tvFillRateOfInterest;
     private CommonVO commonVO;
     private Integer creditScore;
-    private Double interest;
-    private HomeFragment.OnFragmentInteractionListener mListener;
+
+
 
     public InterestCalcFragment() {
         // Required empty public constructor
@@ -154,14 +154,10 @@ public class InterestCalcFragment extends Fragment {
     // Initializes all the variables
     private void initValues(View viewObj) {
         Log.i(this.getClass().getSimpleName(), "Initializing Values..");
-        tvBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_AccountBalance);
         tvDisplayBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillAccountBalance);
         tvDisplayBalance.setText(String.valueOf(commonVO.getAccountVO().getAccountBalance()));
-        tvPrincipal = (TextView) viewObj.findViewById(R.id.tvIntCalc_PrincipalAmount);
         etPrincipal = (EditText) viewObj.findViewById(R.id.etIntCalc_FillPrincipalAmount);
         etDate = (EditText) viewObj.findViewById(R.id.etIntCalc_Date);
-        tvPeriod = (TextView) viewObj.findViewById(R.id.tvIntCalc_Period);
-        tvCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_CreditScore);
         tvDisplayCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillCreditScore);
         tvInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_Interest);
         tvRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_RateOfInterest);
