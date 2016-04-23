@@ -23,8 +23,8 @@ import com.google.gson.reflect.TypeToken;
 import java.util.List;
 
 /**
- * ActivityHistoryFragment extends Fragment and is used to display all transactions made for the account.
- * Display both debit and credit transfers.
+ * ActivityHistoryFragment extends {@link Fragment} and is used to display all
+ * transactions made for the account.
  */
 public class ActivityHistoryFragment extends Fragment {
 
@@ -36,24 +36,40 @@ public class ActivityHistoryFragment extends Fragment {
 
     private CommonVO commonVO;
 
-    private TransactionAdapter adapter;
+    private TransactionAdapter transactionAdapter;
     private int accountNumber;
+
+    private String invalidAccountNumber = "Invalid Account Number.";
 
     private AccountNoValidationTask accountnovalidationtask;
     private ActivityHistoryFetchTask activityHistoryFetchTask;
     private ActivityHistoryDBHelper activityHistoryDBHelper;
 
+    /**
+     * ActivityHistoryFragment is the default constructor of this class.
+     */
     public ActivityHistoryFragment() {
-        // Required empty public constructor
     }
 
-
+    /**
+     * onCreateView is an overridden function that is called while the fragment is
+     * being created.
+     *
+     * @param layoutInflater     Contains the {@link LayoutInflater} object that defines
+     *                           the layout of the fragment
+     * @param viewGroup          Contains the {@link ViewGroup} object to which this fragment
+     *                           belongs to.
+     * @param savedInstanceState Object of {@link Bundle} that is used to pass data to this
+     *                           activity while creating it.
+     * @return View         Return the {@link View} object created.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        Log.d(this.getClass().getSimpleName(), "onCreateView: Initializing the fragment.");
 
-        viewObj = inflater.inflate(R.layout.fragment_activity_history, container, false);
+        // Inflate the layout for this fragment
+        viewObj = layoutInflater.inflate(R.layout.fragment_activity_history, viewGroup, false);
         etAccountNumber = (EditText) viewObj.findViewById(R.id.etActivityHistory_AccountNo);
         btnSubmit = (Button) viewObj.findViewById(R.id.btnSubmit);
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -86,13 +102,22 @@ public class ActivityHistoryFragment extends Fragment {
     }
 
     /**
-     * AccountNoValidationTask is used to check with the server that the account no is valid
-     *
+     * AccountNoValidationTask extends {@link GetAsyncCommonTask} to asynchronously
+     * check with the server that the account number is valid. This class returns object of
+     * String in postExecute.
      */
     private class AccountNoValidationTask extends GetAsyncCommonTask<String> {
 
-        //calls common Async task
-        public AccountNoValidationTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+        /**
+         * AccountNoValidationTask is the parametrized constructor of this class.
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param contentValues Contains the values to be sent to the server.
+         */
+        public AccountNoValidationTask(Context contextObj, String serverAddress,
+                                       String path, ContentValues contentValues) {
             super(contextObj, serverAddress, path, contentValues, String.class);
         }
 
@@ -108,34 +133,46 @@ public class ActivityHistoryFragment extends Fragment {
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+
             // Checking the server response
             switch (resultObj) {
                 case "false":
-                    etAccountNumber.setError("Invalid Account No");
+                    etAccountNumber.setError(invalidAccountNumber);
                     etAccountNumber.requestFocus();
                     break;
                 case "true":
                     ContentValues contentValues = new ContentValues();
                     contentValues.put(getString(R.string.account_no), accountNumber);
                     //Calls for fetching Activity History of the valid entered Account Number
-                    activityHistoryFetchTask = new ActivityHistoryFetchTask(getContext(), commonVO.getServerAddress(),
-                            getString(R.string.activity_history_path), contentValues);
+                    activityHistoryFetchTask = new ActivityHistoryFetchTask(getContext(),
+                            commonVO.getServerAddress(),
+                            getString(R.string.activity_history_path),
+                            contentValues);
                     activityHistoryFetchTask.execute();
                     break;
                 default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response on Account No Validation");
+                    Log.e(this.getClass().getSimpleName(), "postSuccess: " +
+                            "Invalid response on Account No Validation");
                     break;
             }
         }
     }
 
     /**
-     * ActivityHistoryFetchTask fetches transaction details related to the account Number entered
-     *
+     * ActivityHistoryFetchTask extends {@link GetAsyncCommonTask} to asynchronously
+     * fetch transaction details related to the account Number entered.
+     * This returns a String object in postExecute.
      */
     private class ActivityHistoryFetchTask extends GetAsyncCommonTask<String> {
 
-        //calls Super common Async task
+        /**
+         * ActivityHistoryFetchTask is the parametrized constructor of this class.
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param contentValues Contains the values to be sent to the server.
+         */
         public ActivityHistoryFetchTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
             super(contextObj, serverAddress, path, contentValues, String.class);
         }
@@ -151,16 +188,21 @@ public class ActivityHistoryFragment extends Fragment {
         @Override
         protected void postSuccess(String resultObj) {
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+
             // Checking the server response
             Gson gson = new Gson();
+
             //Gets the transaction list back to original format from JSON
-            List<TransactionVO> result = gson.fromJson(resultObj, new TypeToken<List<TransactionVO>>() {
-            }.getType());
-            //loads the transaction details into adapter and specifies display GUI
-            adapter = new TransactionAdapter(getContext(), R.layout.transaction_format, result);
-            //displays the loaded adapter in GUI
-            lvTransactionList.setAdapter(adapter);
+            List<TransactionVO> result = gson.fromJson(resultObj,
+                    new TypeToken<List<TransactionVO>>() {
+                    }.getType());
+            //loads the transaction details into transactionAdapter and specifies display GUI
+            transactionAdapter = new TransactionAdapter(getContext(),
+                    R.layout.transaction_format, result);
+            //displays the loaded transactionAdapter in GUI
+            lvTransactionList.setAdapter(transactionAdapter);
             activityHistoryDBHelper = new ActivityHistoryDBHelper(getContext());
+
             //dumps transaction details in local database
             for (TransactionVO transactionVO : result) {
                 activityHistoryDBHelper.addTransfer(transactionVO, accountNumber);
@@ -168,4 +210,3 @@ public class ActivityHistoryFragment extends Fragment {
         }
     }
 }
-

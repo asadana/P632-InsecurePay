@@ -149,7 +149,7 @@ public class TransferFragment extends Fragment {
     private class TransferValidationTask extends GetAsyncCommonTask<String> {
 
         /**
-         * TransferValidationTask is the parametrized constructor of ForgotPasswordTask
+         * TransferValidationTask is the parametrized constructor of this class.
          *
          * @param contextObj    Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .
@@ -205,7 +205,7 @@ public class TransferFragment extends Fragment {
     private class CustomerAccountFetchTask extends GetAsyncCommonTask<AccountVO> {
 
         /**
-         * CustomerAccountFetchTask is the parametrized constructor of ForgotPasswordTask
+         * CustomerAccountFetchTask is the parametrized constructor of this class.
          *
          * @param contextObj    Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .

@@ -110,7 +110,7 @@ public class HomeFragment extends Fragment {
         private AccountVO accountVOObj;
 
         /**
-         * CustomerAccountFetchTask is the parametrized constructor of ForgotPasswordTask
+         * CustomerAccountFetchTask is the parametrized constructor of this class.
          *
          * @param contextObj    Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .

@@ -455,11 +455,11 @@ public class ChatFragment extends Fragment {
 
     /**
      * ChatSubjectTask extends {@link PostAsyncCommonTask} to asynchronously communicate with the
-     * server and send subject.
+     * server and send subject and returns String object in postExecute.
      */
     private class ChatSubjectTask extends PostAsyncCommonTask<String> {
         /**
-         * ChatSubjectTask is the parametrized constructor of ChatSubjectTask
+         * ChatSubjectTask is the parametrized constructor of this class.
          *
          * @param contextObject Contains the context of the parent activity.
          * @param serverAddress Contains the server url/address .
