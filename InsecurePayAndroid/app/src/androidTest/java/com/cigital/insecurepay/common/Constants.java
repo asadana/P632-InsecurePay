@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.cigital.insecurepay.R;
 
-import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
@@ -32,13 +32,16 @@ public class Constants {
     public static final String receiverUserName = "foo";
 
     // For AccountFragmentTest
-    public static SimpleDateFormat simpleDateFormatObj = new SimpleDateFormat("SSSSS");
     public static String displayedText = "";
     public static int transferAmount = 0;
-
     // For InterestCalc
     public static int period = 0;
     public static double principal = 0;
+
+    public static String generateNumber() {
+        Random random = new Random(System.currentTimeMillis());
+        return String.valueOf((1 + random.nextInt(2)) * 10000 + random.nextInt(10000));
+    }
 
     // Common login for all tests
     public static void login() {

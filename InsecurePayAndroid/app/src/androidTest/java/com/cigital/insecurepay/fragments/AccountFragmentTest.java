@@ -17,8 +17,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Calendar;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -115,8 +113,7 @@ public class AccountFragmentTest {
 
         onView(withId(R.id.btnAccount_update)).check(matches(not(isEnabled())));
 
-        Calendar calendarObj = Calendar.getInstance();
-        Constants.displayedText = Constants.simpleDateFormatObj.format(calendarObj.getTime());
+        Constants.displayedText = Constants.generateNumber();
 
         onView(withId(R.id.etAccount_fillAddressZip)).perform(replaceText(Constants.displayedText));
 
