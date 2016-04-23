@@ -2,7 +2,6 @@ package com.cigital.insecurepay.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -54,16 +53,10 @@ public class ChatFragment extends Fragment {
     public static final int INPUT_FILE_REQUEST_CODE = 1;
     private int megaByteSize = 1024 * 1024;
     private int maxFileSize = 5 * megaByteSize;
-    private String fileName;
-    private String forAllTypes = "*/*";
-    private String fileChooserTitle = "File Chooser";
-    private String pathToLiveChat = "file:///android_asset/LiveChat.html";
-    private String uriStart = "content://";
-    private String fileUriStart = "file://";
-    private String fileNameStart = "custNo-";
     private String webAppInterface = "Android";
     private String httpTimeOutError = "HTTP Client Timeout";
     private String httpInternalError = "HTTP Internal Error";
+    private String fileName;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -113,11 +106,14 @@ public class ChatFragment extends Fragment {
                     mFilePathCallback.onReceiveValue(null);
                 }
                 mFilePathCallback = filePathCallback;
+
                 /**
                  * ACTION_GET_CONTENT with MIME type in the given setType() and category CATEGORY_OPENABLE
                  * Display all pickers for data that can be opened with ContentResolver.openInputStream(),
                  * allowing the user to pick one of them and then some data inside of it and returning the resulting URI to the caller.
                  * */
+                String forAllTypes = "*/*";
+                String fileChooserTitle = "File Chooser";
                 Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 contentSelectionIntent.setType(forAllTypes);
@@ -133,6 +129,7 @@ public class ChatFragment extends Fragment {
 
         // Load the local LiveChat.html file
         if (mWebView.getUrl() == null) {
+            String pathToLiveChat = "file:///android_asset/LiveChat.html";
             mWebView.loadUrl(pathToLiveChat);
         }
 
@@ -158,9 +155,11 @@ public class ChatFragment extends Fragment {
      * @param fileUri The fileUri object
      */
     public void getFileName(Uri fileUri) {
+        String uriStart = "content://";
         String uriString = fileUri.toString();
         File myFile = new File(uriString);
-        String path = myFile.getAbsolutePath();
+        String fileUriStart = "file://";
+        String fileNameStart = "customerNo-";
 
         //get name of the selected file
         if (uriString.startsWith(uriStart)) {
@@ -168,6 +167,7 @@ public class ChatFragment extends Fragment {
             try {
                 cursor = getActivity().getContentResolver().query(fileUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
+
                     fileName = fileNameStart + String.valueOf(commonVO.getCustomerNumber()) +
                             '-' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                     fileName = fileName.replaceAll("\\s", "");
@@ -266,14 +266,14 @@ public class ChatFragment extends Fragment {
         private String path;
 
         /** Constructor for
-         * @param contextObj Context object
+         * @param contextObject Context object
          *  @param serverAddress Address of the server
          *  @param path service path
          *  @param  sourceFileUri URI of the source file
          * */
-        public UploadFileTask(Context contextObj, String serverAddress,
+        public UploadFileTask(Context contextObject, String serverAddress,
                               String path, Uri sourceFileUri) {
-            super(contextObj, serverAddress, path);
+            super(contextObject, serverAddress, path);
             this.sourceFileUri = sourceFileUri;
             this.serverAddress = serverAddress;
             this.path = path;
@@ -288,8 +288,8 @@ public class ChatFragment extends Fragment {
         @Override
         protected ResponseWrapper doInBackground(Object... params) {
             super.doInBackground(params);
-            HttpURLConnection conn = null;
-            DataOutputStream dos = null;
+            HttpURLConnection httpUrlConnection = null;
+            DataOutputStream dataOutStream = null;
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary = "*****";
@@ -299,25 +299,25 @@ public class ChatFragment extends Fragment {
             try {
                 InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
                 URL url = new URL(serverAddress + path);
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
-                conn.setChunkedStreamingMode(1024);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fileName);
-                connectivityObj.setHttpURLConnectionObj(conn);
+                httpUrlConnection = (HttpURLConnection) url.openConnection();
+                httpUrlConnection.setDoInput(true); // Allow Inputs
+                httpUrlConnection.setDoOutput(true); // Allow Outputs
+                httpUrlConnection.setUseCaches(false); // Don't use a Cached Copy
+                httpUrlConnection.setChunkedStreamingMode(1024);
+                httpUrlConnection.setRequestMethod("POST");
+                httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
+                httpUrlConnection.setRequestProperty("ENCTYPE", "multipart/form-data");
+                httpUrlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                httpUrlConnection.setRequestProperty("uploaded_file", fileName);
+                connectivityObj.setHttpURLConnectionObj(httpUrlConnection);
                 connectivityObj.addCookiesToRequest();
 
                 if (checkConnection()) {
                     // After this line it returns null exception
-                    dos = new DataOutputStream(conn.getOutputStream());
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
-                    dos.writeBytes(lineEnd);
+                    dataOutStream = new DataOutputStream(httpUrlConnection.getOutputStream());
+                    dataOutStream.writeBytes(twoHyphens + boundary + lineEnd);
+                    dataOutStream.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
+                    dataOutStream.writeBytes(lineEnd);
 
                     // create a buffer of  maximum size
                     bytesAvailable = inputStream.available();
@@ -330,19 +330,19 @@ public class ChatFragment extends Fragment {
 
                     while (bytesRead > 0) {
 
-                        dos.write(buffer, 0, bufferSize);
+                        dataOutStream.write(buffer, 0, bufferSize);
                         bytesAvailable = inputStream.available();
                         bufferSize = Math.min(bytesAvailable, maxBufferSize);
                         bytesRead = inputStream.read(buffer, 0, bufferSize);
                     }
 
-                    // send multipart form data necesssary after file data...
-                    dos.writeBytes(lineEnd);
-                    dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                    // send multipart form data necessary after file data...
+                    dataOutStream.writeBytes(lineEnd);
+                    dataOutStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
 
-                    ResponseWrapper responseWrapperObj = new ResponseWrapper(conn.getResponseCode(),
-                            connectivityObj.readIt(conn.getInputStream()), conn.getResponseMessage());
+                    ResponseWrapper responseWrapperObj = new ResponseWrapper(httpUrlConnection.getResponseCode(),
+                            connectivityObj.readIt(httpUrlConnection.getInputStream()), httpUrlConnection.getResponseMessage());
                     return responseWrapperObj;
 
                 } else {
@@ -360,12 +360,12 @@ public class ChatFragment extends Fragment {
          * This function performs all the tasks to be done in postExecute when server response
          * is not an error.
          *
-         * @param resultObj Contains the string sent from the server as part of the response.
+         * @param resultObject Contains the string sent from the server as part of the response.
          */
         @Override
-        protected void postSuccess(String resultObj) {
-            super.postSuccess(resultObj);
-            Log.d(TAG, "postSuccess: Server response: " + resultObj);
+        protected void postSuccess(String resultObject) {
+            super.postSuccess(resultObject);
+            Log.d(TAG, "postSuccess: Server response: " + resultObject);
             Toast.makeText(getContext(), getString(R.string.chatUploadSuccess), Toast.LENGTH_SHORT).show();
 
         }
@@ -375,14 +375,14 @@ public class ChatFragment extends Fragment {
          * postFailure is called when the server responds with an error code response.
          * This function performs all the tasks to be done in postExecute when server response
          * is an error.
-         * @param responseWrapperObj Contains the response wrapper sent from the server
+         * @param ResponseWrapperObject Contains the response wrapper sent from the server
          * */
-        protected void postFailure(ResponseWrapper responseWrapperObj) {
-            if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+        protected void postFailure(ResponseWrapper ResponseWrapperObject) {
+            if (ResponseWrapperObject.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
             }
             Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_LONG).show();
-            super.postFailure(responseWrapperObj);
+            super.postFailure(ResponseWrapperObject);
 
         }
     }
@@ -405,31 +405,31 @@ public class ChatFragment extends Fragment {
     private class ChatSubjectTask extends PostAsyncCommonTask<String> {
         /**
          * ChatSubjectTask is the parametrized constructor of ChatSubjectTask
-         *@param contextObj Contains the context of the parent activity.
+         *@param contextObject Contains the context of the parent activity.
          *@param serverAddress Contains the server url/address .
          * @param path         Contains the sub-path to the service that needs to be used.
          * @param subject     Contains subject to be sent
          * */
-        public ChatSubjectTask(Context contextObj, String serverAddress, String path, String subject) {
-            super(contextObj, serverAddress, path, subject, String.class);
+        public ChatSubjectTask(Context contextObject, String serverAddress, String path, String subject) {
+            super(contextObject, serverAddress, path, subject, String.class);
         }
         /**
          * postSuccess is called when the server responds with a non-error code response.
          * This function performs all the tasks to be done in postExecute when server response
          * is not an error.
          *
-         * @param resultObj Contains the string sent from the server as part of the response.
+         * @param resultObject Contains the string sent from the server as part of the response.
          */
         @Override
-        protected void postSuccess(String resultObj) {
-            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+        protected void postSuccess(String resultObject) {
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObject);
             // Converting the string back to right encoding
-            resultObj = new String(resultObj.toCharArray());
-            run(resultObj);
+            resultObject = new String(resultObject.toCharArray());
+            run(resultObject);
         }
     }
     /**
-     * Start a new thread to render feeedback message on the webview. It is called from postSuccess
+     * Start a new thread to render feedback message on the webView. It is called from postSuccess
      * @param responseFeedback The subject to be displayed
      * */
     public void run(final String responseFeedback) {
