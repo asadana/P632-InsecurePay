@@ -2,7 +2,6 @@ package com.cigital.insecurepay.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.PrimitiveIterator.OfDouble;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;

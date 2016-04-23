@@ -11,8 +11,8 @@ import javax.ws.rs.ApplicationPath;
 import java.util.logging.Logger;
 
 /**
- * Logging extends {@link ResourceConfig}. This class is used to provide a
- * logger for all the other classes.
+ * Logging extends {@link ResourceConfig}. 
+ * This class is used to provide a logger for all the other classes.
  */
 @ApplicationPath("/rest")
 public class Logging extends ResourceConfig {

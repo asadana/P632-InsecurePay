@@ -16,8 +16,9 @@ import com.cigital.insecurepay.service.BO.ForgotPasswordBO;
 import com.cigital.insecurepay.service.BO.LoginValidationBO;
 
 /**
- * ForgotPasswordService extends {@link BaseService}. This class is a service
- * that allows the user to reset their account password.
+ * ForgotPasswordService extends {@link BaseService}. 
+ * This class is a service that allows the user to reset their 
+ * account password.
  */
 @Path("/forgotPassword")
 public class ForgotPasswordService extends BaseService {

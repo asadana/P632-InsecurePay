@@ -18,8 +18,9 @@ import com.cigital.insecurepay.common.DaoFactory;
 import com.cigital.insecurepay.dao.FileUploadDao;
 
 /**
- * ChatService extends {@link BaseService}. This class is a service that
- * receives a subject message from the user and sends it back.
+ * ChatService extends {@link BaseService}. 
+ * This class is a service that receives a subject message from the 
+ * user and sends it back.
  */
 @Path("/chatService")
 public class ChatService extends BaseService {

@@ -19,9 +19,9 @@ import com.cigital.insecurepay.service.BO.LoginBO;
 import com.cigital.insecurepay.service.BO.LoginValidationBO;
 
 /**
- * LoginService extends {@link BaseService}. This class is a service 
- * that allows user to be validated before other services can 
- * be accessed from a client.
+ * LoginService extends {@link BaseService}. 
+ * This class is a service that allows user to be validated 
+ * before other services can be accessed from a client.
  */
 @Path("/login")
 public class LoginService extends BaseService {
@@ -31,8 +31,8 @@ public class LoginService extends BaseService {
 
 	/**
 	 * validateLogin is a function that validates the credentials 
-	 * sent by the user against the database credentials. If valid, 
-	 * the user is allotted a cookie.
+	 * sent by the user against the database credentials using {@link LoginDao}.
+	 * If valid, the user is allotted a cookie.
 	 * 
 	 * @param	loginBO		Contains the user credentials received
 	 * 						in the form of {@link LoginBO} object.

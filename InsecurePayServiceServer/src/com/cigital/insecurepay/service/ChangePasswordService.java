@@ -15,8 +15,9 @@ import com.cigital.insecurepay.dao.ChangePasswordDao;
 import com.cigital.insecurepay.service.BO.ChangePasswordBO;
 
 /**
- * ChangePasswordService extends {@link BaseService}. This class is a service
- * that allows the user to update his existing password.
+ * ChangePasswordService extends {@link BaseService}. 
+ * This class is a service that allows the user to update 
+ * his existing password.
  */
 @Path("/changePassword")
 public class ChangePasswordService extends BaseService {
