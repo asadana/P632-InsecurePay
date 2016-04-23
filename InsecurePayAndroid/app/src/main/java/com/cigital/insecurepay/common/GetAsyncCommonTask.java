@@ -6,22 +6,23 @@ import android.content.Context;
 import java.net.HttpURLConnection;
 
 /**
- * GetAsyncCommonTask is used to handle all the GET requests Async tasks
+ * GetAsyncCommonTask extends {@link AsyncCommonTask}.
+ * This class is a parent class that is extended by any Activity/Fragment that
+ * wants to perform a Get request to the server.
  */
 public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
     protected T objReceived;
     private ContentValues contentValuesObj;
     private Class<T> classObj;
 
-
     /**
-     * GetAsyncCommonTask is the parameterized constructor
+     * GetAsyncCommonTask is the parametrized constructor of this class.
      *
      * @param contextObj    Contains the context of the parent activity.
-     * @param serverAddress Contains the server url/address .
+     * @param serverAddress Contains the server url/address.
      * @param path          Contains the sub-path to the service that needs to be used.
-     * @param contentValues Data or Object of the VO class being sent to the server
-     * @param classObj      Object of the VO class sent by server in response
+     * @param contentValues Data or Object of the VO class being sent to the server.
+     * @param classObj      Object of the class sent by server in response.
      */
     public GetAsyncCommonTask(Context contextObj, String serverAddress, String path,
                               ContentValues contentValues, Class<T> classObj) {
@@ -30,9 +31,18 @@ public abstract class GetAsyncCommonTask<T> extends AsyncCommonTask {
         this.classObj = classObj;
     }
 
+    /**
+     * doInBackground is the function that establishes a connection with the server
+     * in a background thread.
+     *
+     * @param params Contains the parameters that may be passed while calling doInBackground.
+     * @return ResponseWrapper  Return an object of {@link ResponseWrapper}.
+     */
     @Override
     protected ResponseWrapper doInBackground(Object... params) {
         super.doInBackground(params);
+
+        // If condition checks if the network is on.
         if (checkConnection()) {
             return connectivityObj.get(contentValuesObj);
         } else {

@@ -26,7 +26,7 @@ import java.net.HttpURLConnection;
  * asynchronously with the UI thread, and displays a ProgressDialog while
  * the application communicates with the server.
  */
-public class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWrapper> {
+public abstract class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWrapper> {
 
     protected Connectivity connectivityObj;
     protected Gson gsonObj;
@@ -124,7 +124,9 @@ public class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWrapper> {
             return true;
         } else {
             Log.e(this.getClass().getSimpleName(), "checkConnection: Network is off.");
-            Toast.makeText(contextObj, contextObj.getString(R.string.no_network), Toast.LENGTH_SHORT).show();
+            Toast.makeText(contextObj,
+                    contextObj.getString(R.string.no_network),
+                    Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -167,7 +169,8 @@ public class AsyncCommonTask extends AsyncTask<Object, Void, ResponseWrapper> {
                             alertDialog.dismiss();
                             Intent intent = new Intent(contextObj, LoginActivity.class);
                             // Clear back stack
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_NEW_TASK);
                             // Start a new activity
                             contextObj.startActivity(intent);
                         }
