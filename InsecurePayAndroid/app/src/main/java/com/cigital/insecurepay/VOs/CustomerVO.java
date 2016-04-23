@@ -38,8 +38,9 @@ public class CustomerVO {
      * @param email
      * @param custUsername
      */
-    public CustomerVO(int custNo, String custName, String street, String city, String state, int zipcode, long phoneNo,
-                      String birthDate, String ssn, String email, String custUsername) {
+    public CustomerVO(int custNo, String custName, String street, String city,
+                      String state, int zipcode, long phoneNo, String birthDate,
+                      String ssn, String email, String custUsername) {
         super();
         this.customerNumber = custNo;
         this.customerName = custName;

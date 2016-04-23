@@ -17,7 +17,6 @@ public class ChangePasswordVO {
      * @param	username
      * @param	password
      */
-
     public ChangePasswordVO( String username,String password){
         this.username=username;
         this.password=password;
