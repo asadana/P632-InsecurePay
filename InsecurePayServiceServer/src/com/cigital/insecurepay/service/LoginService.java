@@ -55,12 +55,12 @@ public class LoginService extends BaseService {
 			
 			// If condition checks if the user was validated
 			if (validate.isValidUser()) {
-				// If condition checks if the cookie counter is under a given range
-				if (Constants.counter >= Constants.counterInitial 
-						&& Constants.counter < Constants.counterLimit) {
-					Constants.counter++;
+				// If condition checks if the cookieCounter is under a given range
+				if (Constants.cookieCounter >= Constants.counterInitial 
+						&& Constants.cookieCounter < Constants.counterLimit) {
+					Constants.cookieCounter++;
 				} else {
-					Constants.counter = Constants.counterInitial;
+					Constants.cookieCounter = Constants.counterInitial;
 				}
 
 				// Alloting cookie to the validated user

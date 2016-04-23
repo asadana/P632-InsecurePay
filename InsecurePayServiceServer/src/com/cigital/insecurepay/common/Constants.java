@@ -32,12 +32,15 @@ public class Constants {
 	// Reset password
 	public final static String defaultPassword = "12345";
 	
-	// List to store cookies on the server side
+	/*
+	 * cookieList stores cookies on the server side. 
+	 * Object of class {@link CookieList}	
+	 */
 	public static CookieList cookieList = new CookieList();
 	// Counter to keep track of logged in users
-	public static int counter = 100;
-	// Lower limit of counter, also used as a reset value
+	public static int cookieCounter = 100;
+	// Lower limit of cookieCounter, also used as a reset value
 	public final static int counterInitial = 100;
-	// Upper limit of counter
+	// Upper limit of cookieCounter
 	public final static int counterLimit  = 1000000;
 }

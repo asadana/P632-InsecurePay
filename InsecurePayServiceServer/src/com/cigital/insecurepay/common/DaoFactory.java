@@ -11,12 +11,13 @@ import com.cigital.insecurepay.dao.BaseDao;
  * and passes the connection to BaseDao class.
  */
 public class DaoFactory {
-	public static  <T  extends BaseDao> T getInstance(Class<T> cl, Connection conn)
-			throws InstantiationException, IllegalAccessException, 
-			NoSuchMethodException, SecurityException, IllegalArgumentException, 
-			InvocationTargetException {
+	public static  <T  extends BaseDao> T getInstance(Class<T> classObj, 
+														Connection connectionObj)
+			throws 	InstantiationException, IllegalAccessException, 
+					NoSuchMethodException, SecurityException, IllegalArgumentException, 
+					InvocationTargetException {
 		
-		Constructor<T> cons = cl.getConstructor(Connection.class);
-		return cons.newInstance(conn);
+		Constructor<T> constructorObj = classObj.getConstructor(Connection.class);
+		return constructorObj.newInstance(connectionObj);
 	}
 }

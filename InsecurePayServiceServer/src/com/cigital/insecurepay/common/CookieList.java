@@ -118,7 +118,7 @@ public class CookieList {
 		// Generating the cookie
 		NewCookie newCookieObj = new NewCookie(
 									new Cookie("CookieID", 
-												custUserName + Constants.counter, "/", ""), 
+												custUserName + Constants.cookieCounter, "/", ""), 
 									null, cookieAgeInSeconds, dateObj, false, false);
 
 		// Return the generated NewCookie object

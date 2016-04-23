@@ -5,7 +5,7 @@ import java.util.Date;
 import javax.ws.rs.core.NewCookie;
 
 /**
- * CookieWrapper is a wrapper class that contains a NewCookie, 
+ * CookieWrapper is a wrapper class that contains a {@link NewCookie}, 
  * customer number and the last date cookie was accessed. 
  */
 public class CookieWrapper {
@@ -17,7 +17,7 @@ public class CookieWrapper {
 	/**
 	 * CookieWrapper is a parameterized constructor for CookieWrapper.
 	 * 
-	 *  @param	newCookieObj	Contains the NewCookie object.
+	 *  @param	newCookieObj	Contains the {@link NewCookie} object.
 	 *  @param	custNo			Contains the customer number.
 	 */
 	public CookieWrapper(NewCookie newCookieObj, int custNo) {
