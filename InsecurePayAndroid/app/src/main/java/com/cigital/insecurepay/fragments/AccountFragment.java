@@ -5,6 +5,7 @@
 package com.cigital.insecurepay.fragments;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -12,6 +13,7 @@ import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.telephony.PhoneNumberFormattingTextWatcher;
@@ -46,9 +48,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * AccountFragment extends Fragment and is used to display and handle Account Management
- * related view operations.
+ * AccountFragment extends {@link Fragment}.
+ * This class is used to display and handle Account Management related view
+ * operations for the user.
  */
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AccountFragment extends Fragment {
 
     // View objects
@@ -76,6 +80,8 @@ public class AccountFragment extends Fragment {
     private Calendar calenderObj = Calendar.getInstance();
     private SimpleDateFormat dateFormatObj = new SimpleDateFormat("yyyy-MM-dd");
 
+    private String passwordMisMatch = "Password mismatch";
+
     // TextWatcher objects to handle on edit events for EditText fields
     private TextWatcher twEmail = new TextWatcher() {
         @Override
@@ -89,7 +95,6 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Email Address value changed.");
         }
     };
     private TextWatcher twAddressStreet = new TextWatcher() {
@@ -104,7 +109,6 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Address street value changed.");
         }
     };
     private TextWatcher twAddressCity = new TextWatcher() {
@@ -119,7 +123,6 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Address city value changed.");
         }
     };
     private TextWatcher twAddressState = new TextWatcher() {
@@ -134,7 +137,6 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Address state value changed.");
         }
     };
     private TextWatcher twAddressZip = new TextWatcher() {
@@ -155,7 +157,6 @@ public class AccountFragment extends Fragment {
                 etAddressZip.setError(null);
             }
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Address zip value changed.");
         }
     };
     private PhoneNumberFormattingTextWatcher twPhone = new PhoneNumberFormattingTextWatcher("US") {
@@ -179,7 +180,6 @@ public class AccountFragment extends Fragment {
                 etPhone.setError(null);
             }
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Phone number value changed.");
         }
     };
     private TextWatcher twDOB = new TextWatcher() {
@@ -194,20 +194,33 @@ public class AccountFragment extends Fragment {
         @Override
         public void afterTextChanged(Editable s) {
             btnUpdateInfo.setEnabled(true);
-            Log.i(this.getClass().getSimpleName(), "Date of Birth value changed.");
         }
     };
 
+    /**
+     * AccountFragment is the default constructor of this class.
+     */
     public AccountFragment() {
-        // Required empty public constructor
     }
 
-    // onCreateView is called when the class's view is being generated
+    /**
+     * onCreateView is an overridden function that is called while the fragment is
+     * being created.
+     *
+     * @param layoutInflater     Contains the {@link LayoutInflater} object that defines
+     *                           the layout of the fragment
+     * @param viewGroup          Contains the {@link ViewGroup} object to which this fragment
+     *                           belongs to.
+     * @param savedInstanceState Object of {@link Bundle} that is used to pass data to this
+     *                           activity while creating it.
+     * @return View         Return the {@link View} object created.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
+        Log.d(this.getClass().getSimpleName(), "onCreateView: Initializing the fragment.");
         // Inflate the layout for this fragment
-        View viewObj = inflater.inflate(R.layout.fragment_account, container, false);
+        View viewObj = layoutInflater.inflate(R.layout.fragment_account, viewGroup, false);
 
         initValues(viewObj);
         addListeners();
@@ -215,9 +228,14 @@ public class AccountFragment extends Fragment {
         return viewObj;
     }
 
-    // Initializing all the variables
+    /**
+     * initValues is a function that is used to initialize the UI components
+     * and other variables.
+     *
+     * @param viewObj Contains the {@link View} of the fragment.
+     */
     private void initValues(View viewObj) {
-        Log.i(this.getClass().getSimpleName(), "Initializing values.");
+        Log.d(this.getClass().getSimpleName(), "initValues: Initializing values.");
 
         // Initializing all objects from fragment_account
         tvName = (TextView) viewObj.findViewById(R.id.tvAccount_fillName);
@@ -243,14 +261,19 @@ public class AccountFragment extends Fragment {
         ContentValues contentValues = new ContentValues();
         contentValues.put(getString(R.string.cust_no), commonVO.getCustomerNumber());
 
-        GetCustomerDetailsTask getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
-                getString(R.string.cust_details_path), contentValues);
+        GetCustomerDetailsTask getCustomerDetailsTask = new GetCustomerDetailsTask(getContext(),
+                commonVO.getServerAddress(),
+                getString(R.string.cust_details_path),
+                contentValues);
         getCustomerDetailsTask.execute();
     }
 
-    // Initializing listeners where needed
+    /**
+     * addListeners is a function that is called to attach listeners
+     * to various components.
+     */
     private void addListeners() {
-        Log.i(this.getClass().getSimpleName(), "Adding Listeners");
+        Log.d(this.getClass().getSimpleName(), "Adding Listeners");
         etEmail.addTextChangedListener(twEmail);
         etAddressStreet.addTextChangedListener(twAddressStreet);
         etAddressCity.addTextChangedListener(twAddressCity);
@@ -274,19 +297,24 @@ public class AccountFragment extends Fragment {
         tvUserDOB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment(AccountFragment.this.getContext());
+                DateOfBirthPickerFragment dateDialogFragment = new DateOfBirthPickerFragment(
+                        AccountFragment.this.getContext());
                 // Calling show with FragmentManager and a unique tag name
                 dateDialogFragment.show(getActivity().getFragmentManager(), "datePicker");
             }
         });
     }
 
-    // Handles tasks to be done when Update button is clicked
+    /**
+     * onClickUpdateInformation is a function that is used to do a list of tasks
+     * when btnUpdateInfo is clicked.
+     */
     private void onClickUpdateInformation() {
         if (etAddressZip.getError() != null || etPhone.getError() != null) {
-            Toast.makeText(getContext(), getString(R.string.accountFixBeforeUpdate), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.accountFixBeforeUpdate),
+                    Toast.LENGTH_SHORT).show();
         } else {
-            Log.i(this.getClass().getSimpleName(), "Updating customer information.");
+            Log.d(this.getClass().getSimpleName(), "Updating customer information.");
 
             customerVOObj.setEmail(etEmail.getText().toString());
             customerVOObj.setStreet(etAddressStreet.getText().toString());
@@ -294,26 +322,40 @@ public class AccountFragment extends Fragment {
             customerVOObj.setState(etAddressState.getText().toString());
             customerVOObj.setBirthDate(tvUserDOB.getText().toString());
             customerVOObj.setZipcode(Integer.parseInt(etAddressZip.getText().toString()));
-            customerVOObj.setPhoneNo(Long.valueOf(etPhone.getText().toString().replaceAll("\\D+", "")));
+            customerVOObj.setPhoneNo(Long.valueOf(etPhone.getText().toString()
+                    .replaceAll("\\D+", "")));
 
+            Log.d(this.getClass().getSimpleName(), "onClickUpdateInformation: Writing to file.");
             jsonFileHandlerObj.writeToFile(gsonObj.toJson(customerVOObj));
-
             try {
-                customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(), CustomerVO.class);
-            } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Overridden Constructor: " + e.toString());
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Log.e(this.getClass().getSimpleName(), "onClickUpdateInformation: ", e);
             }
 
-            UpdateCustomerDetailsTask updateCustomerDetailsTask = new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
-                    getString(R.string.cust_details_path), customerVOObj);
+            try {
+                Log.d(this.getClass().getSimpleName(),
+                        "onClickUpdateInformation: Reading from file.");
+                customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(),
+                        CustomerVO.class);
+            } catch (IOException e) {
+                Log.e(this.getClass().getSimpleName(), "Overridden Constructor: ", e);
+            }
+
+            UpdateCustomerDetailsTask updateCustomerDetailsTask =
+                    new UpdateCustomerDetailsTask(getContext(), commonVO.getServerAddress(),
+                            getString(R.string.cust_details_path), customerVOObj);
             updateCustomerDetailsTask.execute();
         }
     }
 
-    // Handles tasks to be done when Change Password is clicked
+    /**
+     * onClickChangePassword is a function that is used to do a list of tasks
+     * when btnChangePassword is clicked.
+     */
     private void onClickChangePassword() {
-        Log.i(this.getClass().getSimpleName(), "Displaying change password dialog");
-
+        Log.d(this.getClass().getSimpleName(), "onClickChangePassword: " +
+                "Displaying change password dialog");
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_password, null);
@@ -327,15 +369,17 @@ public class AccountFragment extends Fragment {
 
         // EditText variables to fetch user inputs from the dialog
         etNewPassword = (EditText) dialogView.findViewById(R.id.etChangePassword_newPassword);
-        etConfirmPassword = (EditText) dialogView.findViewById(R.id.etChangePassword_confirmPassword);
+        etConfirmPassword = (EditText) dialogView
+                .findViewById(R.id.etChangePassword_confirmPassword);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
         alertD.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                alertD.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
+                alertD.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
                     public void onClick(View v) {
                         String newPassword = etNewPassword.getText().toString();
                         String confirmPassword = etConfirmPassword.getText().toString();
@@ -361,20 +405,24 @@ public class AccountFragment extends Fragment {
 
                         //Checks to see if both entries of new password match
                         if (newPassword.equals(confirmPassword)) {
-                            changePasswordTask = new ChangePasswordTask(getContext(), commonVO.getServerAddress(),
-                                    getString(R.string.change_password_path), new ChangePasswordVO(commonVO.getUsername(), newPassword));
+                            changePasswordTask = new ChangePasswordTask(getContext(),
+                                    commonVO.getServerAddress(),
+                                    getString(R.string.change_password_path),
+                                    new ChangePasswordVO(commonVO.getUsername(), newPassword));
                             changePasswordTask.execute();
                             alertD.dismiss();
                         } else {
                             etNewPassword.setText("");
                             etConfirmPassword.setText("");
-                            Toast.makeText(AccountFragment.this.getContext(), "Password mismatch", Toast.LENGTH_LONG).show();
+                            Toast.makeText(AccountFragment.this.getContext(),
+                                    passwordMisMatch, Toast.LENGTH_LONG).show();
                         }
 
                     }
                 });
-                alertD.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
+                alertD.getButton(AlertDialog.BUTTON_NEGATIVE)
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
                     public void onClick(View v) {
                         alertD.dismiss();
                     }
@@ -385,42 +433,90 @@ public class AccountFragment extends Fragment {
         alertD.show();
     }
 
-    // Inner class to update the password on the server
+    /**
+     * ChangePasswordTask extends {@link PostAsyncCommonTask} to asynchronously communicate
+     * with the server to update the user's password. This uses {@link ChangePasswordVO}
+     * object to send the request.
+     */
     private class ChangePasswordTask extends PostAsyncCommonTask<ChangePasswordVO> {
         private String newPassword;
 
+        /**
+         * ChangePasswordTask is the parametrized constructor of this class.
+         *
+         * @param contextObj       Contains the context of the parent activity.
+         * @param serverAddress    Contains the server url/address .
+         * @param path             Contains the sub-path to the service that needs to be used.
+         * @param changePasswordVO Contains the new password to be sent to the server in
+         *                         the form of {@link ChangePasswordVO} object.
+         */
         public ChangePasswordTask(Context contextObj, String serverAddress, String path,
                                   ChangePasswordVO changePasswordVO) {
             super(contextObj, serverAddress, path, changePasswordVO, ChangePasswordVO.class);
             newPassword = changePasswordVO.getPassword();
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         *                  Server sends the Customer No in response.
+         */
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
+
             // Checking the server response
             switch (resultObj) {
                 case "false":
-                    Toast.makeText(getContext(), getString(R.string.password_not_changed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),
+                            getString(R.string.password_not_changed),
+                            Toast.LENGTH_LONG).show();
                     break;
                 case "true":
-                    Toast.makeText(getContext(), getString(R.string.password_changed) + " '" + newPassword + "'", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),
+                            getString(R.string.password_changed) + " '" + newPassword + "'",
+                            Toast.LENGTH_LONG).show();
                     break;
                 default:
-                    Log.e(this.getClass().getSimpleName(), "Invalid response on password change");
+                    Log.e(this.getClass().getSimpleName(),
+                            "postSuccess: Invalid response on password change");
                     break;
             }
         }
     }
 
-    // Inner class to fetch customer details
+    /**
+     * GetCustomerDetailsTask extends {@link GetAsyncCommonTask} to asynchronously
+     * communicate with the server and retrieve user details. This uses an object of
+     * {@link CustomerVO} to send the request.
+     */
     private class GetCustomerDetailsTask extends GetAsyncCommonTask<CustomerVO> {
 
-        public GetCustomerDetailsTask(Context contextObj, String serverAddress, String path, ContentValues contentValues) {
+        /**
+         * GetCustomerDetailsTask is the parametrized constructor of this class.
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param contentValues Contains the values to be sent to the server.
+         */
+        public GetCustomerDetailsTask(Context contextObj, String serverAddress,
+                                      String path, ContentValues contentValues) {
             super(contextObj, serverAddress, path, contentValues, CustomerVO.class);
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         *                  Server sends the Customer No in response.
+         */
         @Override
         public void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
@@ -446,14 +542,34 @@ public class AccountFragment extends Fragment {
 
     }
 
-    // Inner class to update customer details
+    /**
+     * UpdateCustomerDetailsTask extends {@link PostAsyncCommonTask} to asynchronously
+     * communicate with the server and update the customer details using an object of
+     * {@link CustomerVO} to send the request.
+     */
     private class UpdateCustomerDetailsTask extends PostAsyncCommonTask<CustomerVO> {
 
+        /**
+         * TransferValidationTask is the parametrized constructor of this class.
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param customerVO    Contains the customer details updated by the user.
+         */
         public UpdateCustomerDetailsTask(Context contextObj, String serverAddress, String path,
                                          CustomerVO customerVO) {
             super(contextObj, serverAddress, path, customerVO, CustomerVO.class);
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the response.
+         *                  Server sends the Customer No in response.
+         */
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
@@ -462,30 +578,45 @@ public class AccountFragment extends Fragment {
                     Log.d(this.getClass().getSimpleName(),
                             "postSuccess: Updated account information successfully.");
                     Toast.makeText(getContext(),
-                                    getString(R.string.account_update_successful),
-                                                Toast.LENGTH_SHORT).show();
+                            getString(R.string.account_update_successful),
+                            Toast.LENGTH_SHORT).show();
                     btnUpdateInfo.setEnabled(false);
                     break;
                 case "false":
                     Log.d(this.getClass().getSimpleName(),
                             "postSuccess: Updating account information failed.");
                     Toast.makeText(getContext(),
-                                    getString(R.string.account_update_failed),
-                                                Toast.LENGTH_SHORT).show();
+                            getString(R.string.account_update_failed),
+                            Toast.LENGTH_SHORT).show();
                     break;
             }
         }
 
+        /**
+         * postSuccess is called when the server responds with an error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is an error.
+         *
+         * @param responseWrapperObj Contains the response from the server as an object of
+         *                           {@link ResponseWrapper}.
+         */
         @Override
         protected void postFailure(ResponseWrapper responseWrapperObj) {
-            Toast.makeText(getContext(), getString(R.string.account_update_failed), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),
+                    getString(R.string.account_update_failed),
+                    Toast.LENGTH_SHORT).show();
+
             ArrayList<String> arrayListObj = new ArrayList<String>();
             arrayListObj.add("Customer Name: " + customerVOObj.getCustomerName());
             arrayListObj.add("Customer Number: " + customerVOObj.getCustomerNumber());
-            arrayListObj.add("Customer Account Number: " + Integer.toString(commonVO.getAccountVO().getAccountNumber()));
+            arrayListObj.add("Customer Account Number: "
+                    + Integer.toString(commonVO.getAccountVO().getAccountNumber()));
             arrayListObj.add("Customer SSN: " + customerVOObj.getDecodedSsn());
+
             String currentString = responseWrapperObj.getResponseString();
+
             responseWrapperObj.setResponseString(arrayListObj.toString() + "\n\n" + currentString);
+
             if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
             }
@@ -493,13 +624,21 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    // Inner class for DialogFragment
+    /**
+     * DateOfBirthPickerFragment is a class that extends {@link DialogFragment}
+     * and implements {@link DatePickerDialog} to display a date picker dialog box.
+     */
     @SuppressLint("ValidFragment")
     private class DateOfBirthPickerFragment extends DialogFragment
             implements DatePickerDialog.OnDateSetListener {
 
         private Context context;
 
+        /**
+         * DateOfBirthPickerFragment is a parametrized constructor of this class.
+         *
+         * @param context   Contains the context of the parent.
+         */
         public DateOfBirthPickerFragment(Context context) {
             this.context = context;
             try {
@@ -509,6 +648,14 @@ public class AccountFragment extends Fragment {
             }
         }
 
+        /**
+         * onCreateDialog is an overridden function that is invoked when the dialog is being
+         * created.
+         *
+         * @param bundleObj Contains the information that may be passed from the parent.
+         *
+         * @return Dialog   Return the {@link Dialog} that was created.
+         */
         @Override
         public Dialog onCreateDialog(Bundle bundleObj) {
             int year = calenderObj.get(Calendar.YEAR);
@@ -518,9 +665,17 @@ public class AccountFragment extends Fragment {
             return new DatePickerDialog(context, this, year, month, day);
         }
 
-        // Function handles what to once new date is selected from dialog
+        /**
+         * onDateSet is an overridden function that is invoked when the user selects the date
+         * and the dialog exists.
+         *
+         * @param datePicker    Contains the {@link DatePicker} object that was used.
+         * @param year          Contains the year.
+         * @param monthOfYear   Contains the month of the year.
+         * @param dayOfMonth    Contains the day of the month.
+         */
         @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
             calenderObj.set(year, monthOfYear, dayOfMonth);
             tvUserDOB.setText(dateFormatObj.format(calenderObj.getTime()));
         }
