@@ -1,7 +1,8 @@
 package com.cigital.insecurepay.VOs;
 
 /**
- * LoginValidationVO is a POJO used to verify if the user is valid or not, username exists and the respective customer number
+ * LoginValidationVO is a POJO used to verify if the user is valid or not,
+ * username exists and the respective customer number
  */
 public class LoginValidationVO {
 

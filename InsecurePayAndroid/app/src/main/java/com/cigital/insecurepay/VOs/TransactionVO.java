@@ -29,7 +29,8 @@ public class TransactionVO implements Serializable {
      * @param transactionAmount
      * @param type
      */
-    public TransactionVO(String description, String date, int finalAmount, int transactionAmount, int type) {
+    public TransactionVO(String description, String date, int finalAmount,
+                         int transactionAmount, int type) {
         this.type = type;
         this.transactionAmount = transactionAmount;
         this.description = description;

@@ -27,7 +27,8 @@ public class TransferFundsVO implements Serializable {
      * @param	transferAmount
      * @param	transferDetails
      */
-    public TransferFundsVO(AccountVO fromAccount, AccountVO toAccount, float transferAmount, String transferDetails) {
+    public TransferFundsVO(AccountVO fromAccount, AccountVO toAccount,
+                           float transferAmount, String transferDetails) {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.transferAmount = transferAmount;
