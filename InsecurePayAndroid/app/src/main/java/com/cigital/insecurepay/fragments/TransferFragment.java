@@ -143,7 +143,7 @@ public class TransferFragment extends Fragment {
 
     /**
      * TransferValidationTask is used to ensure that the receiver of the funds is valid.
-     * CustomerAccountFetchTask extends {@link GetAsyncCommonTask} and produces
+     * TransferValidationTask extends {@link GetAsyncCommonTask} and produces
      * object of {@link String} in postExecute.
      */
     private class TransferValidationTask extends GetAsyncCommonTask<String> {

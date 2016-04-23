@@ -241,13 +241,13 @@ public class HomePageActivity
     }
 
     /**
-     * setAccDetails is a function that is called to take account details retrieved
-     * and pass them as intent to child fragments.
+     * setAccountDetails is a function that is called to take account details retrieved
+     * and pass them as intent to child fragment(s).
      *
      * @param accountVO Contains the account details for the user.
      */
     @Override
-    public void setAccDetails(AccountVO accountVO) {
+    public void setAccountDetails(AccountVO accountVO) {
         CommonVO commonVO = (CommonVO) getIntent().getSerializableExtra(getString(R.string.common_VO));
         commonVO.setAccountVO(accountVO);
         getIntent().putExtra(getString(R.string.common_VO), commonVO);
