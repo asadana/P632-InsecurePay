@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
 	<Properties>
+		<!-- Path where all the logs will be generated -->
 		<Property name="log-path">/var/log/tomcat8</Property>
 	</Properties>
 	<Appenders>
+		<!-- Name and pattern name of the file -->
 		<RollingFile name="RollingFile"
 			fileName="${log-path}/Insecure_Pay_Service_Server.log"
 			filePattern="${log-path}/Insecure_Pay_Service_Server-%d{yyyy-MM-dd}-%i.log">
@@ -13,9 +15,11 @@
 			<Policies>
 				<TimeBasedTriggeringPolicy interval="1"
 					modulate="true" />
+				<!-- Size limit of the logs -->
 				<SizeBasedTriggeringPolicy size="100 KB" />
 			</Policies>
 			<DefaultRolloverStrategy>
+				<!-- Delete logs older than 30 days -->
 				<Delete basePath="${log-path}" maxDepth="1">
 					<IfLastModified age="30d" />
 				</Delete>
@@ -26,9 +30,7 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<!-- <Logger name="root" level="debug" additivity="false"> <appender-ref 
-			ref="RollingFile" level="debug" /> <AppenderRef ref="Console" level="debug" 
-			/> </Logger> -->
+		<!-- Log level, default debug -->
 		<Root level="debug" additivity="false">
 			<AppenderRef ref="RollingFile" />
 		</Root>
