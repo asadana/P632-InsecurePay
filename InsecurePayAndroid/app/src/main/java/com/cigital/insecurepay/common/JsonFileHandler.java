@@ -6,8 +6,6 @@ package com.cigital.insecurepay.common;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,16 +14,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * JsonFileHandler is used to handle read and write data to files
+ * JsonFileHandler is a class that is used to handle read and write data to JSON file.
  */
 public class JsonFileHandler {
+
     private final Context contextObj;
     private String fileName;
     private String contentToStore;
-    private Gson gsonObj = new Gson();
 
     /**
-     * JsonFileHandler parameterized constructor
+     * JsonFileHandler parametrized constructor
      *
      * @param contextObj    Contains the context of the parent activity.
      * @param fileName      Contains the filename .
@@ -36,7 +34,12 @@ public class JsonFileHandler {
     }
 
     /**
-     * writeToFile is called to write data to the file in local storage
+     * writeToFile is a function that is called to write data to the file in local storage.
+     *
+     * @param contentToStore Contains the content that needs to be stored into a file.
+     *
+     * @return boolean      Return a boolean value depending on if the write to file was a
+     *                      success.
      */
     public boolean writeToFile(String contentToStore) {
 
@@ -49,16 +52,18 @@ public class JsonFileHandler {
             outputStreamObj.close();
             return true;
         } catch (FileNotFoundException e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
+            Log.e(this.getClass().getSimpleName(), "writeToFile: ", e);
             return false;
         } catch (IOException e) {
-            Log.e(this.getClass().getSimpleName(), e.toString());
+            Log.e(this.getClass().getSimpleName(), "writeToFile: ", e);
             return false;
         }
     }
 
     /**
-     * readFromFile is called to read data from the file stored in local storage
+     * readFromFile is a function that is called to read data from the file stored in local storage.
+     *
+     * @return String   Return a string containing the contents of the file.
      */
     public String readFromFile() throws IOException {
         FileInputStream fileInputStreamObj = contextObj.openFileInput(fileName);
