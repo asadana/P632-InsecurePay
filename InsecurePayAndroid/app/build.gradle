@@ -12,6 +12,7 @@ android {
     }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
+
     defaultConfig {
         applicationId "com.cigital.insecurepay"
         minSdkVersion 17
@@ -40,38 +41,46 @@ android {
             // For running coverage reports on debug builds
             testCoverageEnabled = true
         }
-        release {
-            minifyEnabled true
-            shrinkResources true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    productFlavors {
         pro {
-            minSdkVersion 17
-            applicationId 'com.cigital.insecurepay'
-            proguardFile 'somerules'
+            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
-            targetSdkVersion 23
-            versionCode 1
-            versionName '1.0'
-        }
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    project.ext { appName = 'InsecurePay' }
+                    def newName = output.outputFile.name
+                    newName = newName.replace("app-", "$project.ext.appName-")
+                    newName = newName.replace(".apk", "-" + defaultConfig.versionName +
+                            "-" + defaultConfig.versionCode + ".apk")
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
+        }/*
         free {
-            minSdkVersion 17
-            applicationId 'com.cigital.insecurepay'
+            minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.config
-            targetSdkVersion 23
-            versionCode 1
-            versionName '1.0'
-        }
+            applicationVariants.all { variant ->
+                customName(variant, defaultConfig)
+            }
+        }*/
     }
-
     packagingOptions {
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
 }
+/*
+
+def customName(variant, defaultConfig) {
+    def file = variant.outputFile
+    def fileName = file.name.replace(".apk", "-" + defaultConfig.versionName +
+            "-" + defaultConfig.versionCode + ".apk")
+    fileName = fileName.replace("app-", "InsecurePay-")
+    variant.outputFile = new File(file.parent, fileName)
+}
+*/
+
 
 def getDate() {
     def date = new Date()
