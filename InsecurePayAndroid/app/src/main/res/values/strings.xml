@@ -11,8 +11,6 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <string name="default_path">/rest/</string>
-    <string name="no_network">No network connection</string>
 
     <!--Following strings are for Login-->
 
@@ -29,8 +27,8 @@
     <string name="action_logout">Log out</string>
     <string name="username">username</string>
     <string name="password">password</string>
-    <string name="url">URL</string>
-    <string name="path">Path</string>
+    <string name="url">http://0.0.0.0:8080</string>
+    <string name="path">/InsecurePayServiceServer/rest/</string>
     <string name="send">SEND</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="information_mismatch">Please verify your information and try again.</string>
@@ -42,6 +40,8 @@
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
     <!--<string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>-->
+    <string name="default_path">/rest/</string>
+    <string name="no_network">No network connection</string>
     <string name="progress_dialog_message">Loading. Please wait..</string>
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
