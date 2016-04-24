@@ -480,14 +480,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(dialogView);
-        alertDialogBuilder.setTitle(R.string.prompt_server_addr);
+        alertDialogBuilder.setTitle(R.string.prompt_server_address);
 
         // EditText variables to fetch user inputs from the dialog
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
-        etUrlAddress.setText(getString(R.string.url));
-        etUrlPath.setText(getString(R.string.path));
+        etUrlAddress.setText(getString(R.string.changeServer_url));
+        etUrlPath.setText(getString(R.string.changeServer_path));
 
         Log.i(this.getClass().getSimpleName(),
                 "changeUrl: Initial address: " + userAddress + userPath);

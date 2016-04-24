@@ -89,7 +89,7 @@ public class ActivityHistoryFragment extends Fragment {
                 accountNumber = Integer.parseInt(accountNo);
                 ContentValues contentValues = new ContentValues();
                 //Calls validation task to make sure that Account No entered is valid
-                contentValues.put(getString(R.string.account_no), accountNumber);
+                contentValues.put(getString(R.string.account_number), accountNumber);
                 accountnovalidationtask = new AccountNoValidationTask(getContext(), commonVO.getServerAddress(),
                         getString(R.string.accountno_validation_path), contentValues);
                 accountnovalidationtask.execute();
@@ -142,7 +142,7 @@ public class ActivityHistoryFragment extends Fragment {
                     break;
                 case "true":
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put(getString(R.string.account_no), accountNumber);
+                    contentValues.put(getString(R.string.account_number), accountNumber);
                     //Calls for fetching Activity History of the valid entered Account Number
                     activityHistoryFetchTask = new ActivityHistoryFetchTask(getContext(),
                             commonVO.getServerAddress(),

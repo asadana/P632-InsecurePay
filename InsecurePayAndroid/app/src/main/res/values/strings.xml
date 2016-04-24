@@ -13,22 +13,17 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
 
     <!--Following strings are for Login-->
-
-    <string name="prompt_server_addr">Enter Server Address</string>
+    <string name="prompt_server_address">Enter Server Address</string>
     <string name="account_lockout_duration">1</string>
-    <string name="title_activity_home_page">HomePage</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="login_failed_account_locked">Login Failed and Account Locked</string>
     <string name="login_failed">Login Failed</string>
     <string name="login_successful">Login Successful</string>
     <string name="menu_change_url">Change Server Address</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="action_logout">Log out</string>
     <string name="username">username</string>
     <string name="password">password</string>
-    <string name="url">http://0.0.0.0:8080</string>
-    <string name="path">/InsecurePayServiceServer/rest/</string>
+    <string name="changeServer_url">http://0.0.0.0:8080</string>
+    <string name="changeServer_path">/InsecurePayServiceServer/rest/</string>
     <string name="send">SEND</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="information_mismatch">Please verify your information and try again.</string>
@@ -55,6 +50,10 @@
     <string name="logout_path">logout</string>
 
     <!--For Navigation Drawer Toolbar titles-->
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Log out</string>
     <string name="nav_homepage">Home</string>
     <string name="nav_account_manage">Account Management</string>
     <string name="nav_transfer_funds">Transfer Funds</string>
@@ -125,7 +124,7 @@
     <!--For Activity History Fragment-->
     <string name="tvActivityHistory_AccountNo">Enter Account No</string>
     <string name="btnSubmit">Submit</string>
-    <string name="account_no">accountNo</string>
+    <string name="account_number">accountNo</string>
 
 
     <!--For Transaction List item-->
@@ -158,7 +157,7 @@
     <!--For Chat Fragment-->
     <string name="chatUploadSuccess">File upload successful</string>
     <string name="chatUploadFailure">File upload failed</string>
-    <string name="chatThankyou">Thank you for your message</string>
+    <string name="chatThankYou">Thank you for your message</string>
 
 
     <string-array name="Date">
