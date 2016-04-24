@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.EditText;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.Constants;
 
@@ -81,7 +82,7 @@ public class LoginActivityTest {
 
         // Getting database and deleting it
         activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
+        activityObj.deleteDatabase(LoginDBHelper.TABLE_NAME_LOGIN);
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
 
@@ -105,7 +106,7 @@ public class LoginActivityTest {
 
         // Getting database and deleting it
         activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
+        activityObj.deleteDatabase(LoginDBHelper.TABLE_NAME_LOGIN);
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
 

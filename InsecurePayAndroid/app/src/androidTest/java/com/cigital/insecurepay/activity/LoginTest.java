@@ -3,6 +3,7 @@ package com.cigital.insecurepay.activity;
 import android.app.Activity;
 import android.support.test.rule.ActivityTestRule;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.Constants;
 
@@ -29,7 +30,7 @@ public class LoginTest {
         activityObj = loginActivityActivityTestRule.getActivity();
         // Getting database and deleting it
         activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
+        activityObj.deleteDatabase(LoginDBHelper.TABLE_NAME_LOGIN);
         activityObj.finish();
         activityObj.startActivity(activityObj.getIntent());
 

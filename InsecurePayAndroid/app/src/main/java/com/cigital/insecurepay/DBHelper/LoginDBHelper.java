@@ -19,7 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 public class LoginDBHelper extends DBHelper {
 
     //Initialize column variable names
-    private static final String TABLE_NAME_LOGIN = "LoginTrials";
+    public static final String TABLE_NAME_LOGIN = "LoginTrials";
     private static final String CUSTOMER_USERNAME = "cust_username";
     private static final String TRIALS = "trials";
     private static final String CURRENT_TIME = "curr_time";
