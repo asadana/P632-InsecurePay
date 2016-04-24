@@ -12,18 +12,6 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME_LOGIN = "LoginTrials";
-    public static final String CUSTOMER_USERNAME = "cust_username";
-    public static final String TRIALS = "trials";
-    public static final String CURRENT_TIME = "curr_time";
-    public static final String isLocked = "isLocked";
-    public static final String ACCOUNT_NUMBER = "AccountNo";
-    protected static final String TYPE = "Type";
-    protected static final String TABLE_NAME_TRANSFERS = "Transfers";
-    protected static final String TRANSFER_DETAILS = "Transfer_details";
-    protected static final String TRANSFER_DATE = "Transfer_date";
-    protected static final String FINAL_AMOUNT = "Final_amount";
-    protected static final String TRANSFER_AMOUNT = "Transfer_amount";
     //Initialize variables used as column names in database
     private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "InsecurePayDB";
@@ -44,15 +32,6 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LOGIN + ";");
-        sqLiteDatabase.execSQL("create table " + TABLE_NAME_LOGIN + " (" + CUSTOMER_USERNAME +
-                " text primary key, " + TRIALS + " int, " + CURRENT_TIME + " DATETIME , " +
-                isLocked + " int )");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TRANSFERS + ";");
-        sqLiteDatabase.execSQL("create table " + TABLE_NAME_TRANSFERS + " (" + ACCOUNT_NUMBER +
-                " int, " + TYPE + " int, " + TRANSFER_DATE + " date, " + TRANSFER_AMOUNT +
-                " real ," + TRANSFER_DETAILS + " text , " + FINAL_AMOUNT + " real )");
-
     }
 
     /**

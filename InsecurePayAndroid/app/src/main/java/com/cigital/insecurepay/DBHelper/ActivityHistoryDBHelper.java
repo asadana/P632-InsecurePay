@@ -17,13 +17,13 @@ import com.cigital.insecurepay.common.DBHelper;
 public class ActivityHistoryDBHelper extends DBHelper {
 
     //Initialize column variable names
-    public static final String TYPE = "Type";
-    public static final String TRANSFER_DETAILS = "Transfer_details";
-    public static final String TRANSFER_DATE = "Transfer_date";
-    public static final String FINAL_AMOUNT = "Final_amount";
-    public static final String TRANSFER_AMOUNT = "Transfer_amount";
-    public static final String TRANSFERS = "Transfers";
-    public static final String ACCOUNT_NUMBER = "AccountNo";
+    private static final String TABLE_NAME_TRANSFERS = "Transfers";
+    private static final String TYPE = "Type";
+    private static final String TRANSFER_DETAILS = "Transfer_details";
+    private static final String TRANSFER_DATE = "Transfer_date";
+    private static final String FINAL_AMOUNT = "Final_amount";
+    private static final String TRANSFER_AMOUNT = "Transfer_amount";
+    private static final String ACCOUNT_NUMBER = "AccountNo";
 
     /**
      * ActivityHistoryDBHelper is the parametrized constructor of this class.
@@ -32,6 +32,22 @@ public class ActivityHistoryDBHelper extends DBHelper {
      */
     public ActivityHistoryDBHelper(Context context) {
         super(context);
+    }
+
+    /**
+     * onCreate is an overridden function that is called when database is created.
+     *
+     * @param sqLiteDatabase Contains the database to be used to store tables.
+     */
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        super.onCreate(sqLiteDatabase);
+        Log.d(this.getClass().getSimpleName(), "onCreate: " +
+                "Creating " + TABLE_NAME_TRANSFERS + " table.");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TRANSFERS + ";");
+        sqLiteDatabase.execSQL("create table " + TABLE_NAME_TRANSFERS + " (" + ACCOUNT_NUMBER +
+                " int, " + TYPE + " int, " + TRANSFER_DATE + " date, " + TRANSFER_AMOUNT +
+                " real ," + TRANSFER_DETAILS + " text , " + FINAL_AMOUNT + " real )");
     }
 
     /**
@@ -67,6 +83,6 @@ public class ActivityHistoryDBHelper extends DBHelper {
         values.put(TRANSFER_DETAILS, transactionVO.getDescription());
         values.put(FINAL_AMOUNT, transactionVO.getFinalAmount());
         //inserts the values in database
-        sqLiteDatabase.insert(TRANSFERS, null, values);
+        sqLiteDatabase.insert(TABLE_NAME_TRANSFERS, null, values);
     }
 }

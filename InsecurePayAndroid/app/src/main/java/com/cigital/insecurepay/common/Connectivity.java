@@ -297,7 +297,7 @@ public class Connectivity implements Serializable {
             outWriter = new OutputStreamWriter(out, "UTF-8");
             outWriter.write(sendToServer);
             outWriter.flush();
-            Log.d(this.getClass().getSimpleName(), "Sent");
+            Log.d(this.getClass().getSimpleName(), "writeIt: Sent");
         } catch (IOException e) {
             Log.e(this.getClass().getSimpleName(), "writeIt: Error sending data to server", e);
         } finally {

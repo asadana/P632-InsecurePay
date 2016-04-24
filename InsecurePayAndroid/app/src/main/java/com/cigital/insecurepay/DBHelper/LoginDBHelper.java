@@ -20,10 +20,11 @@ import org.joda.time.format.DateTimeFormatter;
 public class LoginDBHelper extends DBHelper {
 
     //Initialize column variable names
-    public static final String CUST_USERNAME = "cust_username";
-    public static final String TABLE_NAME = "trials";
-    public static final String CURR_TIME = "curr_time";
-    public static final String isLocked = "isLocked";
+    private static final String TABLE_NAME_LOGIN = "LoginTrials";
+    private static final String CUSTOMER_USERNAME = "cust_username";
+    private static final String TRIALS = "trials";
+    private static final String CURRENT_TIME = "curr_time";
+    private static final String isLocked = "isLocked";
 
     private DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     private Context contextObj;
@@ -36,6 +37,22 @@ public class LoginDBHelper extends DBHelper {
     public LoginDBHelper(Context context) {
         super(context);
         this.contextObj = context;
+    }
+
+    /**
+     * onCreate is an overridden function that is called when database is created.
+     *
+     * @param sqLiteDatabase Contains the database to be used to store tables.
+     */
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        super.onCreate(sqLiteDatabase);
+        Log.d(this.getClass().getSimpleName(), "onCreate: " +
+                "Creating " + TABLE_NAME_LOGIN + " table.");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LOGIN + ";");
+        sqLiteDatabase.execSQL("create table " + TABLE_NAME_LOGIN + " (" + CUSTOMER_USERNAME +
+                " text primary key, " + TRIALS + " int, " + CURRENT_TIME + " DATETIME , " +
+                isLocked + " int )");
     }
 
     /**
@@ -62,10 +79,10 @@ public class LoginDBHelper extends DBHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         //prepares row entry for insertion
-        values.put(TABLE_NAME, 1);
-        values.put(CUST_USERNAME, username);
+        values.put(TRIALS, 1);
+        values.put(CUSTOMER_USERNAME, username);
         values.put(isLocked, 0);
-        values.put(CURR_TIME, format.print(DateTime.now()));
+        values.put(CURRENT_TIME, format.print(DateTime.now()));
         //inserts the row in database
         sqLiteDatabase.insert(contextObj.getString(R.string.tableLoginTrials), null, values);
     }
@@ -84,12 +101,12 @@ public class LoginDBHelper extends DBHelper {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         //prepares row entry for insertion
-        values.put(TABLE_NAME, trialCount);
+        values.put(TRIALS, trialCount);
         values.put(LoginDBHelper.isLocked, isLocked);
-        values.put(CURR_TIME, format.print(DateTime.now()));
+        values.put(CURRENT_TIME, format.print(DateTime.now()));
         //updates the row of the database
         sqLiteDatabase.update(contextObj.getString(R.string.tableLoginTrials), values,
-                CUST_USERNAME + "='" + username + "'", null);
+                CUSTOMER_USERNAME + "='" + username + "'", null);
     }
 
     /**
@@ -105,9 +122,9 @@ public class LoginDBHelper extends DBHelper {
         int userTrial = -1;
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-        Cursor cursor = sqLiteDatabase.rawQuery("select " + TABLE_NAME + " from " +
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + TRIALS + " from " +
                 contextObj.getString(R.string.tableLoginTrials) + " where " +
-                CUST_USERNAME + "='" + username + "'", null);
+                CUSTOMER_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             userTrial = cursor.getInt(0);
@@ -130,8 +147,8 @@ public class LoginDBHelper extends DBHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         DateTime entryTime = null;
-        Cursor cursor = sqLiteDatabase.rawQuery("select " + CURR_TIME + " from " +
-                contextObj.getString(R.string.tableLoginTrials) + " where " + CUST_USERNAME
+        Cursor cursor = sqLiteDatabase.rawQuery("select " + CURRENT_TIME + " from " +
+                contextObj.getString(R.string.tableLoginTrials) + " where " + CUSTOMER_USERNAME
                 + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
@@ -155,7 +172,7 @@ public class LoginDBHelper extends DBHelper {
         boolean locked = false;
         Cursor cursor = sqLiteDatabase.rawQuery("select " + isLocked + " from " +
                 contextObj.getString(R.string.tableLoginTrials) +
-                " where " + CUST_USERNAME + "='" + username + "'", null);
+                " where " + CUSTOMER_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             locked = cursor.getInt(0) == 1;
@@ -173,7 +190,7 @@ public class LoginDBHelper extends DBHelper {
     public void deleteTrial(String username) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.delete(contextObj.getString(R.string.tableLoginTrials),
-                CUST_USERNAME + "='" + username + "'", null);
+                CUSTOMER_USERNAME + "='" + username + "'", null);
     }
 
 }

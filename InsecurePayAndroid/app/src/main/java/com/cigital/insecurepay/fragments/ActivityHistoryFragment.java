@@ -201,7 +201,8 @@ public class ActivityHistoryFragment extends Fragment {
                     R.layout.transaction_format, result);
             //displays the loaded transactionAdapter in GUI
             lvTransactionList.setAdapter(transactionAdapter);
-            activityHistoryDBHelper = new ActivityHistoryDBHelper(getContext());
+            activityHistoryDBHelper = new ActivityHistoryDBHelper(
+                    ActivityHistoryFragment.this.getActivity());
 
             //dumps transaction details in local database
             for (TransactionVO transactionVO : result) {
