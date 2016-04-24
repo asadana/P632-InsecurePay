@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.DBHelper;
 
 import org.joda.time.DateTime;
@@ -49,7 +48,7 @@ public class LoginDBHelper extends DBHelper {
         super.onCreate(sqLiteDatabase);
         Log.d(this.getClass().getSimpleName(), "onCreate: " +
                 "Creating " + TABLE_NAME_LOGIN + " table.");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LOGIN + ";");
+
         sqLiteDatabase.execSQL("create table " + TABLE_NAME_LOGIN + " (" + CUSTOMER_USERNAME +
                 " text primary key, " + TRIALS + " int, " + CURRENT_TIME + " DATETIME , " +
                 isLocked + " int )");
@@ -65,6 +64,10 @@ public class LoginDBHelper extends DBHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        Log.d(this.getClass().getSimpleName(),
+                "onUpgrade: Removing old table " + TABLE_NAME_LOGIN);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LOGIN + ";");
+        onCreate(sqLiteDatabase);
     }
 
     /**
@@ -84,7 +87,7 @@ public class LoginDBHelper extends DBHelper {
         values.put(isLocked, 0);
         values.put(CURRENT_TIME, format.print(DateTime.now()));
         //inserts the row in database
-        sqLiteDatabase.insert(contextObj.getString(R.string.tableLoginTrials), null, values);
+        sqLiteDatabase.insert(TABLE_NAME_LOGIN, null, values);
     }
 
     /**
@@ -105,7 +108,7 @@ public class LoginDBHelper extends DBHelper {
         values.put(LoginDBHelper.isLocked, isLocked);
         values.put(CURRENT_TIME, format.print(DateTime.now()));
         //updates the row of the database
-        sqLiteDatabase.update(contextObj.getString(R.string.tableLoginTrials), values,
+        sqLiteDatabase.update(TABLE_NAME_LOGIN, values,
                 CUSTOMER_USERNAME + "='" + username + "'", null);
     }
 
@@ -123,8 +126,7 @@ public class LoginDBHelper extends DBHelper {
 
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select " + TRIALS + " from " +
-                contextObj.getString(R.string.tableLoginTrials) + " where " +
-                CUSTOMER_USERNAME + "='" + username + "'", null);
+                TABLE_NAME_LOGIN + " where " + CUSTOMER_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             userTrial = cursor.getInt(0);
@@ -148,8 +150,7 @@ public class LoginDBHelper extends DBHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         DateTime entryTime = null;
         Cursor cursor = sqLiteDatabase.rawQuery("select " + CURRENT_TIME + " from " +
-                contextObj.getString(R.string.tableLoginTrials) + " where " + CUSTOMER_USERNAME
-                + "='" + username + "'", null);
+                TABLE_NAME_LOGIN + " where " + CUSTOMER_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             entryTime = format.withOffsetParsed().parseDateTime(cursor.getString(0));
@@ -171,8 +172,7 @@ public class LoginDBHelper extends DBHelper {
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         boolean locked = false;
         Cursor cursor = sqLiteDatabase.rawQuery("select " + isLocked + " from " +
-                contextObj.getString(R.string.tableLoginTrials) +
-                " where " + CUSTOMER_USERNAME + "='" + username + "'", null);
+                TABLE_NAME_LOGIN + " where " + CUSTOMER_USERNAME + "='" + username + "'", null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             locked = cursor.getInt(0) == 1;
@@ -189,8 +189,7 @@ public class LoginDBHelper extends DBHelper {
      */
     public void deleteTrial(String username) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        sqLiteDatabase.delete(contextObj.getString(R.string.tableLoginTrials),
-                CUSTOMER_USERNAME + "='" + username + "'", null);
+        sqLiteDatabase.delete(TABLE_NAME_LOGIN, CUSTOMER_USERNAME + "='" + username + "'", null);
     }
 
 }

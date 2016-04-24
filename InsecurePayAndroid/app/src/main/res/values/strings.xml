@@ -34,7 +34,6 @@
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
-    <string name="tableLoginTrials">LoginTrials</string>
     <string name="sharedPreferenceLogin">loginPrefs</string>
 
     <!--Following strings are for Connectivity-->

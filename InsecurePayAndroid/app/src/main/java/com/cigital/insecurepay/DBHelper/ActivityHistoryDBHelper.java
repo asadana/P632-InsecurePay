@@ -44,7 +44,7 @@ public class ActivityHistoryDBHelper extends DBHelper {
         super.onCreate(sqLiteDatabase);
         Log.d(this.getClass().getSimpleName(), "onCreate: " +
                 "Creating " + TABLE_NAME_TRANSFERS + " table.");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TRANSFERS + ";");
+
         sqLiteDatabase.execSQL("create table " + TABLE_NAME_TRANSFERS + " (" + ACCOUNT_NUMBER +
                 " int, " + TYPE + " int, " + TRANSFER_DATE + " date, " + TRANSFER_AMOUNT +
                 " real ," + TRANSFER_DETAILS + " text , " + FINAL_AMOUNT + " real )");
@@ -60,6 +60,10 @@ public class ActivityHistoryDBHelper extends DBHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+        Log.d(this.getClass().getSimpleName(),
+                "onUpgrade: Removing old table " + TABLE_NAME_TRANSFERS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_TRANSFERS + ";");
+        onCreate(sqLiteDatabase);
     }
 
     /**
@@ -71,7 +75,7 @@ public class ActivityHistoryDBHelper extends DBHelper {
      * @param accountNo     Specifies the account number associated with the transactions.
      */
     public void addTransfer(TransactionVO transactionVO, int accountNo) {
-        Log.d(this.getClass().getSimpleName(), "addTransfer: Adding transfers.");
+        Log.d(this.getClass().getSimpleName(), "addTransfer: Adding transfer details.");
 
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         ContentValues values = new ContentValues();
