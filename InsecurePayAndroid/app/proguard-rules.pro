@@ -17,4 +17,4 @@
 }
 -dontwarn org.joda.time.*
 -dontwarn org.joda.time.base.*
-
+-keep class com.cigital.insecurepay.VOs.** {*;}
