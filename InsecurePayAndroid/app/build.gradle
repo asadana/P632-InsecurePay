@@ -6,7 +6,7 @@ android {
         config {
             keyAlias 'InsecurePayKey'
             keyPassword 'insecurepay'
-            storeFile file('/home/ankit/workspace/insecurepay-keystore/insecurepay-keystore.jks')
+            storeFile file("insecurepay-keystore/insecurepay-keystore.jks")
             storePassword 'insecurepay'
         }
     }
@@ -43,7 +43,7 @@ android {
         }
         pro {
             minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
@@ -55,15 +55,12 @@ android {
                     output.outputFile = new File(output.outputFile.parent, newName)
                 }
             }
-        }/*
+        }
         free {
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.config
-            applicationVariants.all { variant ->
-                customName(variant, defaultConfig)
-            }
-        }*/
+        }
     }
     packagingOptions {
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
