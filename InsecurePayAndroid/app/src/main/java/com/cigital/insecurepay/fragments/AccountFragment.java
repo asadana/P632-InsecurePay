@@ -339,7 +339,7 @@ public class AccountFragment extends Fragment {
                 customerVOObj = gsonObj.fromJson(jsonFileHandlerObj.readFromFile(),
                         CustomerVO.class);
             } catch (IOException e) {
-                Log.e(this.getClass().getSimpleName(), "Overridden Constructor: ", e);
+                Log.e(this.getClass().getSimpleName(), "onClickUpdateInformation: ", e);
             }
 
             UpdateCustomerDetailsTask updateCustomerDetailsTask =
