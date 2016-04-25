@@ -16,4 +16,5 @@
    public *;
 }
 -dontwarn org.joda.time.*
+-dontwarn org.joda.time.base.*
 

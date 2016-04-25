@@ -2,14 +2,6 @@ apply plugin: 'com.android.application'
 apply from: 'jacoco.gradle'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'InsecurePayKey'
-            keyPassword 'insecurepay'
-            storeFile file("insecurepay-keystore/insecurepay-keystore.jks")
-            storePassword 'insecurepay'
-        }
-    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
 
@@ -35,6 +27,14 @@ android {
         htmlReport true
         htmlOutput file("$project.projectDir/../reports/lint/lint-result-" + getDate() + ".html")
     }
+    signingConfigs {
+        config {
+            keyAlias 'InsecurePayKey'
+            keyPassword 'insecurepay'
+            storeFile file("insecurepay-keystore/insecurepay-keystore.jks")
+            storePassword 'insecurepay'
+        }
+    }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -43,8 +43,11 @@ android {
         }
         pro {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
             signingConfig signingConfigs.config
+            // Naming the application
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     project.ext { appName = 'InsecurePay' }
@@ -67,16 +70,6 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
 }
-/*
-
-def customName(variant, defaultConfig) {
-    def file = variant.outputFile
-    def fileName = file.name.replace(".apk", "-" + defaultConfig.versionName +
-            "-" + defaultConfig.versionCode + ".apk")
-    fileName = fileName.replace("app-", "InsecurePay-")
-    variant.outputFile = new File(file.parent, fileName)
-}
-*/
 
 
 def getDate() {
