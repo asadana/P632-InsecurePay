@@ -10,20 +10,6 @@ command -v docker >/dev/null 2>&1 || {
 	exit 1; 
 }
 
-# tomcatPortNo value points to the host port number assigned to the docker
-echo -n "Enter the port you want to assign to tomcat container [default 8080]: "
-read tomcatPortNo
-echo
-
-# Check if entered value is empty or non-numeric, then set value to default
-numberRegex='^[0-9]+$'
-if [[ ( -z $tomcatPortNo ) || ( ! $tomcatPortNo =~ $numberRegex ) ]]; then	
-	echo "Using default port for tomcat container"
-	tomcatPortNo=8080
-else
-	echo "Using port: $tomcatPortNo"
-fi
-
 tomcatName="insecurepay/tomcat:v1"
 tomcatContainerName="tomcat"
 
@@ -33,6 +19,43 @@ postgresName="insecurepay/postgres:v1"
 # then you need to change it in InsecurePayServiceServer com/cigital/common/Constants.java
 # and repack the war file docker/dockerTomcat/InsecurePayServiceServer.war
 postgresContainerName="postgres"
+
+while [[ true ]]; do
+	# tomcatPortNo value points to the host port number assigned to the docker
+	echo -n "Enter the port you want to assign to $tomcatContainerName container [default 8080]: "
+	read tomcatPortNo
+	echo
+
+	# Check if entered value is empty or non-numeric, then set value to default
+	numberRegex='^[0-9]+$'
+	if [[ ( -z $tomcatPortNo ) || ( ! $tomcatPortNo =~ $numberRegex ) ]]; then	
+		echo "No valid port number entered. Using default port."
+		tomcatPortNo=8080
+	fi
+
+	echo
+	echo "Checking port availability..."
+	checkPort=$(netstat -ln | grep ":$tomcatPortNo")
+	# Check if the port is already in use
+	if [[ ! -z "$checkPort" ]]; then
+			echo
+			echo "Port is already in use."
+			echo "$checkPort"
+			echo
+			echo "Continue anyway? (y/n): "
+			read -n 1 yesNoReply
+			if [[ ($yesNoReply == "y") || ($yesNoReply == "Y") ]]; then
+				echo
+				break;
+			fi
+
+		else
+			echo "Port is currently not in use."
+			break;
+	fi
+	
+done
+echo "Using port: $tomcatPortNo for $tomcatContainerName container"
 
 # Building tomcat image
 cd ./dockerTomcat
