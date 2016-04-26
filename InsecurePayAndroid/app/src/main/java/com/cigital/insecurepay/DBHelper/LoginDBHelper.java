@@ -18,15 +18,8 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class LoginDBHelper extends DBHelper {
 
-    //Initialize column variable names
-    public static final String TABLE_NAME_LOGIN = "LoginTrials";
-    private static final String CUSTOMER_USERNAME = "cust_username";
-    private static final String TRIALS = "trials";
-    private static final String CURRENT_TIME = "curr_time";
-    private static final String isLocked = "isLocked";
 
     private DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-    private Context contextObj;
 
     /**
      * LoginDBHelper is the parametrized constructor of this class.
@@ -35,39 +28,6 @@ public class LoginDBHelper extends DBHelper {
      */
     public LoginDBHelper(Context context) {
         super(context);
-        this.contextObj = context;
-    }
-
-    /**
-     * onCreate is an overridden function that is called when database is created.
-     *
-     * @param sqLiteDatabase Contains the database to be used to store tables.
-     */
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        super.onCreate(sqLiteDatabase);
-        Log.d(this.getClass().getSimpleName(), "onCreate: " +
-                "Creating " + TABLE_NAME_LOGIN + " table.");
-
-        sqLiteDatabase.execSQL("create table " + TABLE_NAME_LOGIN + " (" + CUSTOMER_USERNAME +
-                " text primary key, " + TRIALS + " int, " + CURRENT_TIME + " DATETIME , " +
-                isLocked + " int )");
-    }
-
-    /**
-     * onUpgrade is an overridden function that is called when the database needs to be updated
-     * from a previous version.
-     *
-     * @param sqLiteDatabase Contains the database object.
-     * @param oldVersion     Contains the oldVersion number.
-     * @param newVersion     Contains the newVersion number.
-     */
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        Log.d(this.getClass().getSimpleName(),
-                "onUpgrade: Removing old table " + TABLE_NAME_LOGIN);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_LOGIN + ";");
-        onCreate(sqLiteDatabase);
     }
 
     /**
@@ -88,6 +48,7 @@ public class LoginDBHelper extends DBHelper {
         values.put(CURRENT_TIME, format.print(DateTime.now()));
         //inserts the row in database
         sqLiteDatabase.insert(TABLE_NAME_LOGIN, null, values);
+        sqLiteDatabase.close();
     }
 
     /**
@@ -110,6 +71,7 @@ public class LoginDBHelper extends DBHelper {
         //updates the row of the database
         sqLiteDatabase.update(TABLE_NAME_LOGIN, values,
                 CUSTOMER_USERNAME + "='" + username + "'", null);
+        sqLiteDatabase.close();
     }
 
     /**
@@ -133,6 +95,8 @@ public class LoginDBHelper extends DBHelper {
         }
         if (cursor != null)
             cursor.close();
+
+        sqLiteDatabase.close();
         return userTrial;
     }
 
@@ -157,6 +121,7 @@ public class LoginDBHelper extends DBHelper {
         }
         if (cursor != null)
             cursor.close();
+        sqLiteDatabase.close();
         return entryTime;
     }
 
@@ -179,6 +144,7 @@ public class LoginDBHelper extends DBHelper {
         }
         if (cursor != null)
             cursor.close();
+        sqLiteDatabase.close();
         return locked;
     }
 
@@ -190,6 +156,7 @@ public class LoginDBHelper extends DBHelper {
     public void deleteTrial(String username) {
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
         sqLiteDatabase.delete(TABLE_NAME_LOGIN, CUSTOMER_USERNAME + "='" + username + "'", null);
+        sqLiteDatabase.close();
     }
 
 }
