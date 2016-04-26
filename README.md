@@ -9,16 +9,16 @@ The front-end of the application is developed in Java/Android and the back-end s
 
 The latest apk can be found [here](https://github.iu.edu/asadana/P632-InsecurePay/tree/develop/release)
 
-Some of the vulnerabilities that can be found in the application are: 
-
->- A
->- B
->B continues
->- C
-> - D
 
 Changelog
 -------------------
+*v1.01*
+>- UI Improvements over all
+>- Dockerized version of the server
+>- Improved Support Chat UI
+>- Improved Support Chat functionality
+>- Improved error handling on the server
+
 *v0.4-beta*
 >- Added Support Chat messages
 >- Added Support Chat file upload
