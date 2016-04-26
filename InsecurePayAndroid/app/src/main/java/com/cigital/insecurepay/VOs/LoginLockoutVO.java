@@ -1,16 +1,26 @@
 package com.cigital.insecurepay.VOs;
 
-
 import org.joda.time.DateTime;
 
+/**
+ * LoginLockoutVO is a POJO class that is used to keep track of
+ * failed user login attempts.
+ */
 public class LoginLockoutVO {
 
+    // isLocaked is a flag to indicate a locked out user
     private boolean isLocked;
+    // trialTime is the duration of locked timeout
     private DateTime trialTime;
-    private LoginValidationVO loginValidationVO;
+    // trialCount keeps track of number of failed attempts
     private int trialCount;
+    // addUser is a flag to indicate if a new user is being used
     private boolean addUser;
-
+    /**
+     * loginValidationVO is used to validate the login
+     * Object of {@link LoginValidationVO}
+     */
+    private LoginValidationVO loginValidationVO;
 
     public boolean isAddUser() {
         return addUser;

@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in C:\Users\Amish\AppData\Local\Android\sdk/tools/proguard/proguard-android.txt
+# in sdk/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -12,6 +12,37 @@
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepclassmembers class com.cigital.insecurepay.fragments.ChatFragment.WebAppInterface {
+   public *;
+}
+
+# Joda Time
+-dontwarn org.joda.convert.**
+-dontwarn org.joda.time.**
+-dontwarn org.joda.time.base.*
+-keep class org.joda.time.** { *; }
+-keep interface org.joda.time.** { *; }
+
+# To keep gson server formats
+-keep class com.cigital.insecurepay.VOs.** {*;}
+
+# For better stacktrace
+-renamesourcefileattribute SourceFile
+-keepattributes SourceFile,LineNumberTable
+
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in a class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+-keep class com.google.gson.examples.android.model.** { *; }
+
+##---------------End: proguard configuration for Gson  ----------

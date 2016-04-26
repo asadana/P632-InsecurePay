@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
 import android.widget.EditText;
 
+import com.cigital.insecurepay.DBHelper.LoginDBHelper;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.common.Constants;
 
@@ -36,92 +37,12 @@ import static org.hamcrest.CoreMatchers.not;
 @RunWith(AndroidJUnit4.class)
 public class LoginActivityTest {
 
-    private Activity activityObj;
-
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
-
-    @Test
-    public void loginFailTest() {
-
-        // Getting database and deleting it
-        activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
-        activityObj.finish();
-        activityObj.startActivity(activityObj.getIntent());
-
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.wrongInput), closeSoftKeyboard());
-        // First attempt
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
-        onView(withId(R.id.password))
-                .check(matches(withError(activityObj.getString(R.string.error_incorrect_password))));
-        onView(withText(R.string.login_failed))
-                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void rememberMeTest() {
-
-        // Getting database and deleting it
-        activityObj = loginActivityActivityTestRule.getActivity();
-        activityObj.deleteDatabase(activityObj.getString(R.string.tableLoginTrials));
-        activityObj.finish();
-        activityObj.startActivity(activityObj.getIntent());
-
-        // Getting the shared preference and clearing it
-        SharedPreferences loginPreferences = activityObj.getSharedPreferences(activityObj.getString(R.string.sharedPreferenceLogin),
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editorObj = loginPreferences.edit();
-        editorObj.clear();
-        editorObj.commit();
-
-
-        // check the checkbox
-        onView(withId(R.id.saveLoginCheckBox))
-                .check(matches(not(isChecked())))
-                .perform(click())
-                .check(matches(isChecked()));
-
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
-        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-
-        onView(withText(R.string.action_logout))
-                .perform(click());
-
-        // Getting the activity, closing it and restarting it
-        activityObj.finish();
-        activityObj.startActivity(activityObj.getIntent());
-
-        onView(withId(R.id.username)).check(matches(inTextEdit(Constants.correctUsername)));
-        onView(withId(R.id.password)).check(matches(inTextEdit(Constants.defaultPassword)));
-
-        Constants.sleepWait();
-
-        onView(withId(R.id.saveLoginCheckBox))
-                .check(matches(isChecked()))
-                .perform(click());
-
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
-        Constants.logout();
-    }
+    private Activity activityObj;
 
     // A matcher to match the credentials after coming back to the app
-    public static Matcher<View> inTextEdit(final String credentials) {
+    private static Matcher<View> inTextEdit(final String credentials) {
         return new TypeSafeMatcher<View>() {
 
             @Override
@@ -154,5 +75,81 @@ public class LoginActivityTest {
 
             }
         };
+    }
+
+    @Test
+    public void loginFailTest() {
+
+        // Getting database and deleting it
+        activityObj = loginActivityActivityTestRule.getActivity();
+        activityObj.deleteDatabase(LoginDBHelper.TABLE_NAME_LOGIN);
+        activityObj.finish();
+        activityObj.startActivity(activityObj.getIntent());
+
+        onView(withId(R.id.username)).
+                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
+        onView(withId(R.id.password)).
+                perform(replaceText(Constants.wrongInput), closeSoftKeyboard());
+
+        onView(withId(R.id.btnSignIn))
+                .perform(click());
+
+        onView(withId(R.id.password))
+                .check(matches(withError(activityObj.getString(R.string.error_incorrect_password))));
+        onView(withText(R.string.login_failed))
+                .inRoot(withDecorView(not(loginActivityActivityTestRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void rememberMeTest() {
+
+        // Getting database and deleting it
+        activityObj = loginActivityActivityTestRule.getActivity();
+        activityObj.deleteDatabase(LoginDBHelper.TABLE_NAME_LOGIN);
+        activityObj.finish();
+        activityObj.startActivity(activityObj.getIntent());
+
+        // Getting the shared preference and clearing it
+        SharedPreferences loginPreferences = activityObj.getSharedPreferences(activityObj.getString(R.string.sharedPreferenceLogin),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorObj = loginPreferences.edit();
+        editorObj.clear();
+        editorObj.commit();
+
+
+        // check the checkbox
+        onView(withId(R.id.saveLoginCheckBox))
+                .check(matches(not(isChecked())))
+                .perform(click())
+                .check(matches(isChecked()));
+
+        Constants.login();
+
+        openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
+
+        onView(withText(R.string.action_logout))
+                .perform(click());
+
+        // Getting the activity, closing it and restarting it
+        activityObj.finish();
+        activityObj.startActivity(activityObj.getIntent());
+
+        // Checking if the edit text fields retain their values
+        onView(withId(R.id.username)).check(matches(inTextEdit(Constants.correctUsername)));
+        onView(withId(R.id.password)).check(matches(inTextEdit(Constants.defaultPassword)));
+
+        Constants.sleepWait();
+
+        // Check if the checkbox is checked
+        onView(withId(R.id.saveLoginCheckBox))
+                .check(matches(isChecked()))
+                .perform(click());
+
+        onView(withId(R.id.btnSignIn))
+                .perform(click());
+
+        // Logging out
+        Constants.logout();
     }
 }

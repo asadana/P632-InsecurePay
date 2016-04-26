@@ -11,37 +11,32 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
-    <string name="default_path">/rest/</string>
-    <string name="no_network">No network connection</string>
 
     <!--Following strings are for Login-->
-
-    <string name="prompt_server_addr">Enter Server Address</string>
+    <string name="prompt_server_address">Enter Server Address</string>
     <string name="account_lockout_duration">1</string>
-    <string name="title_activity_home_page">HomePage</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="login_failed_account_locked">Login Failed and Account Locked</string>
     <string name="login_failed">Login Failed</string>
     <string name="login_successful">Login Successful</string>
     <string name="menu_change_url">Change Server Address</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="action_logout">Log out</string>
     <string name="username">username</string>
     <string name="password">password</string>
-    <string name="url">URL</string>
-    <string name="path">Path</string>
+    <string name="changeServer_url">http://0.0.0.0:8080</string>
+    <string name="changeServer_path">/InsecurePayServiceServer/rest/</string>
     <string name="send">SEND</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="information_mismatch">Please verify your information and try again.</string>
     <string name="default_password_link_sent">Your password has been reset.</string>
     <string name="common_VO">commonVO</string>
-    <string name="tableLoginTrials">LoginTrials</string>
     <string name="sharedPreferenceLogin">loginPrefs</string>
 
     <!--Following strings are for Connectivity-->
     <string name="default_address">http://insecurepay-dev-env.idweubyz6e.us-east-1.elasticbeanstalk.com</string>
     <!--<string name="default_address">http://192.168.1.106:8080/InsecurePayServiceServer</string>-->
+    <string name="default_path">/rest/</string>
+    <string name="no_network">No network connection</string>
+    <string name="progress_dialog_message">Loading. Please wait..</string>
     <string name="login_path">login</string>
     <string name="forgot_password_path">forgotPassword</string>
     <string name="cust_details_path">custService</string>
@@ -51,10 +46,14 @@
     <string name="transfer_validation_path">transferValidation</string>
     <string name="accountno_validation_path">accountNumberValidation</string>
     <string name="activity_history_path">activityHistory</string>
-    <string name="chatFileUploadPath">chatFileUpload</string>
+    <string name="chat_path">chatService</string>
     <string name="logout_path">logout</string>
 
     <!--For Navigation Drawer Toolbar titles-->
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Log out</string>
     <string name="nav_homepage">Home</string>
     <string name="nav_account_manage">Account Management</string>
     <string name="nav_transfer_funds">Transfer Funds</string>
@@ -64,9 +63,9 @@
     <string name="nav_logout">Logout</string>
 
     <!--For Home Fragment-->
-    <string name="tvHome_accountNumber">Account No</string>
+    <string name="tvHome_accountNumber">Account Number</string>
     <string name="tvHome_accountBalance">Balance</string>
-    <string name="tvHome_insecure_pay_Account">Insecure Pay Account</string>
+    <string name="tvHome_insecure_pay_Account">InsecurePay Account</string>
 
     <!--For Account Management Fragment-->
     <string name="tvAccount_accountNumber">Account Number</string>
@@ -125,11 +124,8 @@
     <!--For Activity History Fragment-->
     <string name="tvActivityHistory_AccountNo">Enter Account No</string>
     <string name="btnSubmit">Submit</string>
-    <string name="account_no">accountNo</string>
+    <string name="account_number">accountNo</string>
 
-    <!--For Chat Fragment-->
-    <string name="chatUploadSuccess">File upload successful</string>
-    <string name="chatUploadFailure">File upload failed</string>
 
     <!--For Transaction List item-->
     <string name="tvActivityHistory_Description">Description</string>
@@ -157,6 +153,12 @@
     <string name="tvIntCalc_RateOfInterest">Rate Of Interest </string>
     <string name="tvIntCalc_FillRateOfInterest" />
     <string name="tvIntCalc_Percent">"%"</string>
+
+    <!--For Chat Fragment-->
+    <string name="chatUploadSuccess">File upload successful</string>
+    <string name="chatUploadFailure">File upload failed</string>
+    <string name="chatThankYou">Thank you for your message</string>
+
 
     <string-array name="Date">
         <item>Years</item>

@@ -2,7 +2,6 @@ package com.cigital.insecurepay.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,6 +24,7 @@ import android.widget.Toast;
 import com.cigital.insecurepay.R;
 import com.cigital.insecurepay.VOs.CommonVO;
 import com.cigital.insecurepay.common.AsyncCommonTask;
+import com.cigital.insecurepay.common.PostAsyncCommonTask;
 import com.cigital.insecurepay.common.ResponseWrapper;
 
 import java.io.DataOutputStream;
@@ -34,32 +34,49 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * ChatFragment extends {@link Fragment}.
+ * This class is used to handles file upload and sending customer feedback operations.
+ */
 public class ChatFragment extends Fragment {
 
+    //Following are the constants and references needed for file upload operations
     public static final int INPUT_FILE_REQUEST_CODE = 1;
-    public static final String EXTRA_FROM_NOTIFICATION = "EXTRA_FROM_NOTIFICATION";
+    // Tag to be used for logging
     private static final String TAG = ChatFragment.class.getSimpleName();
-    String fileName;
-    WebAppInterface webAppInterface;
-    String[] mimetypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
-    //WebAppInterface webAppInterface;
+    // Declare all mime types which user can upload
+    private String[] mimeTypes = {"image/*", "audio/*", "text/*", "video/*", "application/*"};
+    // Declare webView reference
     private WebView mWebView;
+    // A callback interface used to provide values asynchronously.
     private ValueCallback<Uri[]> mFilePathCallback;
+    // Declare VO
     private CommonVO commonVO;
-
-    // 1 MB = 1024 * 1024 bytes
     private int megaByteSize = 1024 * 1024;
-
-    // File Size Limit 5 MB = 5 * 1024 * 1024
     private int maxFileSize = 5 * megaByteSize;
+    private String webAppInterface = "Android";
+    private String httpTimeOutError = "HTTP Client Timeout";
+    private String httpInternalError = "HTTP Internal Error";
+    private String fileName;
 
+    /**
+     * ChatFragment is the default constructor of this class
+     */
     public ChatFragment() {
-
     }
 
     @SuppressLint("JavascriptInterface")
     @Override
-
+    /**
+     * onCreateView is the first method called when the Fragment is being created.
+     * It populates and initializes the necessary views.
+     *
+     * @param inflater The LayoutInflater object that is used to inflate fragment_chat.
+     * @param container  Contains the {@link ViewGroup} object to which this fragment
+     *                   belongs to.
+     * @param savedInstanceState  If non-null, this fragment is being re-constructed from
+     *                            a previous saved state.
+     * */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat, container, false);
@@ -69,7 +86,7 @@ public class ChatFragment extends Fragment {
         //Enable Javascript
         mWebView.getSettings().setJavaScriptEnabled(true);
         //Inject WebAppInterface methods into Web page by having Interface name 'Android'
-        mWebView.addJavascriptInterface(new WebAppInterface(getContext()), "Android");
+        mWebView.addJavascriptInterface(new WebAppInterface(getContext()), webAppInterface);
         setUpWebViewDefaults(mWebView);
 
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
@@ -80,6 +97,11 @@ public class ChatFragment extends Fragment {
             mWebView.restoreState(savedInstanceState);
         }
 
+        /**
+         * This class is called when something that might impact a browser UI happens, for
+         * instance, progress updates and JavaScript alerts are sent here.
+         *
+         * */
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onShowFileChooser(
                     WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -89,33 +111,44 @@ public class ChatFragment extends Fragment {
                 }
                 mFilePathCallback = filePathCallback;
 
+                /**
+                 * ACTION_GET_CONTENT with MIME type in the given setType() and category
+                 * CATEGORY_OPENABLE. Display all pickers for data that can be opened with
+                 * ContentResolver.openInputStream(), allowing the user to pick one of them and
+                 * then some data inside of it and returning the resulting URI to the caller.
+                 * */
+                String forAllTypes = "*/*";
+                String fileChooserTitle = "File Chooser";
                 Intent contentSelectionIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 contentSelectionIntent.addCategory(Intent.CATEGORY_OPENABLE);
-                contentSelectionIntent.setType("*/*");
-
+                contentSelectionIntent.setType(forAllTypes);
                 Intent chooserIntent = new Intent(Intent.ACTION_CHOOSER);
                 chooserIntent.putExtra(Intent.EXTRA_INTENT, contentSelectionIntent);
-                chooserIntent.putExtra(Intent.EXTRA_TITLE, "File Chooser");
-                chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-
+                chooserIntent.putExtra(Intent.EXTRA_TITLE, fileChooserTitle);
+                chooserIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
                 startActivityForResult(chooserIntent, INPUT_FILE_REQUEST_CODE);
                 return true;
             }
 
         });
 
-        // Load the local index.html file
+        // Load the local LiveChat.html file
         if (mWebView.getUrl() == null) {
-            mWebView.loadUrl("file:///android_asset/LiveChat.html");
+            String pathToLiveChat = "file:///android_asset/LiveChat.html";
+            mWebView.loadUrl(pathToLiveChat);
         }
 
         return rootView;
     }
 
-
+    /**
+     * setUpWebViewDefaults is a function that sets the basic webView settings.
+     *
+     * @param webView The webView Object
+     */
     private void setUpWebViewDefaults(WebView webView) {
         WebSettings settings = webView.getSettings();
-        // Enable Javascript
+        // Enable Javascript to support JS in the web page to be rendered.
         settings.setJavaScriptEnabled(true);
 
         // We set the WebViewClient to ensure links are consumed by the WebView rather
@@ -123,19 +156,28 @@ public class ChatFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient());
     }
 
+    /**
+     * getFileName is a function that gets the name of the file to upload.
+     *
+     * @param fileUri The fileUri object
+     */
     public void getFileName(Uri fileUri) {
+        String uriStart = "content://";
         String uriString = fileUri.toString();
         File myFile = new File(uriString);
-        String path = myFile.getAbsolutePath();
+        String fileUriStart = "file://";
+        String fileNameStart = "customerNo-";
 
         //get name of the selected file
-        if (uriString.startsWith("content://")) {
+        if (uriString.startsWith(uriStart)) {
             Cursor cursor = null;
             try {
                 cursor = getActivity().getContentResolver().query(fileUri, null, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
-                    fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
-                            '-' + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+
+                    fileName = fileNameStart + String.valueOf(commonVO.getCustomerNumber())
+                            + '-'
+                            + cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                     fileName = fileName.replaceAll("\\s", "");
                 }
             } finally {
@@ -143,13 +185,22 @@ public class ChatFragment extends Fragment {
                     cursor.close();
                 }
             }
-        } else if (uriString.startsWith("file://")) {
-            fileName = "custNo-" + String.valueOf(commonVO.getCustNo()) +
+        } else if (uriString.startsWith(fileUriStart)) {
+            fileName = fileNameStart + String.valueOf(commonVO.getCustomerNumber()) +
                     '-' + myFile.getName();
             fileName = fileName.replaceAll("\\s", "");
         }
     }
 
+
+    /**
+     * onActivityResult is an overridden function that is called when the user is done
+     * with selecting file and returns.
+     *
+     * @param requestCode The request code you passed to startActivityForResult().
+     * @param resultCode A result code specified by the second activity
+     * @param data An Intent that carries the result data.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -188,7 +239,7 @@ public class ChatFragment extends Fragment {
                 if (bytesAvailable <= maxFileSize) {
                     UploadFileTask task = null;
                     task = new UploadFileTask(getContext(), commonVO.getServerAddress(),
-                            getString(R.string.chatFileUploadPath), results[0]);
+                            getString(R.string.chat_path), results[0]);
                     task.execute();
                 } else {
                     int allowedSize = maxFileSize / megaByteSize;
@@ -201,7 +252,8 @@ public class ChatFragment extends Fragment {
                             String.valueOf(allowedSizeRemainder));
                     Toast.makeText(getContext(), "File size cannot be bigger than " +
                                     String.valueOf(allowedSize) + "." +
-                                    String.valueOf(allowedSizeRemainder) + "MB.\nCurrent file size: " +
+                                    String.valueOf(allowedSizeRemainder) +
+                                    "MB.\nCurrent file size: " +
                                     String.valueOf(currentFileSize) + "." +
                                     String.valueOf(currentFileSizeRemainder) + "MB.",
                             Toast.LENGTH_LONG).show();
@@ -216,54 +268,118 @@ public class ChatFragment extends Fragment {
         mFilePathCallback = null;
     }
 
+    /**
+     * onSubmit is a function that is invoked when send button is clicked which creates
+     * sendSubject object for ChatSubjectTask
+     *
+     * @param subject The string given as input from the user
+     */
+    private void onSubmit(String subject) {
+        Log.i(this.getClass().getSimpleName(), "onSubmit: Sending subject");
+        ChatSubjectTask sendSubject = new ChatSubjectTask(getContext(),
+                commonVO.getServerAddress(),
+                getString(R.string.chat_path),
+                subject);
+        sendSubject.execute();
+    }
+
+    /**
+     * run is a function that starts a new thread to render feedback message on the webView.
+     * It is called from postSuccess in {@link ChatSubjectTask}.
+     *
+     * @param responseFeedback The subject to be displayed.
+     */
+    public void run(final String responseFeedback) {
+        mWebView.post(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(this.getClass().getSimpleName(), "run: Display subject to be rendered"
+                        + responseFeedback);
+                mWebView.loadUrl("javascript:" + "displaySubject(\'" + responseFeedback + "\')");
+            }
+        });
+    }
+
+    /**
+     * UploadFileTask extends {@link AsyncCommonTask} to asynchronously communicate with the
+     * server and upload file.
+     */
     class UploadFileTask extends AsyncCommonTask {
 
         private Uri sourceFileUri;
         private String serverAddress;
         private String path;
 
-        public UploadFileTask(Context contextObj, String serverAddress,
+        /**
+         * UploadFileTask is the parametrized constructor for this class.
+         *
+         * @param contextObject Contains the {@link Context} object of the parent.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param sourceFileUri URI of the source file
+         */
+        public UploadFileTask(Context contextObject, String serverAddress,
                               String path, Uri sourceFileUri) {
-            super(contextObj, serverAddress, path);
+            super(contextObject, serverAddress, path);
             this.sourceFileUri = sourceFileUri;
             this.serverAddress = serverAddress;
             this.path = path;
         }
 
+
+        /**
+         * doInBackground is an overridden function that invokes a background thread to upload file.
+         *
+         * @param params  Pass objects that may be used to pass data to doInBackground.
+         *
+         * @return ResponseWrapper Returns the response wrapper received from server
+         */
         @Override
         protected ResponseWrapper doInBackground(Object... params) {
             super.doInBackground(params);
-            HttpURLConnection conn = null;
-            DataOutputStream dos = null;
+
+            HttpURLConnection httpUrlConnection = null;
+            DataOutputStream dataOutStream = null;
+
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary = "*****";
+
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
-            int maxBufferSize = 1024 * 1024;
-            try {
-                InputStream inputStream = getContext().getContentResolver().openInputStream(sourceFileUri);
-                URL url = new URL(serverAddress + path);
+            int maxBufferSize = megaByteSize;
 
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
-                conn.setChunkedStreamingMode(1024);
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fileName);
-                connectivityObj.setHttpURLConnectionObj(conn);
+            try {
+                InputStream inputStream = getContext().getContentResolver()
+                        .openInputStream(sourceFileUri);
+
+                Log.d(TAG, "doInBackground: Setting up connection.");
+                URL url = new URL(serverAddress + path);
+                Log.d(TAG, "doInBackground: Opening connection to : " + url.toString());
+                httpUrlConnection = (HttpURLConnection) url.openConnection();
+                httpUrlConnection.setDoInput(true); // Allow Inputs
+                httpUrlConnection.setDoOutput(true); // Allow Outputs
+                httpUrlConnection.setUseCaches(false); // Don't use a Cached Copy
+                httpUrlConnection.setChunkedStreamingMode(1024);
+                httpUrlConnection.setRequestMethod("POST");
+                httpUrlConnection.setRequestProperty("Connection", "Keep-Alive");
+                httpUrlConnection.setRequestProperty("ENCTYPE", "multipart/form-data");
+                httpUrlConnection.setRequestProperty("Content-Type",
+                        "multipart/form-data;boundary=" + boundary);
+                httpUrlConnection.setRequestProperty("uploaded_file", fileName);
+
+                connectivityObj.setHttpURLConnectionObj(httpUrlConnection);
                 connectivityObj.addCookiesToRequest();
 
                 if (checkConnection()) {
+                    Log.d(TAG, "doInBackground: Network is on.");
+
                     // After this line it returns null exception
-                    dos = new DataOutputStream(conn.getOutputStream());
-                    dos.writeBytes(twoHyphens + boundary + lineEnd);
-                    dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
-                    dos.writeBytes(lineEnd);
+                    dataOutStream = new DataOutputStream(httpUrlConnection.getOutputStream());
+                    dataOutStream.writeBytes(twoHyphens + boundary + lineEnd);
+                    dataOutStream.writeBytes("Content-Disposition: form-data;" +
+                            " name=\"file\";filename=\"" + fileName + "\"" + lineEnd);
+                    dataOutStream.writeBytes(lineEnd);
 
                     // create a buffer of  maximum size
                     bytesAvailable = inputStream.available();
@@ -276,71 +392,130 @@ public class ChatFragment extends Fragment {
 
                     while (bytesRead > 0) {
 
-                        dos.write(buffer, 0, bufferSize);
+                        dataOutStream.write(buffer, 0, bufferSize);
                         bytesAvailable = inputStream.available();
                         bufferSize = Math.min(bytesAvailable, maxBufferSize);
                         bytesRead = inputStream.read(buffer, 0, bufferSize);
                     }
 
-                    // send multipart form data necesssary after file data...
-                    dos.writeBytes(lineEnd);
-                    dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                    // send multipart form data necessary after file data...
+                    dataOutStream.writeBytes(lineEnd);
+                    dataOutStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
+                    Log.d(TAG, "doInBackground: Data sent to server.");
 
-                    ResponseWrapper responseWrapperObj = new ResponseWrapper(conn.getResponseCode(),
-                            connectivityObj.readIt(conn.getInputStream()), conn.getResponseMessage());
-                    return responseWrapperObj;
+                    return new ResponseWrapper(
+                            httpUrlConnection.getResponseCode(),
+                            connectivityObj.readIt(httpUrlConnection.getInputStream()),
+                            httpUrlConnection.getResponseMessage());
 
                 } else {
                     return new ResponseWrapper(HttpURLConnection.HTTP_CLIENT_TIMEOUT, null,
-                            "HTTP Client Timeout");
+                            httpTimeOutError);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "doInBackground: ", e);
                 return new ResponseWrapper(HttpURLConnection.HTTP_INTERNAL_ERROR, null,
-                        "HTTP Internal Error");
+                        httpInternalError);
             }
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObject Contains the string sent from the server as part of the response.
+         */
         @Override
-        protected void postSuccess(String resultObj) {
-            super.postSuccess(resultObj);
-            Log.d(TAG, "postSuccess: Server response: " + resultObj);
+        protected void postSuccess(String resultObject) {
+            super.postSuccess(resultObject);
+            Log.d(TAG, "postSuccess: Server response: " + resultObject);
             Toast.makeText(getContext(), getString(R.string.chatUploadSuccess), Toast.LENGTH_SHORT).show();
 
         }
 
+
+        /**
+         * postFailure is called when the server responds with an error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is an error.
+         *
+         * @param ResponseWrapperObject Contains the response wrapper sent from the server
+         */
         @Override
-        protected void postFailure(ResponseWrapper responseWrapperObj) {
-            if (responseWrapperObj.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
+        protected void postFailure(ResponseWrapper ResponseWrapperObject) {
+            if (ResponseWrapperObject.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST) {
                 shouldLogout = false;
             }
             Toast.makeText(getContext(), getString(R.string.chatUploadFailure), Toast.LENGTH_LONG).show();
-            super.postFailure(responseWrapperObj);
-
+            super.postFailure(ResponseWrapperObject);
         }
     }
 
+    /**
+     * ChatSubjectTask extends {@link PostAsyncCommonTask} to asynchronously communicate with the
+     * server and send subject and returns String object in postExecute.
+     */
+    private class ChatSubjectTask extends PostAsyncCommonTask<String> {
+        /**
+         * ChatSubjectTask is the parametrized constructor of this class.
+         *
+         * @param contextObject Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param subject       Contains subject to be sent
+         */
+        public ChatSubjectTask(Context contextObject, String serverAddress,
+                               String path, String subject) {
+            super(contextObject, serverAddress, path, subject, String.class);
+        }
+
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObject Contains the string sent from the server as part of the response.
+         */
+        @Override
+        protected void postSuccess(String resultObject) {
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObject);
+            // Converting the string back to right encoding
+            resultObject = new String(resultObject.toCharArray());
+            run(resultObject);
+        }
+    }
+
+    /**
+     * WebInterface is class allows webPage to call showDialog().
+     */
     class WebAppInterface {
 
         Context mContext;
 
         /**
-         * Instantiate the interface and set the context
+         * WebAppInterface is a parametrized constructor to instantiate the interface
+         * and set the context.
+         *
+         * @param context Contains the context object of the parent.
          */
-        WebAppInterface(Context c) {
-            mContext = c;
+        WebAppInterface(Context context) {
+            mContext = context;
         }
 
 
+        /**
+         * showDialog is a function that is invoked from html page and calls onSubmit to send
+         * subject to server.
+         *
+         * @param subject Contains the input subject.
+         */
         @JavascriptInterface
-        public void showDialog(String dialogMsg) {
-            new AlertDialog.Builder(mContext)
-                    .setMessage(dialogMsg)
-                    .setPositiveButton("OK", null)
-                    .create().show();
-
+        public void showDialog(String subject) {
+            onSubmit(subject);
         }
+
     }
 }
 

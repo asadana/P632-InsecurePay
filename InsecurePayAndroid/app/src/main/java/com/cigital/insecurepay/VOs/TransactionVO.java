@@ -2,6 +2,10 @@ package com.cigital.insecurepay.VOs;
 
 import java.io.Serializable;
 
+/**
+ * TransactionVO is POJO to pass transaction details when user checks Activity History
+ *
+ */
 public class TransactionVO implements Serializable {
 
     private String description;
@@ -10,7 +14,23 @@ public class TransactionVO implements Serializable {
     private float transactionAmount;
     private int type;
 
-    public TransactionVO(String description, String date, int finalAmount, int transactionAmount, int type) {
+    /**
+     * TransactionVO default constructor
+     */
+    public TransactionVO() {
+    }
+
+    /**
+     * TransactionVO parameterized constructor
+     *
+     * @param description
+     * @param date
+     * @param finalAmount
+     * @param transactionAmount
+     * @param type
+     */
+    public TransactionVO(String description, String date, int finalAmount,
+                         int transactionAmount, int type) {
         this.type = type;
         this.transactionAmount = transactionAmount;
         this.description = description;

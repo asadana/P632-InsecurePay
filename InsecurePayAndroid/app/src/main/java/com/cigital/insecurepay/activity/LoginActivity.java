@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -54,43 +53,82 @@ import java.util.List;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via username,password.
+ * LoginActivity is an activity class that allows the user to login and validate
+ * his/her credentials before accessing other activities/fragments.
+ * LoginActivity extends {@link AppCompatActivity} and implements {@link LoaderCallbacks}.
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int numberOfFailedAttemptsAllowed = 15;
+
     private final Context context = this;
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+
+    // userLoginTask is to keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask userLoginTask = null;
-    // UI references.
+
+    // UI components
     private AutoCompleteTextView usernameView;
     private EditText passwordView;
-    private SharedPreferences loginPreferences;
     private CheckBox rememberMeCheck;
+    private TextView forgotPasswordView;
+    private Button btnSignIn;
+
+    private SharedPreferences loginPreferences;
     private String userAddress;
     private String userPath;
     private Gson gson = new Gson();
     private Intent intent;
     private CommonVO commonVO;
+
     private LoginLockoutVO lockoutVO;
     private LoginVO loginVOObj;
     private LoginDBHelper loginDBHelper;
 
+    /**
+     * onCreate is the first method called when the Activity is being created.
+     * It populates and initializes the text views.
+     *
+     * @param savedInstanceState Object that is used to pass data to this activity while
+     *                           creating it.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing started.");
+
         setContentView(R.layout.activity_login);
 
         // To allow Screenshots
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
         // To disable screenshots in this activity
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+        //                      WindowManager.LayoutParams.FLAG_SECURE);
 
+        initValues();
+        addListeners();
+
+        rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
+        loginPreferences = getSharedPreferences(getString(R.string.sharedPreferenceLogin),
+                MODE_PRIVATE);
+
+        boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
+
+        //if the flag was true then get username and password and display
+        if (saveLogin) {
+            usernameView.setText(loginPreferences.getString(getString(R.string.username), ""));
+            passwordView.setText(loginPreferences.getString(getString(R.string.password), ""));
+            rememberMeCheck.setChecked(true);
+        }
+
+        Log.d(this.getClass().getSimpleName(), "onCreate: Initializing finished.");
+    }
+
+    /**
+     * initValues is a function that populates the UI components.
+     */
+    private void initValues() {
+        Log.d(this.getClass().getSimpleName(), "initValues: Initializing values.");
         userAddress = getString(R.string.default_address);
         userPath = getString(R.string.default_path);
 
@@ -100,10 +138,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         usernameView = (AutoCompleteTextView) findViewById(R.id.username);
 
-        TextView forgotPasswordView = (TextView) findViewById(R.id.btnForgotPassword);
+        forgotPasswordView = (TextView) findViewById(R.id.btnForgotPassword);
         populateAutoComplete();
-
         passwordView = (EditText) findViewById(R.id.password);
+
+        btnSignIn = (Button) findViewById(R.id.btnSignIn);
+
+    }
+
+    /**
+     * addListeners is a function that adds listeners.
+     */
+    private void addListeners() {
+        Log.d(this.getClass().getSimpleName(), "addListeners: Adding listeners.");
         passwordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -115,43 +162,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        forgotPasswordView.setOnClickListener(new OnClickListener() {
+        forgotPasswordView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(this.getClass().getSimpleName(), "forgot password view");
-                intent = new Intent(LoginActivity.this.getApplicationContext(), ForgotPassword.class);
+                Log.d(this.getClass().getSimpleName(), "addListeners: forgot password view");
+                intent = new Intent(LoginActivity.this.getApplicationContext(),
+                        ForgotPasswordActivity.class);
                 intent.putExtra(getString(R.string.common_VO), commonVO);
                 startActivity(intent);
             }
         });
 
-        Button mUsernameSignInButton = (Button) findViewById(R.id.btnSignIn);
-        mUsernameSignInButton.setOnClickListener(new OnClickListener() {
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
-        rememberMeCheck = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-        loginPreferences = getSharedPreferences(getString(R.string.sharedPreferenceLogin), MODE_PRIVATE);
-        boolean saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        //if the flag was true then get username and password and display
-        if (saveLogin) {
-            usernameView.setText(loginPreferences.getString(getString(R.string.username), ""));
-            passwordView.setText(loginPreferences.getString(getString(R.string.password), ""));
-            rememberMeCheck.setChecked(true);
-        }
     }
 
+    /**
+     * populateAutoComplete is a function that auto completes the edit text field.
+     */
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
             return;
         }
-
         getLoaderManager().initLoader(0, null, this);
     }
 
+    /**
+     * mayRequestContacts is a function that allows requesting contacts to populate the
+     * edit text fields.
+     */
     private boolean mayRequestContacts() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -175,7 +218,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Callback received when a permissions request has been completed.
+     * onRequestPermissionsResult is a function that is called when a
+     * permissions request has been completed.
+     *
+     * @param requestCode Contains the request code.
+     * @param permissions Contains the permissions that were requested
+     * @param grantResults Contains the integer array with granted permissions.
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -189,7 +237,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * attemptLogin attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
@@ -198,9 +246,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-        // Display username and password in log
-        Log.i(this.getClass().getSimpleName(), "Username : " + usernameView.getText().toString());
-        Log.i(this.getClass().getSimpleName(), "Password : " + passwordView.getText().toString());
+        Log.i(this.getClass().getSimpleName(), "attemptLogin: " +
+                "Username : " + usernameView.getText().toString());
+        Log.i(this.getClass().getSimpleName(), "attemptLogin: " +
+                "Password : " + passwordView.getText().toString());
 
         // Reset errors.
         usernameView.setError(null);
@@ -245,21 +294,29 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (lockoutVO.getTrialTime() == null) {
                     lockoutVO.setAddUser(true);
                 } else {
-                    Log.d(this.getClass().getSimpleName(), lockoutVO.getTrialTime().toString());
-                    Log.d(this.getClass().getSimpleName(), DateTime.now().toString());
-                    Log.d(this.getClass().getSimpleName(), Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() + "");
+                    Log.d(this.getClass().getSimpleName(), "attemptLogin: " +
+                            lockoutVO.getTrialTime().toString());
+                    Log.d(this.getClass().getSimpleName(), "attemptLogin: " +
+                            DateTime.now().toString());
+                    Log.d(this.getClass().getSimpleName(), "attemptLogin: " +
+                            Minutes.minutesBetween(lockoutVO.getTrialTime(),
+                                    DateTime.now()).getMinutes() + "");
                 }
 
                 if (!lockoutVO.isAddUser()) {
                     lockoutVO.setIsLocked(loginDBHelper.isLocked(username));
-                    if (Minutes.minutesBetween(lockoutVO.getTrialTime(), DateTime.now()).getMinutes() > Integer.parseInt(getString(R.string.account_lockout_duration)) && lockoutVO.isLocked()) {
+                    if (Minutes.minutesBetween(lockoutVO.getTrialTime(),
+                            DateTime.now()).getMinutes() >
+                            Integer.parseInt(getString(R.string.account_lockout_duration))
+                            && lockoutVO.isLocked()) {
                         loginDBHelper.deleteTrial(username);
                         lockoutVO.setAddUser(true);
                         lockoutVO.setIsLocked(false);
                     }
                 }
 
-                Log.d(this.getClass().getSimpleName(), Boolean.toString(lockoutVO.isLocked()));
+                Log.d(this.getClass().getSimpleName(), "attemptLogin: " +
+                        Boolean.toString(lockoutVO.isLocked()));
 
                 if (!lockoutVO.isLocked()) {
                     //Parameters contain credentials which are capsuled to LoginVO objects
@@ -269,7 +326,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             getString(R.string.login_path), loginVOObj);
                     userLoginTask.execute();
                 } else {
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this.getApplicationContext(),
+                            getString(R.string.login_failed_account_locked),
+                            Toast.LENGTH_SHORT).show();
                 }
 
             } catch (Exception e) {
@@ -278,15 +337,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
-    /*
-    Checks if the password length is at least 2
+    /**
+     * isPasswordValid is a function that checks if the password length is at least 2.
+     *
+     * @param password  Contains the password entered by the user.
+     *
+     * @return boolean  Return a boolean value based on given condition.
      */
     private boolean isPasswordValid(String password) {
         return password.length() > 2;
     }
 
-    /*
-    Stores the username and password if Remember Me is checked
+    /**
+     * saveLoginPreferences is a function that stores the username and password
+     * if remember me checkbox is checked/
      */
     private void saveLoginPreferences() {
         SharedPreferences.Editor loginPrefsEditor = loginPreferences.edit();
@@ -301,8 +365,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    /**
+     * onCreateLoader is an overridden function that is called when activity is loaded.
+     *
+     * @param integer Contains the integer index value of the loader.
+     * @param bundle  Contains the bundle passed to the activity on creation.
+     * @return Loader   Return the Loader with the cursor.
+     */
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+    public Loader<Cursor> onCreateLoader(int integer, Bundle bundle) {
         return new CursorLoader(this,
                 // Retrieve data rows for the device user's 'profile' contact.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
@@ -318,6 +389,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
     }
 
+    /**
+     * onLoadFinished is a function that is called when the activity is finished loading.
+     *
+     * @param cursorLoader  Contains an object of Loader with cursor.
+     * @param cursor        Contains a cursor object.
+     */
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         List<String> emails = new ArrayList<>();
@@ -326,15 +403,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             emails.add(cursor.getString(ProfileQuery.ADDRESS));
             cursor.moveToNext();
         }
-
         addEmailsToAutoComplete(emails);
     }
 
+    /**
+     * onLoaderReset is a function that is called when the activity is reloading.
+     *
+     * @param cursorLoader  Contains an object of Loader with cursor.
+     */
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
     }
 
+    /**
+     * addEmailsToAutoComplete is a function that is called to populate the username field
+     * using the emails grabbed from contacts.
+     *
+     * @param emailAddressCollection    Contains the list of email addresses retrieved from the
+     *                                  contacts on the device.
+     */
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
@@ -345,7 +432,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Creates a menu option in the current activity
+     * onCreateOptionsMenu is an overridden function that is called to create a menu
+     * option in the current activity.
+     *
+     * @param menu  Contains the menu object of the current activity.
+     *
+     * @return boolean Return true if menu was created.
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -355,7 +447,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Function triggered when any of the options in the menu is selected
+     * onOptionsItemSelected is an overridden function triggered when any
+     * of the options in the menu is selected.
+     *
+     * @param item  Contains the {@link MenuItem} that was selected by the user.
+     *
+     * @return boolean Return true if the right item was selected.
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -366,30 +463,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.itemChange_server) {
-            Log.i(this.getClass().getSimpleName(), "Url change selected");
+            Log.i(this.getClass().getSimpleName(), "onOptionsItemSelected: Url change selected.");
             changeUrl();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Creates a dialog for the user to enter the new server url
+     * changeUrl is a function that creates a dialog for the user to enter the new server url.
      */
     private void changeUrl() {
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View dialogView = layoutInflater.inflate(R.layout.dialog_change_url, null);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setView(dialogView);
-        alertDialogBuilder.setTitle(R.string.prompt_server_addr);
+        alertDialogBuilder.setTitle(R.string.prompt_server_address);
 
         // EditText variables to fetch user inputs from the dialog
         final EditText etUrlAddress = (EditText) dialogView.findViewById(R.id.etUrlAddress);
         final EditText etUrlPath = (EditText) dialogView.findViewById(R.id.etUrlPath);
 
-        Log.i(this.getClass().getSimpleName(), "Initial address: " + userAddress + userPath);
+        etUrlAddress.setText(getString(R.string.changeServer_url));
+        etUrlPath.setText(getString(R.string.changeServer_path));
+
+        Log.i(this.getClass().getSimpleName(),
+                "changeUrl: Initial address: " + userAddress + userPath);
 
         // When OK is clicked
         alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -397,12 +498,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 if (!etUrlAddress.getText().toString().isEmpty()) {
                     userAddress = etUrlAddress.getText().toString();
+                } else {
+                    userAddress = getString(R.string.default_address);
                 }
+
                 if (!etUrlPath.getText().toString().isEmpty()) {
                     userPath = etUrlPath.getText().toString();
+                } else {
+                    userPath = getString(R.string.default_path);
                 }
                 commonVO.setServerAddress(userAddress + userPath);
-                Log.i(this.getClass().getSimpleName(), "Storing address: " + userAddress + userPath);
+                Log.i(this.getClass().getSimpleName(), "changeUrl: " +
+                        "Storing address: " + userAddress + userPath);
             }
             // When Cancel is clicked
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -415,6 +522,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         alertD.show();
     }
 
+    /**
+     * ProfileQuery is an interface that is used
+     */
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -426,29 +536,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * UserLoginTask extends {@link PostAsyncCommonTask} to asynchronously validate the
+     * user login credentials. This returns an object of {@link LoginVO}.
      */
-
     public class UserLoginTask extends PostAsyncCommonTask<LoginVO> {
 
-
-        public UserLoginTask(Context contextObj, String serverAddress, String path, LoginVO objToBeSent) {
+        /**
+         * UserLoginTask is the parametrized constructor of this class.
+         *
+         * @param contextObj    Contains the context of the parent activity.
+         * @param serverAddress Contains the server url/address .
+         * @param path          Contains the sub-path to the service that needs to be used.
+         * @param objToBeSent   Object of the VO class being sent to the server
+         */
+        public UserLoginTask(Context contextObj, String serverAddress,
+                             String path, LoginVO objToBeSent) {
             super(contextObj, serverAddress, path, objToBeSent, LoginVO.class);
-            Log.d(this.getClass().getSimpleName(), "Sending credentials");
+            Log.d(this.getClass().getSimpleName(), "UserLoginTask: Sending credentials.");
         }
 
+        /**
+         * onCancelled is an overridden function that is called when the AsyncTask is
+         * cancelled by the user.
+         */
         @Override
         protected void onCancelled() {
             userLoginTask = null;
         }
 
+        /**
+         * postSuccess is called when the server responds with a non-error code response.
+         * This function performs all the tasks to be done in postExecute when server response
+         * is not an error.
+         *
+         * @param resultObj Contains the string sent from the server as part of the
+         *                  response.
+         */
         @Override
         protected void postSuccess(String resultObj) {
             super.postSuccess(resultObj);
             Log.d(this.getClass().getSimpleName(), "postSuccess: " + resultObj);
             //Convert serverResponse to respectiveVO
-            LoginValidationVO loginValidationVO = gson.fromJson(resultObj, LoginValidationVO.class);
+            LoginValidationVO loginValidationVO = gson.fromJson(resultObj,
+                    LoginValidationVO.class);
 
             lockoutVO.setLoginValidationVO(loginValidationVO);
 
@@ -458,11 +588,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         lockoutVO.setTrialCount(1);
                         loginDBHelper.addTrial(loginVOObj.getUsername());
                     } else {
-                        lockoutVO.setTrialCount(loginDBHelper.getTrial(loginVOObj.getUsername()) + 1);
-                        Log.d(this.getClass().getSimpleName(), "Trials " + lockoutVO.getTrialCount());
-                        if (lockoutVO.getTrialCount() > 3)
+                        lockoutVO.setTrialCount(loginDBHelper
+                                .getTrial(loginVOObj.getUsername()) + 1);
+                        Log.d(this.getClass().getSimpleName(), "postSuccess: " +
+                                "Trials " + lockoutVO.getTrialCount());
+                        if (lockoutVO.getTrialCount() > numberOfFailedAttemptsAllowed)
                             lockoutVO.setIsLocked(true);
-                        loginDBHelper.updateTrial(loginVOObj.getUsername(), lockoutVO.getTrialCount(), lockoutVO.isLocked());
+                        loginDBHelper.updateTrial(loginVOObj.getUsername(),
+                                lockoutVO.getTrialCount(), lockoutVO.isLocked());
                     }
                 }
             }
@@ -470,27 +603,31 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             userLoginTask = null;
 
-            Log.d(this.getClass().getSimpleName(), Boolean.toString(lockoutVO.isLocked()));
+            Log.d(this.getClass().getSimpleName(), "postSuccess: " +
+                    Boolean.toString(lockoutVO.isLocked()));
 
             if (lockoutVO.isLocked()) {
-                Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this.getApplicationContext(),
+                        getString(R.string.login_failed_account_locked), Toast.LENGTH_LONG).show();
             } else if (!lockoutVO.getLoginValidationVO().isUsernameExists()) {
                 usernameView.setError(getString(R.string.error_username_does_not_exist));
                 usernameView.requestFocus();
             } else if (lockoutVO.getLoginValidationVO().isValidUser()) {
                 try {
                     // Move to Home Page if successful login
-                    Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_successful), Toast.LENGTH_LONG).show();
-                    intent = new Intent(getApplicationContext(), HomePage.class);
+                    Toast.makeText(LoginActivity.this.getApplicationContext(),
+                            getString(R.string.login_successful), Toast.LENGTH_LONG).show();
+                    intent = new Intent(getApplicationContext(), HomePageActivity.class);
                     commonVO.setUsername(loginVOObj.getUsername());
-                    commonVO.setCustNo(lockoutVO.getLoginValidationVO().getCustNo());
+                    commonVO.setCustomerNumber(lockoutVO.getLoginValidationVO().getCustomerNumber());
                     intent.putExtra(getString(R.string.common_VO), commonVO);
                     startActivity(intent);
                 } catch (Exception e) {
-                    Log.e(this.getClass().getSimpleName(), "Exception ", e);
+                    Log.e(this.getClass().getSimpleName(), "postSuccess: ", e);
                 }
             } else {
-                Toast.makeText(LoginActivity.this.getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this.getApplicationContext(),
+                        getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                 passwordView.setError(getString(R.string.error_incorrect_password));
             }
         }

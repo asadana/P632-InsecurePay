@@ -8,8 +8,8 @@
     <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stretchColumns="*"
-        android:padding="@dimen/abc_button_inset_vertical_material">
+        android:padding="50dp"
+        android:stretchColumns="*">
 
         <TableRow
             android:layout_width="wrap_content"
@@ -20,14 +20,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvHome_accountNumber"
-                android:textSize="@dimen/abc_text_size_display_1_material" />
+                android:textSize="@dimen/abc_text_size_title_material" />
 
             <TextView
                 android:id="@+id/tvHome_fillAccountNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/abc_text_size_display_1_material" />
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/abc_text_size_title_material"
+                android:textStyle="bold" />
         </TableRow>
 
         <TableRow
@@ -39,14 +40,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvHome_accountBalance"
-                android:textSize="@dimen/abc_text_size_display_1_material" />
+                android:textSize="@dimen/abc_text_size_title_material" />
 
             <TextView
                 android:id="@+id/tvHome_fillBalance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="@dimen/abc_text_size_display_1_material" />
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/abc_text_size_title_material"
+                android:textStyle="bold" />
         </TableRow>
     </TableLayout>
 

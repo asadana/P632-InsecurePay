@@ -3,7 +3,7 @@ apply from: 'jacoco.gradle'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.cigital.insecurepay"
@@ -15,7 +15,6 @@ android {
         // Enabling multidex support.
         multiDexEnabled true
     }
-
     lintOptions {
         // if true, stop the gradle build if errors are found
         abortOnError false
@@ -28,20 +27,50 @@ android {
         htmlReport true
         htmlOutput file("$project.projectDir/../reports/lint/lint-result-" + getDate() + ".html")
     }
-
-
-
+    signingConfigs {
+        config {
+            keyAlias 'InsecurePayKey'
+            keyPassword 'insecurepay'
+            storeFile file("insecurepay-keystore/insecurepay-keystore.jks")
+            storePassword 'insecurepay'
+        }
+    }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             // For running coverage reports on debug builds
             testCoverageEnabled = true
         }
-        release {
+        pro {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+
+            signingConfig signingConfigs.config
+            // Naming the application
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    project.ext { appName = 'InsecurePay' }
+                    def newName = output.outputFile.name
+                    newName = newName.replace("app-", "$project.ext.appName-")
+                    newName = newName.replace(".apk", "-" + defaultConfig.versionName +
+                            "-" + defaultConfig.versionCode + ".apk")
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
+        }
+        free {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            signingConfig signingConfigs.config
         }
     }
+    packagingOptions {
+        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+    }
 }
+
 
 def getDate() {
     def date = new Date()
@@ -51,13 +80,15 @@ def getDate() {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.1'
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'com.android.support:support-v4:23.0.1'
     compile 'joda-time:joda-time:2.9.2'
     compile 'com.android.support:recyclerview-v7:23.0.1'
+    androidTestCompile 'com.android.support.test:rules:0.4'
+    androidTestCompile 'com.android.support.test:runner:0.4'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.1'
 }

@@ -22,7 +22,6 @@ import java.util.Calendar;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -33,85 +32,8 @@ public class TransferFragmentTest {
     @Rule
     public final ActivityTestRule<LoginActivity> loginActivityActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
-
-    @Test
-    public void fundsTransferTest() {
-        Calendar calendarObj = Calendar.getInstance();
-        Constants.transferAmount = calendarObj.get(Calendar.DATE);
-
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
-
-        // Open Drawer
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        // Click on Transfer Funds
-        onView(withText(R.string.nav_transfer_funds))
-                .perform(click());
-
-        //Enter customer username
-        onView(withId(R.id.etCust_username)).
-                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
-
-        //Enter amount
-        onView(withId(R.id.ettransferAmount)).
-                perform(typeText(String.valueOf(-Constants.transferAmount)), closeSoftKeyboard());
-
-        //Enter message
-        onView(withId(R.id.ettransferDetails)).
-                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
-
-
-        //Click on Transfer
-        onView(withId(R.id.btn_transfer))
-                .perform(click());
-        onView(withText(R.string.btnConfirm))
-                .perform(click());
-
-
-        //Lets cancel transfer
-        // Open Drawer
-        onView(withId(R.id.drawer_layout))
-                .perform(DrawerActions.open());
-
-        // Click on Transfer Funds
-        onView(withText(R.string.nav_transfer_funds))
-                .perform(click());
-
-        //Enter customer username
-        onView(withId(R.id.etCust_username)).
-                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
-
-        //Enter amount
-        onView(withId(R.id.ettransferAmount)).
-                perform(typeText(String.valueOf(Constants.transferAmount)), closeSoftKeyboard());
-
-        //Enter message
-        onView(withId(R.id.ettransferDetails)).
-                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
-        //Click on Transfer
-        onView(withId(R.id.btn_transfer))
-                .perform(click());
-
-
-        onView(withId(R.id.btnCancel))
-                .perform(click());
-
-        //Check Amount
-        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.receiverUserName)));
-        onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
-
-        Constants.logout();
-    }
-
-    //Matcher to match string in TextEdit
-    public static Matcher<View> inTextEdit(final String input) {
+    // Matcher to match string in TextEdit
+    private static Matcher<View> inTextEdit(final String input) {
         return new TypeSafeMatcher<View>() {
             @Override
             public boolean matchesSafely(View view) {
@@ -124,6 +46,80 @@ public class TransferFragmentTest {
             public void describeTo(Description description) {
             }
         };
+    }
+
+    @Test
+    public void fundsTransferTest() {
+
+        // Logging in
+        Constants.login();
+
+        // Open Drawer
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        // Click on Transfer Funds
+        onView(withText(R.string.nav_transfer_funds))
+                .perform(click());
+
+        // Enter customer username
+        onView(withId(R.id.etCust_username)).
+                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
+
+        // Creating a dummy value
+        Calendar calendarObj = Calendar.getInstance();
+        Constants.transferAmount = calendarObj.get(Calendar.DATE);
+
+        // Enter amount
+        onView(withId(R.id.ettransferAmount)).
+                perform(typeText(String.valueOf(-Constants.transferAmount)), closeSoftKeyboard());
+
+        // Enter message
+        onView(withId(R.id.ettransferDetails)).
+                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
+
+
+        // Click on Transfer
+        onView(withId(R.id.btn_transfer))
+                .perform(click());
+        onView(withText(R.string.btnConfirm))
+                .perform(click());
+
+
+        // Lets cancel transfer
+        // Open Drawer
+        onView(withId(R.id.drawer_layout))
+                .perform(DrawerActions.open());
+
+        // Click on Transfer Funds
+        onView(withText(R.string.nav_transfer_funds))
+                .perform(click());
+
+        // Enter customer username
+        onView(withId(R.id.etCust_username)).
+                perform(typeText(Constants.receiverUserName), closeSoftKeyboard());
+
+        // Enter amount
+        onView(withId(R.id.ettransferAmount)).
+                perform(typeText(String.valueOf(Constants.transferAmount)), closeSoftKeyboard());
+
+        // Enter message
+        onView(withId(R.id.ettransferDetails)).
+                perform(typeText(calendarObj.getTime().toString()), closeSoftKeyboard());
+        // Click on Transfer
+        onView(withId(R.id.btn_transfer))
+                .perform(click());
+
+        // Cancelling the transfer
+        onView(withId(R.id.btnCancel))
+                .perform(click());
+
+        // Check Amount
+        onView(withId(R.id.etCust_username)).check(matches(inTextEdit(Constants.receiverUserName)));
+        onView(withId(R.id.ettransferAmount)).check(matches(inTextEdit(String.valueOf(Constants.transferAmount))));
+
+        // Logging out
+        Constants.logout();
     }
     
 }

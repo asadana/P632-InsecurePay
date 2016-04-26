@@ -18,7 +18,10 @@ import com.cigital.insecurepay.VOs.CommonVO;
 import java.math.BigDecimal;
 import java.util.Random;
 
-
+/**
+ * InterestCalcFragment extends {@link Fragment}.
+ * This class is used for calculating interest based on generated credit score.
+ */
 public class InterestCalcFragment extends Fragment {
 
 
@@ -45,48 +48,127 @@ public class InterestCalcFragment extends Fragment {
     private static final double RANGE_LEVEL1 = 1000;
     private static final double RANGE_LEVEL2 = 4000;
     private static final double RANGE_LEVEL3 = 10000;
+
     // View objects
-    private TextView tvBalance;
-    private TextView tvDisplayBalance;
-    private TextView tvPrincipal;
-    private EditText etPrincipal;
-    private TextView tvPeriod;
-    private EditText etDate;
-    private TextView tvCreditScore;
-    private TextView tvDisplayCreditScore;
     private Button btnCalculate;
+    private EditText etPrincipal;
+    private EditText etDate;
     private Spinner dateType;
+    private TextView tvDisplayBalance;
+    private TextView tvDisplayCreditScore;
     private TextView tvInterest;
     private TextView tvRateOfInterest;
     private TextView tvFillInterest;
     private TextView tvFillRateOfInterest;
+
     private CommonVO commonVO;
     private Integer creditScore;
-    private Double interest;
-    private HomeFragment.OnFragmentInteractionListener mListener;
 
+    private String enterValidAmount = "Enter Valid Amount";
+
+    /**
+     * InterestCalcFragment is the default constructor for this class.
+     */
     public InterestCalcFragment() {
-        // Required empty public constructor
     }
 
 
+    /**
+     * onCreateView is an overridden function that is called while the fragment is
+     * being created.
+     *
+     * @param layoutInflater     Contains the {@link LayoutInflater} object that defines
+     *                           the layout of the fragment
+     * @param viewGroup          Contains the {@link ViewGroup} object to which this fragment
+     *                           belongs to.
+     * @param savedInstanceState Object of {@link Bundle} that is used to pass data to this
+     *                           activity while creating it.
+     * @return View         Return the {@link View} object created.
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
-        View viewObj = inflater.inflate(R.layout.fragment_interest_calc, container, false);
-        Log.i(this.getClass().getSimpleName(), "Generating View ...");
+
+        Log.i(this.getClass().getSimpleName(), "onCreateView: Initializing view.");
+
+        View viewObj = layoutInflater.inflate(R.layout.fragment_interest_calc, viewGroup, false);
+
         creditScore = generateCreditScore();
         initValues(viewObj);
+
         //Credit score is init seperately
         tvDisplayCreditScore.setText((creditScore).toString());
         addListener();
+
         return viewObj;
     }
 
+    /**
+     * initValues is a function that is used to initialize the UI components
+     * and other variables.
+     *
+     * @param viewObj Contains the {@link View} of the fragment.
+     */
+    private void initValues(View viewObj) {
+        Log.d(this.getClass().getSimpleName(), "initValues: Initializing values.");
+
+        tvDisplayBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillAccountBalance);
+        tvDisplayBalance.setText(String.valueOf(commonVO.getAccountVO().getAccountBalance()));
+        etPrincipal = (EditText) viewObj.findViewById(R.id.etIntCalc_FillPrincipalAmount);
+        etDate = (EditText) viewObj.findViewById(R.id.etIntCalc_Date);
+        tvDisplayCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillCreditScore);
+        tvInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_Interest);
+        tvRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_RateOfInterest);
+        tvFillInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillInterest);
+        tvFillRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillRateOfInterest);
+        btnCalculate = (Button) viewObj.findViewById(R.id.btnIntCalc_Calc);
+        dateType = (Spinner) viewObj.findViewById(R.id.etIntCalc_Period);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.Date, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dateType.setAdapter(adapter);
+
+    }
+
+    /**
+     * addListeners is a function that is called to attach listeners
+     * to various components.
+     */
+    private void addListener() {
+        Log.d(this.getClass().getSimpleName(), "addListener: Adding listeners.");
+
+        btnCalculate.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                String inputTime = String.valueOf(etDate.getText());
+                String inputPrincipal = String.valueOf(etPrincipal.getText());
+
+                if (etPrincipal.equals("")) {
+                    etPrincipal.setError(enterValidAmount);
+                    etPrincipal.requestFocus();
+                    return;
+                }
+                double time = Double.parseDouble(inputTime);
+                double principal = Double.parseDouble(inputPrincipal);
+                calcInterest(time, principal);
+            }
+        });
+    }
+
+    /**
+     * generateCreditScore is a function that is called to determine the credit score
+     * given the current balance.
+     *
+     * @return int  Contains the credit score generated.
+     */
     private int generateCreditScore() {
-        Log.i(this.getClass().getSimpleName(), "Generating credit Score ... ");
+        Log.i(this.getClass().getSimpleName(), "generateCreditScore: Generating credit score.");
+
         commonVO = ((CommonVO) this.getArguments().getSerializable(getString(R.string.common_VO)));
         double account_bal = commonVO.getAccountVO().getAccountBalance();
+
+        //Determine credit score range depending on Account Balance
         int creditScoreRank = RANK_ONE;
         if (account_bal >= RANGE_BASE && account_bal <= RANGE_LEVEL1) {
             creditScoreRank = RANK_FOUR;
@@ -124,55 +206,14 @@ public class InterestCalcFragment extends Fragment {
         return creditScore;
     }
 
-    // Initializing listeners where needed
-    private void addListener() {
-        Log.i(this.getClass().getSimpleName(), "Adding Listeners");
-
-        btnCalculate.setOnClickListener(new View.OnClickListener() {
-            @Override
-
-            public void onClick(View v) {
-                String inputTime = String.valueOf(etDate.getText());
-                String inputPrincipal = String.valueOf(etPrincipal.getText());
-
-                if (etPrincipal.equals("")) {
-                    etPrincipal.setError("Enter Valid Amount");
-                    etPrincipal.requestFocus();
-                    return;
-                }
-                double time = Double.parseDouble(inputTime);
-                double principal = Double.parseDouble(inputPrincipal);
-                calcInterest(time, principal);
-            }
-        });
-    }
-
-    private void initValues(View viewObj) {
-        Log.i(this.getClass().getSimpleName(), "Initializing Values..");
-        tvBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_AccountBalance);
-        tvDisplayBalance = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillAccountBalance);
-        tvDisplayBalance.setText(String.valueOf(commonVO.getAccountVO().getAccountBalance()));
-        tvPrincipal = (TextView) viewObj.findViewById(R.id.tvIntCalc_PrincipalAmount);
-        etPrincipal = (EditText) viewObj.findViewById(R.id.etIntCalc_FillPrincipalAmount);
-        etDate = (EditText) viewObj.findViewById(R.id.etIntCalc_Date);
-        tvPeriod = (TextView) viewObj.findViewById(R.id.tvIntCalc_Period);
-        tvCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_CreditScore);
-        tvDisplayCreditScore = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillCreditScore);
-        tvInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_Interest);
-        tvRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_RateOfInterest);
-        tvFillInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillInterest);
-        tvFillRateOfInterest = (TextView) viewObj.findViewById(R.id.tvIntCalc_FillRateOfInterest);
-        btnCalculate = (Button) viewObj.findViewById(R.id.btnIntCalc_Calc);
-        dateType = (Spinner) viewObj.findViewById(R.id.etIntCalc_Period);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
-                R.array.Date, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dateType.setAdapter(adapter);
-
-    }
-
+    /**
+     * calcInterest is a function that is called ti calculate interest.
+     *
+     * @param time          Contains the time duration entered by the user.
+     * @param principal     Contains the principal amount entered by the user.
+     */
     private void calcInterest(double time, double principal) {
-        Log.i(this.getClass().getSimpleName(), "Calculating Interest...");
+        Log.d(this.getClass().getSimpleName(), "calcInterest: Calculating interest.");
 
 
         String type = dateType.getSelectedItem().toString();
@@ -187,13 +228,15 @@ public class InterestCalcFragment extends Fragment {
         }
 
         //Calc rate of interest
-        double amount = commonVO.getAccountVO().getAccountBalance();
         int creditScore = Integer.parseInt(tvDisplayCreditScore.getText().toString());
+
         //Adding (1-creditscore/1000) to the base interest rate
         Double rateOfInterest = INTERESTBASE + (1 - (creditScore / CREDITSCOREDIVISOR));
         rateOfInterest = roundOff(rateOfInterest);
+
         tvRateOfInterest.setVisibility(View.VISIBLE);
         tvFillRateOfInterest.setText(rateOfInterest.toString() + getString(R.string.tvIntCalc_Percent));
+
         Double interest = (principal * rateOfInterest * time) / INTERESTDIVISOR;
         interest = roundOff(interest);
         tvInterest.setVisibility(View.VISIBLE);
@@ -201,12 +244,16 @@ public class InterestCalcFragment extends Fragment {
 
     }
 
-    //Round off to 2 decimal places after point
+    /**
+     * roundOff is a function that is called to round off to 2 decimal places after decimal.
+     *
+     * @param value Contains the value to be rounded off.
+     * @return Double   Contains the double value returned after rounding off.
+     */
     private Double roundOff(double value) {
-        Log.i(this.getClass().getSimpleName(), "Rounding Off...");
+        Log.d(this.getClass().getSimpleName(), "roundOff: Rounding off.");
         return new BigDecimal(value)
                 .setScale(ROUNDOFFVALUE, BigDecimal.ROUND_HALF_UP)
                 .doubleValue();
-
     }
 }

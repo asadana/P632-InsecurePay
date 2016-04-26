@@ -2,24 +2,53 @@ package com.cigital.insecurepay.common;
 
 import android.util.Base64;
 
+/**
+ * CustomDecoder is a class that decodes SSN Number. Encode operation is performed by
+ * XORing the SSN with the hardcoded key and then Base64 encoding is applied on the XORed string.
+ */
 public class CustomDecoder {
 
+    //Key used for XOR function
     private static final String key = "abc";
 
-    public static String decode(String s) {
-        return new String(xorWithKey(base64Decode(s), key.getBytes()));
+    /**
+     * decode is a function that receives the encoded SSN as string and decodes it.
+     *
+     * @param	ssnString	Contains the string/SSN that needs to be decoded.
+     *
+     * @return	String		Returns the decoded string.
+     */
+    public static String decode(String ssnString) {
+        return new String(xorWithKey(base64Decode(ssnString), key.getBytes()));
     }
 
-    private static byte[] xorWithKey(byte[] a, byte[] key) {
-        byte[] out = new byte[a.length];
-        for (int i = 0; i < a.length; i++) {
-            out[i] = (byte) (a[i] ^ key[i % key.length]);
+    /**
+     * xorWithKey is a function to XOR the SSN with key
+     *
+     * @param	ssnStringBytes	Contains the byte array from the ssn string
+     * @param	keyStringBytes	Contains the byte array from the key string
+     *
+     * @return	byte[]			Returns the xor'ed byte array
+     */
+    private static byte[] xorWithKey(byte[] ssnStringBytes, byte[] keyStringBytes) {
+        byte[] resultObjBytes = new byte[ssnStringBytes.length];
+        // For loop to XOR each byte of the ssnString
+        for (int i = 0; i < ssnStringBytes.length; i++) {
+            resultObjBytes[i] = (byte) (ssnStringBytes[i] ^
+                    keyStringBytes[i % keyStringBytes.length]);
         }
-        return out;
+        return resultObjBytes;
     }
 
-    private static byte[] base64Decode(String s) {
-        return Base64.decode(s, Base64.DEFAULT);
+    /**
+     * base64Decode is a function that performs Base64 decoding of ssnStringBytes
+     *
+     * @param	ssnStringBytes	Contains a byte array of ssnString
+     *
+     * @return byte[]            Return the byte array generated after decoding.
+     */
+    private static byte[] base64Decode(String ssnStringBytes) {
+        return Base64.decode(ssnStringBytes, Base64.DEFAULT);
     }
 
 }

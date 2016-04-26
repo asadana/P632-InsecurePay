@@ -17,8 +17,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Calendar;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -40,18 +38,12 @@ public class AccountFragmentTest {
     private Activity activityObj;
 
     @Test
-    public void checkChangePassword() {
+    public void changepasswordTest() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        // Logging in
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
@@ -104,17 +96,12 @@ public class AccountFragmentTest {
     }
 
     @Test
-    public void checkAccountUpdate() {
+    public void accountUpdateTest() {
 
         activityObj = loginActivityActivityTestRule.getActivity();
 
-        onView(withId(R.id.username)).
-                perform(replaceText(Constants.correctUsername), closeSoftKeyboard());
-        onView(withId(R.id.password)).
-                perform(replaceText(Constants.defaultPassword), closeSoftKeyboard());
-        // First attempt with correct username and password
-        onView(withId(R.id.btnSignIn))
-                .perform(click());
+        // Logging in
+        Constants.login();
 
         // Open Drawer
         onView(withId(R.id.drawer_layout))
@@ -126,8 +113,7 @@ public class AccountFragmentTest {
 
         onView(withId(R.id.btnAccount_update)).check(matches(not(isEnabled())));
 
-        Calendar calendarObj = Calendar.getInstance();
-        Constants.displayedText = Constants.simpleDateFormatObj.format(calendarObj.getTime());
+        Constants.displayedText = Constants.generateNumber();
 
         onView(withId(R.id.etAccount_fillAddressZip)).perform(replaceText(Constants.displayedText));
 
@@ -159,6 +145,7 @@ public class AccountFragmentTest {
                 .perform(click());
 
 
+        // Checking if the current value of zipcode is same as what we entered
         onView(withId(R.id.etAccount_fillAddressZip))
                 .check(matches(new TypeSafeMatcher<View>() {
                     @Override
@@ -173,6 +160,7 @@ public class AccountFragmentTest {
                     }
                 }));
 
+        // Logging out
         Constants.logout();
     }
 }
