@@ -63,9 +63,9 @@
     <string name="nav_logout">Logout</string>
 
     <!--For Home Fragment-->
-    <string name="tvHome_accountNumber">Account No</string>
+    <string name="tvHome_accountNumber">Account Number</string>
     <string name="tvHome_accountBalance">Balance</string>
-    <string name="tvHome_insecure_pay_Account">Insecure Pay Account</string>
+    <string name="tvHome_insecure_pay_Account">InsecurePay Account</string>
 
     <!--For Account Management Fragment-->
     <string name="tvAccount_accountNumber">Account Number</string>
