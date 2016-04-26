@@ -48,5 +48,6 @@ public class ActivityHistoryDBHelper extends DBHelper {
         values.put(FINAL_AMOUNT, transactionVO.getFinalAmount());
         //inserts the values in database
         sqLiteDatabase.insert(TABLE_NAME_TRANSFERS, null, values);
+        sqLiteDatabase.close();
     }
 }
