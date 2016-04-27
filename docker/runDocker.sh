@@ -1,4 +1,13 @@
 #!/usr/bin/bash
+ 
+# Script Name: runDocker.sh
+# This script builds and deploys the docker images for 
+# the server part of our project.
+#
+# Project: InsecurePay
+# Written By: InsecurePay Team
+# Last Edited: 04-27-2016
+# Last Edited By: Ankit Sadana (asadana@indiana.edu)
 
 echo
 
