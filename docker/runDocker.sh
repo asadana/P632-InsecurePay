@@ -20,14 +20,14 @@ command -v docker >/dev/null 2>&1 || {
 }
 
 tomcatName="insecurepay/tomcat:v1"
-tomcatContainerName="tomcat"
+tomcatContainerName="tomcat_insecurepay"
 
 postgresName="insecurepay/postgres:v1" 
 
 # NOTE: If you change the postgresContainerName here, 
 # then you need to change it in InsecurePayServiceServer com/cigital/common/Constants.java
 # and repack the war file docker/dockerTomcat/InsecurePayServiceServer.war
-postgresContainerName="postgres"
+postgresContainerName="postgres_insecurepay"
 
 while [[ true ]]; do
 	# tomcatPortNo value points to the host port number assigned to the docker
