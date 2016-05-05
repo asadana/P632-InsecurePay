@@ -49,15 +49,18 @@ public class LoginDao extends BaseDao {
 			Logging.logger.debug("Attempting to login.");
 			try {
 				// Querying the database to attempt login
-				resultSet = querySql(Queries.ATTEMPT_LOGIN, params);
-				
+				String sql2 = "select * from cust_credentials where "
+						+ "cust_username='" + loginBO.getUsername()
+						+ "' and password='" + loginBO.getPassword()
+						+ "'";
+				statementObj = connectionObj.createStatement();
+				resultSet = statementObj.executeQuery(sql2);				
 				if (resultSet.next()) {
 					validationBO.setValidUser(true);
 				}
 				close();
 				
-			} catch (SQLException | InstantiationException | 
-					IllegalAccessException | ClassNotFoundException e) {
+			} catch (SQLException e) {
 				Logging.logger.error(e);
 				return validationBO;
 			}
